@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -140,7 +141,7 @@ public class VistorController {
 	@ApiOperation(value = "Delete an Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested organizer!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@PutMapping(value = "/deleteById/{ID}", consumes = "application/json", produces = "application/json")
+	@DeleteMapping(value = "/deleteById/{ID}", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<VisitorDTO> deleteAnOrganizer(@PathVariable(value = "ID") final Integer ID) {
 		if (null == ID) {
 			log.warn(messages.getMessage("failed.empty.request.body", null, null));
