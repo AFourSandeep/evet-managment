@@ -3,6 +3,7 @@
  */
 package com.afour.emgmt.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,9 +25,11 @@ import lombok.NoArgsConstructor;
 public class Role {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="role_id")
 	private Integer roleId;
-
+	
+	@Column(name="role_name")
 	private String roleName;
 
 }

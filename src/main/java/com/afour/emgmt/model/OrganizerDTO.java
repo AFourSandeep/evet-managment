@@ -3,7 +3,7 @@
  */
 package com.afour.emgmt.model;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,17 +27,17 @@ public class OrganizerDTO {
 	
 	private String password;
 	
-	private boolean isActive;
+	private Boolean isActive;
 	
 	private RoleDTO role;
 
-	private String created_By;
+	private String createdBy;
 	
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 	
-	private String updated_By;
+	private String updatedBy;
 	
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 	
 
 }

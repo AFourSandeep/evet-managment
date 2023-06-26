@@ -35,13 +35,13 @@ class OrganizerControllerTest {
 	OrganizerController orgController ;
 	
 	@Test
-	void fetchAllOrganizars_for_data() {
+	void fetchAllOrganizers_for_data() {
 		//given
 		List<OrganizerDTO> dtos = List.of(new OrganizerDTO(), new OrganizerDTO());
 		when(orgService.fetchAllOrganizers()).thenReturn(dtos);
 		
 		//when
-		var result= orgController.fetchAllOrganizars();
+		var result= orgController.fetchAllOrganizers();
 		
 		//then
 		assertEquals(HttpStatus.OK,result.getStatusCode());
@@ -49,12 +49,12 @@ class OrganizerControllerTest {
 	}
 
 	@Test
-	void fetchAllOrganizars_for_no_data() {
+	void fetchAllOrganizers_for_no_data() {
 		//given
 		when(orgService.fetchAllOrganizers()).thenReturn(null);
 		
 		//when
-		var result= orgController.fetchAllOrganizars();
+		var result= orgController.fetchAllOrganizers();
 		
 		//then
 		assertEquals(HttpStatus.NO_CONTENT,result.getStatusCode());

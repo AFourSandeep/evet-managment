@@ -1,6 +1,11 @@
 package com.afour.emgmt.config;
 
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+
 import org.modelmapper.ModelMapper;
+import org.modelmapper.module.jsr310.Jsr310Module;
+import org.modelmapper.module.jsr310.Jsr310ModuleConfig;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,6 +15,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 
 @Configuration
 @ComponentScan(basePackages = "com.afour.emgmt")
@@ -33,7 +39,13 @@ public class EventMgmtConfiguration implements WebMvcConfigurer {
 	
 	@Bean
 	ModelMapper mpdelMapper() {
-		return new ModelMapper();
+		ModelMapper modelMapper = new ModelMapper();
+		Jsr310ModuleConfig config = Jsr310ModuleConfig.builder()
+			    .dateTimeFormatter(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+			    .dateFormatter(DateTimeFormatter.ISO_LOCAL_DATE)
+			    .zoneId(ZoneOffset.UTC)
+			    .build();
+		return modelMapper.registerModule(new Jsr310Module(config));
 	}
 
 

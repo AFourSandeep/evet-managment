@@ -28,11 +28,11 @@ public class EventDTO {
 	
 	private OrganizerDTO owner;
 	
-	private String created_By;
+	private String createdBy;
 	
 	private Timestamp createdAt;
 	
-	private String updated_By;
+	private String updatedBy;
 	
 	private Timestamp updatedAt;
 	

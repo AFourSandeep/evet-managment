@@ -3,7 +3,7 @@
  */
 package com.afour.emgmt.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 public class Organizer {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="organizer_id")
 	private Integer organizerId;
 	
@@ -54,13 +54,13 @@ public class Organizer {
 	private String createdBy;
 	
 	@Column(name="created_at")
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 	
 	@Column(name="updated_by")
 	private String updatedBy;
 	
 	@Column(name="updated_at")
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 	
 
 }

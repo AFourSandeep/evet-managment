@@ -3,7 +3,7 @@
  */
 package com.afour.emgmt.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -29,17 +29,18 @@ import lombok.NoArgsConstructor;
 public class Event {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="event_id")
 	private Integer eventId;
 	
 	@Column(name="event_name", length=100, nullable=false, unique=false)
 	private String eventName;
 	
 	@Column(name="start_at")
-	private Timestamp startAt;
+	private LocalDateTime startAt;
 	
 	@Column(name="end_at")
-	private Timestamp endAt;
+	private LocalDateTime endAt;
 	
 	@OneToOne
 	@JoinColumn(name="organizer_id", unique=true, nullable=false)
@@ -49,13 +50,13 @@ public class Event {
 	private String createdBy;
 	
 	@Column(name="created_at")
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 	
 	@Column(name="updated_by")
 	private String updatedBy;
 	
 	@Column(name="updated_at")
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 	
 	@OneToMany( mappedBy = "event")
 	private List<Esession> sessions;

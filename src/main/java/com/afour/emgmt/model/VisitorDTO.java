@@ -31,11 +31,11 @@ public class VisitorDTO {
 	
 	private RoleDTO role;
 	
-	private String created_By;
+	private String createdBy;
 	
 	private Timestamp createdAt;
 	
-	private String updated_By;
+	private String updatedBy;
 	
 	private Timestamp updatedAt;
 }

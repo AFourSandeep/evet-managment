@@ -3,6 +3,7 @@
  */
 package com.afour.emgmt.mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,10 +14,13 @@ import org.springframework.stereotype.Component;
 import com.afour.emgmt.entity.Organizer;
 import com.afour.emgmt.model.OrganizerDTO;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  */
 @Component
+@Slf4j
 public class OrganizerMapperImpl implements OrganizerMapper {
 
 	@Autowired
@@ -24,6 +28,7 @@ public class OrganizerMapperImpl implements OrganizerMapper {
 
 	@Override
 	public OrganizerDTO entityToDTO(Organizer entity) {
+		log.info("Organizer entity to DTO conversion for : {}",entity);
 		return modelMapper.map(entity, OrganizerDTO.class);
 	}
 
@@ -46,6 +51,23 @@ public class OrganizerMapperImpl implements OrganizerMapper {
 				.stream()
 				.map(dto -> DTOToEntity(dto))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Organizer prepareForUpdate(Organizer entity, OrganizerDTO orgDTO) {
+		
+		if (null != orgDTO.getFirstName())
+			entity.setFirstName(orgDTO.getFirstName());
+		if (null != orgDTO.getLastName())
+			entity.setLastName(orgDTO.getLastName());
+		if (null != orgDTO.getPassword())
+			entity.setPassword(orgDTO.getPassword());
+		if (null != orgDTO.getIsActive())
+			entity.setActive(orgDTO.getIsActive());
+		
+		entity.setUpdatedAt(LocalDateTime.now());
+		entity.setUpdatedBy("System");
+		return entity;
 	}
 
 }

@@ -3,7 +3,7 @@
  */
 package com.afour.emgmt.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,17 +27,18 @@ import lombok.NoArgsConstructor;
 public class Esession {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name="essesion_id")
 	private Integer esessionId;
 	
 	@Column(name="esession_title", length=100, nullable=false)
 	private String esessionTitle;
 	
 	@Column(name="start_at")
-	private Timestamp startAt;
+	private LocalDateTime startAt;
 	
 	@Column(name="end_at")
-	private Timestamp endAt;
+	private LocalDateTime endAt;
 	
 	@ManyToOne()
 	@JoinColumn(name="event_id")
@@ -47,12 +48,12 @@ public class Esession {
 	private String createdBy;
 	
 	@Column(name="created_at")
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 	
 	@Column(name="updated_by")
 	private String updatedBy;
 	
 	@Column(name="updated_at")
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 
 }

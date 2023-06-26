@@ -13,12 +13,14 @@ import com.afour.emgmt.model.OrganizerDTO;
  */
 public interface OrganizerMapper {
 	
-	OrganizerDTO entityToDTO(Organizer organizer);
+	OrganizerDTO entityToDTO(Organizer entity);
 	
-	Organizer DTOToEntity(OrganizerDTO organizer);
+	Organizer DTOToEntity(OrganizerDTO dto);
 	
-	List<OrganizerDTO> entityToDTO(List<Organizer> organizers);
+	List<OrganizerDTO> entityToDTO(List<Organizer> entities);
 	
-	List<Organizer> DTOToEntity(List<OrganizerDTO> organizer);
+	List<Organizer> DTOToEntity(List<OrganizerDTO> dtos);
+
+	Organizer prepareForUpdate(Organizer entity, OrganizerDTO orgDTO);
 
 }

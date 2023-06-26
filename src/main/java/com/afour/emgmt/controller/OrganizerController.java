@@ -10,6 +10,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RestController
 @RequestMapping("/organizer")
-@Api(tags="Manage Organizers")
+@Api(tags = "Manage Organizers")
 @Slf4j
 public class OrganizerController {
 
@@ -36,22 +40,99 @@ public class OrganizerController {
 
 	@Autowired
 	MessageSource messages;
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the organizers without any filter!")
-	@ApiResponses(value= {
-			@ApiResponse(code = 200, message = "Found all the organizers!"),
-			@ApiResponse(code = 204, message = "No data found!")
-	})
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the organizers!"),
+			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping("/organizers")
-	public ResponseEntity<List<OrganizerDTO>> fetchAllOrganizars() {
+	public ResponseEntity<List<OrganizerDTO>> fetchAllOrganizers() {
 		List<OrganizerDTO> result = service.fetchAllOrganizers();
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", new Object[] {result.size()}, null));
+			log.info(messages.getMessage("success.data.found.size", new Object[] { result.size() }, null));
 			return new ResponseEntity(result, HttpStatus.OK);
 		} else {
-			log.info(messages.getMessage("no.data.found", null, null));
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
+			log.warn(messages.getMessage("no.data.found", null, null));
+			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@ApiOperation(value = "Fetch one organizers by ID!")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizers!"),
+			@ApiResponse(code = 204, message = "No data found!") })
+	@GetMapping("/organizers/{ID}")
+	public ResponseEntity<List<OrganizerDTO>> findOrganizerByID(@PathVariable(value = "ID") final Integer ID) {
+		OrganizerDTO result = service.findOrganizerByID(ID);
+		if (result != null) {
+			log.info(messages.getMessage("success.data.found.size", null, null));
+			return new ResponseEntity(result, HttpStatus.OK);
+		} else {
+			log.warn(messages.getMessage("no.data.found", null, null));
+			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@ApiOperation(value = "Fetch one organizers by USERNAME!")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizers!"),
+			@ApiResponse(code = 204, message = "No data found!") })
+	@GetMapping("/organizers/{username}")
+	public ResponseEntity<List<OrganizerDTO>> findOrganizerByUserName(@PathVariable(value = "username") final String USERNAME) {
+		OrganizerDTO result = service.findOrganizerByUserName(USERNAME);
+		if (result != null) {
+			log.info(messages.getMessage("success.data.found.size", null, null));
+			return new ResponseEntity(result, HttpStatus.OK);
+		} else {
+			log.warn(messages.getMessage("no.data.found", null, null));
+			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@ApiOperation(value = "Add a new Organizer.")
+	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
+			@ApiResponse(code = 400, message = "Bad Request!") })
+	@PostMapping(value = "/add_organizer", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<OrganizerDTO> addAnOrganizer(@RequestBody OrganizerDTO orgDTO) {
+		if (null == orgDTO) {
+			log.warn(messages.getMessage("failed.empty.request.body", null, null));
+			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
+					HttpStatus.BAD_REQUEST);
+		}
+		
+		OrganizerDTO result = service.addAnOrganizer(orgDTO);
+
+		if (result != null) {
+			log.info(messages.getMessage("organizer.create.success", new Integer[] { result.getOrganizerId() }, null));
+			return new ResponseEntity(result, HttpStatus.CREATED);
+		} else {
+			log.error(messages.getMessage("organizer.create.fail", new OrganizerDTO[] { orgDTO }, null));
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@ApiOperation(value = "Update an Organizer.")
+	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
+			@ApiResponse(code = 400, message = "Bad Request!") })
+	@PutMapping(value = "/update_organizer", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<OrganizerDTO> updateAnOrganizer(@RequestBody OrganizerDTO orgDTO) {
+		
+		if (null == orgDTO) {
+			log.warn(messages.getMessage("failed.empty.request.body", null, null));
+			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
+					HttpStatus.BAD_REQUEST);
+		}
+		
+		OrganizerDTO result = service.updateAnOrganizer(orgDTO);
+
+		if (result != null) {
+			log.info(messages.getMessage("organizer.update.success", new Integer[] { result.getOrganizerId() }, null));
+			return new ResponseEntity(result, HttpStatus.ACCEPTED);
+		} else {
+			log.error(messages.getMessage("organizer.update.fail", new Integer[] { orgDTO.getOrganizerId() }, null));
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
 

@@ -13,5 +13,5 @@ import com.afour.emgmt.entity.Organizer;
  */
 @Repository
 public interface OrganizerRepository extends JpaRepository<Organizer, Integer>{
-	
+	public Organizer findByUserName(final String username); 
 }
