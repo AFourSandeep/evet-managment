@@ -62,8 +62,8 @@ public class VisitorController {
 	@ApiOperation(value = "Fetch one Visitor by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/findByID/{ID}")
-	public ResponseEntity<List<VisitorDTO>> findVisitorByID(@PathVariable(value = "ID") final Integer ID) {
+	@GetMapping("/byId/{ID}")
+	public ResponseEntity<VisitorDTO> findVisitorByID(@PathVariable(value = "ID") final Integer ID) {
 		VisitorDTO result = service.findVisitorByID(ID);
 		if (result != null) {
 			log.info(messages.getMessage("success.data.found.size", null, null));
@@ -78,8 +78,8 @@ public class VisitorController {
 	@ApiOperation(value = "Fetch one Visitor by USERNAME!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/finaByName/{username}")
-	public ResponseEntity<List<VisitorDTO>> findVisitorByUserName(@PathVariable(value = "username") final String USERNAME) {
+	@GetMapping(value="/byName/{username}", produces = "application/json")
+	public ResponseEntity<VisitorDTO> findVisitorByUserName(@PathVariable(value = "username") final String USERNAME) {
 		VisitorDTO result = service.findVisitorByUserName(USERNAME);
 		if (result != null) {
 			log.info(messages.getMessage("success.data.found.size", null, null));
@@ -157,6 +157,22 @@ public class VisitorController {
 		} else {
 			log.error(messages.getMessage("visitor.delete.fail", new Integer[] { ID }, null));
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@ApiOperation(value = "Fetch one Visitor by USERNAME!")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
+			@ApiResponse(code = 204, message = "No data found!") })
+	@GetMapping("/byEventId/{eventId}")
+	public ResponseEntity<List<VisitorDTO>> findVisitorsByEventId(@PathVariable(value = "eventId") final Integer eventId) {
+		List<VisitorDTO> result = service.findVisitorsByEventId(eventId);
+		if (result != null) {
+			log.info(messages.getMessage("success.data.found.size", null, null));
+			return new ResponseEntity(result, HttpStatus.OK);
+		} else {
+			log.warn(messages.getMessage("no.data.found", null, null));
+			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
 		}
 	}
 

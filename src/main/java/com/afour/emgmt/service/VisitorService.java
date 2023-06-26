@@ -22,6 +22,8 @@ public interface VisitorService {
 
 	VisitorDTO updateVisitor(VisitorDTO dto);
 
-	Boolean deleteVisitorByID(Integer iD);
+	Boolean deleteVisitorByID(Integer ID);
+
+	List<VisitorDTO> findVisitorsByEventId(Integer eventId);
 
 }

@@ -28,7 +28,7 @@ public class Esession {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="essesion_id")
+	@Column(name="esession_id")
 	private Integer esessionId;
 	
 	@Column(name="esession_title", length=100, nullable=false)
@@ -40,7 +40,7 @@ public class Esession {
 	@Column(name="end_at")
 	private LocalDateTime endAt;
 	
-	@ManyToOne()
+	@ManyToOne
 	@JoinColumn(name="event_id")
 	private Event event;
 	

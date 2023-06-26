@@ -5,6 +5,7 @@ package com.afour.emgmt.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,6 @@ public class OrganizerServiceImpl implements OrganizerService {
 	@Override
 	public List<OrganizerDTO> fetchAllOrganizers() {
 		List<Organizer> entities = repository.findAll();
-		log.info("DB operation success!");
 		if (null == entities)
 			return null;
 		log.info("DB operation success! Fetched {} Organizers!",entities.size());
@@ -42,10 +42,9 @@ public class OrganizerServiceImpl implements OrganizerService {
 	@Override
 	public OrganizerDTO findOrganizerByID(final Integer ID) {
 		Organizer entity = repository.findById(ID).get();
-		log.info("DB operation success!");
 		if (null == entity)
 			return null;
-		log.info("DB operation success! Fetched Organizer:{} by ID: {}", entity.getOrganizerId(), ID);
+		log.info("DB operation success! Fetched Organizer:{} ", entity.getOrganizerId());
 		return mapper.entityToDTO(entity);
 	}
 
@@ -63,10 +62,8 @@ public class OrganizerServiceImpl implements OrganizerService {
 	@Override
 	public OrganizerDTO addAnOrganizer(final OrganizerDTO dto) {
 		Organizer entity = mapper.DTOToEntity(dto);
-		if (null == dto.getOrganizerId()) {
-			entity.setCreatedAt(LocalDateTime.now());
-			entity.setCreatedBy("System");
-		}
+		entity.setCreatedAt(LocalDateTime.now());
+		entity.setCreatedBy("System");
 		entity.setUpdatedAt(LocalDateTime.now());
 		entity.setUpdatedBy("System");
 
@@ -77,15 +74,15 @@ public class OrganizerServiceImpl implements OrganizerService {
 
 	@Override
 	public OrganizerDTO updateAnOrganizer(final OrganizerDTO dto) {
-		Organizer entity = repository.findById(dto.getOrganizerId()).get();
+		Optional<Organizer> optional = repository.findById(dto.getOrganizerId());
 
-		if (null == entity)
+		if (optional.isEmpty())
 			return null;
 
-		entity = mapper.prepareForUpdate(entity, dto);
+		Organizer entity  = mapper.prepareForUpdate(optional.get(), dto);
 		entity = repository.save(entity);
 
-		log.info("DB operation success! Updated Organizer : {}", entity);
+		log.info("DB operation success! Updated Organizer : {}", entity.getOrganizerId());
 		return mapper.entityToDTO(entity);
 	}
 

@@ -3,7 +3,7 @@
  */
 package com.afour.emgmt.model;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -22,20 +22,24 @@ public class EventDTO {
 	
 	private String eventName;
 	
-	private Timestamp startAt;
+	private LocalDateTime startAt;
 	
-	private Timestamp endAt;
+	private LocalDateTime endAt;
 	
 	private OrganizerDTO owner;
 	
+	private Boolean isClosed;
+	
 	private String createdBy;
 	
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 	
 	private String updatedBy;
 	
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
 	
 	private List<EsessionDTO> sessions;
+	
+	private List<VisitorDTO> visitors;
 
 }

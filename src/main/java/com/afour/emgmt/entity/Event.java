@@ -16,6 +16,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -43,8 +45,11 @@ public class Event {
 	private LocalDateTime endAt;
 	
 	@OneToOne
-	@JoinColumn(name="organizer_id", unique=true, nullable=false)
+	@JoinColumn(name="owner")
 	private Organizer owner;
+	
+	@Column(name="is_closed", nullable=false)
+	private boolean isClosed;
 	
 	@Column(name="created_by")
 	private String createdBy;
@@ -58,6 +63,7 @@ public class Event {
 	@Column(name="updated_at")
 	private LocalDateTime updatedAt;
 	
+	@JsonIgnore
 	@OneToMany( mappedBy = "event")
 	private List<Esession> sessions;
 	

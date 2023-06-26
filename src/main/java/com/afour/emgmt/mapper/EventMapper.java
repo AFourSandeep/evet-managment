@@ -21,4 +21,6 @@ public interface EventMapper {
 	
 	List<Event> DTOToEntity(List<EventDTO> dtos);
 
+	Event prepareForUpdate(Event entity, EventDTO dto);
+
 }

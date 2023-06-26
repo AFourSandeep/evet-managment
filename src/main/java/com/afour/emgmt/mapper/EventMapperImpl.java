@@ -3,6 +3,7 @@
  */
 package com.afour.emgmt.mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,13 +14,10 @@ import org.springframework.stereotype.Component;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.model.EventDTO;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * 
  */
 @Component
-@Slf4j
 public class EventMapperImpl implements EventMapper {
 
 	@Autowired
@@ -27,7 +25,6 @@ public class EventMapperImpl implements EventMapper {
 
 	@Override
 	public EventDTO entityToDTO(Event entity) {
-		log.info("Organizer entity to DTO conversion for : {}",entity);
 		return modelMapper.map(entity, EventDTO.class);
 	}
 
@@ -50,6 +47,22 @@ public class EventMapperImpl implements EventMapper {
 				.stream()
 				.map(dto -> DTOToEntity(dto))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Event prepareForUpdate(Event entity, EventDTO dto) {
+		if (null != dto.getEventName())
+			entity.setEventName(dto.getEventName());
+		if (null != dto.getIsClosed())
+			entity.setClosed(dto.getIsClosed());
+		if (null != dto.getStartAt())
+			entity.setStartAt(dto.getStartAt());
+		if (null != dto.getEndAt())
+			entity.setEndAt(dto.getEndAt());
+		
+		entity.setUpdatedAt(LocalDateTime.now());
+		entity.setUpdatedBy("System");
+		return entity;
 	}
 
 }

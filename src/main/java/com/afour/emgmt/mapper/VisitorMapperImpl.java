@@ -14,13 +14,10 @@ import org.springframework.stereotype.Component;
 import com.afour.emgmt.entity.Visitor;
 import com.afour.emgmt.model.VisitorDTO;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * 
  */
 @Component
-@Slf4j
 public class VisitorMapperImpl implements VisitorMapper {
 
 	@Autowired
@@ -28,7 +25,6 @@ public class VisitorMapperImpl implements VisitorMapper {
 
 	@Override
 	public VisitorDTO entityToDTO(Visitor entity) {
-		log.info("Organizer entity to DTO conversion for : {}",entity);
 		return modelMapper.map(entity, VisitorDTO.class);
 	}
 

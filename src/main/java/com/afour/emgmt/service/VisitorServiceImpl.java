@@ -5,6 +5,7 @@ package com.afour.emgmt.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,18 +35,17 @@ public class VisitorServiceImpl implements VisitorService {
 		List<Visitor> entities = repository.findAll();
 		if (null == entities)
 			return null;
-		log.info("DB operation success! Fetched {} visitors!",entities.size());
+		log.info("DB operation success! Fetched {} visitors!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
 
 	@Override
 	public VisitorDTO findVisitorByID(final Integer ID) {
-		Visitor entity = repository.findById(ID).get();
-		log.info("DB operation success!");
-		if (null == entity)
+		Optional<Visitor> entity = repository.findById(ID);
+		if (!entity.isPresent())
 			return null;
-		log.info("DB operation success! Fetched Visitor:{} by ID: {}", entity.getVisitorId(), ID);
-			return mapper.entityToDTO(entity);
+		log.info("DB operation success! Fetched Visitor:{}", entity.get().getVisitorId());
+		return mapper.entityToDTO(entity.get());
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class VisitorServiceImpl implements VisitorService {
 		Visitor entity = repository.findByUserName(USERNAME);
 		if (null == entity)
 			return null;
-		
+
 		log.info("DB operation success! Fetched Visitor:{} by username: {}", entity.getVisitorId(), USERNAME);
 		return mapper.entityToDTO(entity);
 	}
@@ -83,7 +83,7 @@ public class VisitorServiceImpl implements VisitorService {
 		entity = mapper.prepareForUpdate(entity, dto);
 		entity = repository.save(entity);
 
-		log.info("DB operation success! Fetched Visitor : {}", entity);
+		log.info("DB operation success! Fetched Visitor : {}", entity.getVisitorId());
 		return mapper.entityToDTO(entity);
 	}
 
@@ -98,6 +98,15 @@ public class VisitorServiceImpl implements VisitorService {
 		log.info("DB operation success! Deleted the visitor : {}", !exist);
 
 		return !exist;
+	}
+
+	@Override
+	public List<VisitorDTO> findVisitorsByEventId(final Integer eventId) {
+		List<Visitor> entities = repository.findVisitorsByEventId(eventId);
+		if (null == entities)
+			return null;
+		log.info("DB operation success! Fetched {0} Visitors using Event ID:{1}", entities.size(), eventId);
+		return mapper.entityToDTO(entities);
 	}
 
 }

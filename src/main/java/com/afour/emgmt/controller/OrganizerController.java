@@ -62,8 +62,8 @@ public class OrganizerController {
 	@ApiOperation(value = "Fetch one organizer by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizer!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/findByID/{ID}")
-	public ResponseEntity<List<OrganizerDTO>> findOrganizerByID(@PathVariable(value = "ID") final Integer ID) {
+	@GetMapping("/byId/{ID}")
+	public ResponseEntity<OrganizerDTO> findOrganizerByID(@PathVariable(value = "ID") final Integer ID) {
 		OrganizerDTO result = service.findOrganizerByID(ID);
 		if (result != null) {
 			log.info(messages.getMessage("success.data.found.size", null, null));
@@ -78,8 +78,8 @@ public class OrganizerController {
 	@ApiOperation(value = "Fetch one organizers by USERNAME!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizer!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/finaByName/{username}")
-	public ResponseEntity<List<OrganizerDTO>> findOrganizerByUserName(@PathVariable(value = "username") final String USERNAME) {
+	@GetMapping("/byName/{username}")
+	public ResponseEntity<OrganizerDTO> findOrganizerByUserName(@PathVariable(value = "username") final String USERNAME) {
 		OrganizerDTO result = service.findOrganizerByUserName(USERNAME);
 		if (result != null) {
 			log.info(messages.getMessage("success.data.found.size", null, null));

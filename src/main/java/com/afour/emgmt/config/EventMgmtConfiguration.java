@@ -3,9 +3,12 @@ package com.afour.emgmt.config;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
+import org.hibernate.collection.spi.PersistentCollection;
+import org.modelmapper.Condition;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.module.jsr310.Jsr310Module;
 import org.modelmapper.module.jsr310.Jsr310ModuleConfig;
+import org.modelmapper.spi.MappingContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,7 +18,6 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
 
 @Configuration
 @ComponentScan(basePackages = "com.afour.emgmt")
@@ -36,17 +38,20 @@ public class EventMgmtConfiguration implements WebMvcConfigurer {
 		messageSource.setBasename("messages");
 		return messageSource;
 	}
-	
+
 	@Bean
 	ModelMapper mpdelMapper() {
 		ModelMapper modelMapper = new ModelMapper();
 		Jsr310ModuleConfig config = Jsr310ModuleConfig.builder()
-			    .dateTimeFormatter(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-			    .dateFormatter(DateTimeFormatter.ISO_LOCAL_DATE)
-			    .zoneId(ZoneOffset.UTC)
-			    .build();
+				.dateTimeFormatter(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+				.dateFormatter(DateTimeFormatter.ISO_LOCAL_DATE).zoneId(ZoneOffset.UTC).build();
+
+		modelMapper.getConfiguration().setPropertyCondition(new Condition<Object, Object>() {
+			public boolean applies(MappingContext<Object, Object> context) {
+				return !(context.getSource() instanceof PersistentCollection);
+			}
+		});
 		return modelMapper.registerModule(new Jsr310Module(config));
 	}
-
 
 }

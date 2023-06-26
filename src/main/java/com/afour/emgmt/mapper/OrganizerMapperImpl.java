@@ -14,13 +14,10 @@ import org.springframework.stereotype.Component;
 import com.afour.emgmt.entity.Organizer;
 import com.afour.emgmt.model.OrganizerDTO;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * 
  */
 @Component
-@Slf4j
 public class OrganizerMapperImpl implements OrganizerMapper {
 
 	@Autowired
@@ -28,7 +25,6 @@ public class OrganizerMapperImpl implements OrganizerMapper {
 
 	@Override
 	public OrganizerDTO entityToDTO(Organizer entity) {
-		log.info("Organizer entity to DTO conversion for : {}",entity);
 		return modelMapper.map(entity, OrganizerDTO.class);
 	}
 
@@ -54,16 +50,16 @@ public class OrganizerMapperImpl implements OrganizerMapper {
 	}
 
 	@Override
-	public Organizer prepareForUpdate(Organizer entity, OrganizerDTO orgDTO) {
+	public Organizer prepareForUpdate(Organizer entity, OrganizerDTO dto) {
 		
-		if (null != orgDTO.getFirstName())
-			entity.setFirstName(orgDTO.getFirstName());
-		if (null != orgDTO.getLastName())
-			entity.setLastName(orgDTO.getLastName());
-		if (null != orgDTO.getPassword())
-			entity.setPassword(orgDTO.getPassword());
-		if (null != orgDTO.getIsActive())
-			entity.setActive(orgDTO.getIsActive());
+		if (null != dto.getFirstName())
+			entity.setFirstName(dto.getFirstName());
+		if (null != dto.getLastName())
+			entity.setLastName(dto.getLastName());
+		if (null != dto.getPassword())
+			entity.setPassword(dto.getPassword());
+		if (null != dto.getIsActive())
+			entity.setActive(dto.getIsActive());
 		
 		entity.setUpdatedAt(LocalDateTime.now());
 		entity.setUpdatedBy("System");
