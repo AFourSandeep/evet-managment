@@ -21,4 +21,6 @@ public interface VisitorMapper {
 	
 	List<Visitor> DTOToEntity(List<VisitorDTO> dtos);
 
+	Visitor prepareForUpdate(Visitor entity, VisitorDTO orgDTO);
+
 }

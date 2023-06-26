@@ -58,10 +58,10 @@ public class OrganizerController {
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@ApiOperation(value = "Fetch one organizers by ID!")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizers!"),
+	@ApiOperation(value = "Fetch one organizer by ID!")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizer!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/organizers/{ID}")
+	@GetMapping("/findByID/{ID}")
 	public ResponseEntity<List<OrganizerDTO>> findOrganizerByID(@PathVariable(value = "ID") final Integer ID) {
 		OrganizerDTO result = service.findOrganizerByID(ID);
 		if (result != null) {
@@ -75,9 +75,9 @@ public class OrganizerController {
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one organizers by USERNAME!")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizers!"),
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizer!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/organizers/{username}")
+	@GetMapping("/finaByName/{username}")
 	public ResponseEntity<List<OrganizerDTO>> findOrganizerByUserName(@PathVariable(value = "username") final String USERNAME) {
 		OrganizerDTO result = service.findOrganizerByUserName(USERNAME);
 		if (result != null) {
@@ -90,10 +90,10 @@ public class OrganizerController {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@ApiOperation(value = "Add a new Organizer.")
+	@ApiOperation(value = "Create a new Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@PostMapping(value = "/add_organizer", consumes = "application/json", produces = "application/json")
+	@PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<OrganizerDTO> addAnOrganizer(@RequestBody OrganizerDTO orgDTO) {
 		if (null == orgDTO) {
 			log.warn(messages.getMessage("failed.empty.request.body", null, null));
@@ -116,7 +116,7 @@ public class OrganizerController {
 	@ApiOperation(value = "Update an Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@PutMapping(value = "/update_organizer", consumes = "application/json", produces = "application/json")
+	@PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<OrganizerDTO> updateAnOrganizer(@RequestBody OrganizerDTO orgDTO) {
 		
 		if (null == orgDTO) {
@@ -132,6 +132,29 @@ public class OrganizerController {
 			return new ResponseEntity(result, HttpStatus.ACCEPTED);
 		} else {
 			log.error(messages.getMessage("organizer.update.fail", new Integer[] { orgDTO.getOrganizerId() }, null));
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@ApiOperation(value = "Delete an Organizer.")
+	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested organizer!"),
+			@ApiResponse(code = 400, message = "Bad Request!") })
+	@PutMapping(value = "/deleteById/{ID}", consumes = "application/json", produces = "application/json")
+	public ResponseEntity<OrganizerDTO> deleteAnOrganizer(@PathVariable(value = "ID") final Integer ID) {
+		if (null == ID) {
+			log.warn(messages.getMessage("failed.empty.request.body", null, null));
+			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
+					HttpStatus.BAD_REQUEST);
+		}
+		
+		Boolean result = service.deleteAnOrganizerByID(ID);
+		
+		if (result) {
+			log.info(messages.getMessage("organizer.delete.success", new Integer[] { ID }, null));
+			return new ResponseEntity(result, HttpStatus.ACCEPTED);
+		} else {
+			log.error(messages.getMessage("organizer.delete.fail", new Integer[] { ID }, null));
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}

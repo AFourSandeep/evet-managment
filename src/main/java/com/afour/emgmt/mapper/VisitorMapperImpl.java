@@ -3,6 +3,7 @@
  */
 package com.afour.emgmt.mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,22 @@ public class VisitorMapperImpl implements VisitorMapper {
 				.stream()
 				.map(dto -> DTOToEntity(dto))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	public Visitor prepareForUpdate(Visitor entity, VisitorDTO dto) {
+		if (null != dto.getFirstName())
+			entity.setFirstName(dto.getFirstName());
+		if (null != dto.getLastName())
+			entity.setLastName(dto.getLastName());
+		if (null != dto.getPassword())
+			entity.setPassword(dto.getPassword());
+		if (null != dto.getIsActive())
+			entity.setActive(dto.getIsActive());
+		
+		entity.setUpdatedAt(LocalDateTime.now());
+		entity.setUpdatedBy("System");
+		return entity;
 	}
 
 }

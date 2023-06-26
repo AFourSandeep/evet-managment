@@ -22,4 +22,6 @@ public interface OrganizerService {
 
 	public OrganizerDTO updateAnOrganizer(OrganizerDTO orgDTO);
 
+	public Boolean deleteAnOrganizerByID(Integer iD);
+
 }

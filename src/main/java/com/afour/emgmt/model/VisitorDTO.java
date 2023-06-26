@@ -27,7 +27,7 @@ public class VisitorDTO {
 	
 	private String password;
 	
-	private boolean isActive;
+	private Boolean isActive;
 	
 	private RoleDTO role;
 	
