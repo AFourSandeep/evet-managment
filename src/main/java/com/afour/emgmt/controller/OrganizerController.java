@@ -95,20 +95,20 @@ public class OrganizerController {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<OrganizerDTO> addAnOrganizer(@RequestBody OrganizerDTO orgDTO) {
-		if (null == orgDTO) {
+	public ResponseEntity<OrganizerDTO> addAnOrganizer(@RequestBody OrganizerDTO dto) {
+		if (null == dto) {
 			log.warn(messages.getMessage("failed.empty.request.body", null, null));
 			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
 					HttpStatus.BAD_REQUEST);
 		}
 		
-		OrganizerDTO result = service.addAnOrganizer(orgDTO);
+		OrganizerDTO result = service.addAnOrganizer(dto);
 
 		if (result != null) {
 			log.info(messages.getMessage("organizer.create.success", new Integer[] { result.getOrganizerId() }, null));
 			return new ResponseEntity(result, HttpStatus.CREATED);
 		} else {
-			log.error(messages.getMessage("organizer.create.fail", new OrganizerDTO[] { orgDTO }, null));
+			log.error(messages.getMessage("organizer.create.fail", new OrganizerDTO[] { dto }, null));
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -118,21 +118,21 @@ public class OrganizerController {
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<OrganizerDTO> updateAnOrganizer(@RequestBody OrganizerDTO orgDTO) {
+	public ResponseEntity<OrganizerDTO> updateAnOrganizer(@RequestBody OrganizerDTO dto) {
 		
-		if (null == orgDTO) {
+		if (null == dto) {
 			log.warn(messages.getMessage("failed.empty.request.body", null, null));
 			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
 					HttpStatus.BAD_REQUEST);
 		}
 		
-		OrganizerDTO result = service.updateAnOrganizer(orgDTO);
+		OrganizerDTO result = service.updateAnOrganizer(dto);
 
 		if (result != null) {
 			log.info(messages.getMessage("organizer.update.success", new Integer[] { result.getOrganizerId() }, null));
 			return new ResponseEntity(result, HttpStatus.ACCEPTED);
 		} else {
-			log.error(messages.getMessage("organizer.update.fail", new Integer[] { orgDTO.getOrganizerId() }, null));
+			log.error(messages.getMessage("organizer.update.fail", new Integer[] { dto.getOrganizerId() }, null));
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}

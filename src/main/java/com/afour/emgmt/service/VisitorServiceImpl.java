@@ -22,19 +22,19 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class VisitorServiceImpl implements VisitorService {
-	
+
 	@Autowired
 	VisitorMapper mapper;
-	
+
 	@Autowired
 	VisitorRepository repository;
 
 	@Override
 	public List<VisitorDTO> fetchAllVisitors() {
 		List<Visitor> entities = repository.findAll();
-		log.info("DB operation success!");
 		if (null == entities)
 			return null;
+		log.info("DB operation success! Fetched {} visitors!",entities.size());
 		return mapper.entityToDTO(entities);
 	}
 
@@ -44,33 +44,32 @@ public class VisitorServiceImpl implements VisitorService {
 		log.info("DB operation success!");
 		if (null == entity)
 			return null;
-		else
+		log.info("DB operation success! Fetched Visitor:{} by ID: {}", entity.getVisitorId(), ID);
 			return mapper.entityToDTO(entity);
 	}
-	
+
 	@Override
 	public VisitorDTO findVisitorByUserName(final String USERNAME) {
 		Visitor entity = repository.findByUserName(USERNAME);
-		log.info("DB operation success!");
 		if (null == entity)
 			return null;
-		else
-			return mapper.entityToDTO(entity);
+		
+		log.info("DB operation success! Fetched Visitor:{} by username: {}", entity.getVisitorId(), USERNAME);
+		return mapper.entityToDTO(entity);
 	}
 
 	@Override
 	public VisitorDTO addVisitor(final VisitorDTO dto) {
-		
+
 		Visitor entity = mapper.DTOToEntity(dto);
-		if (null == dto.getVisitorId()) {
-			entity.setCreatedAt(LocalDateTime.now());
-			entity.setCreatedBy("System");
-		}
+
+		entity.setCreatedAt(LocalDateTime.now());
+		entity.setCreatedBy("System");
 		entity.setUpdatedAt(LocalDateTime.now());
 		entity.setUpdatedBy("System");
 
 		entity = repository.save(entity);
-		log.info("DB operation success!");
+		log.info("DB operation success! Added Visitor : {}", entity.getVisitorId());
 		return mapper.entityToDTO(entity);
 	}
 
@@ -78,28 +77,26 @@ public class VisitorServiceImpl implements VisitorService {
 	public VisitorDTO updateVisitor(final VisitorDTO dto) {
 		Visitor entity = repository.findById(dto.getVisitorId()).get();
 
-		log.info("DB operation success! Fetched Visitor : {}", entity);
-
 		if (null == entity)
 			return null;
-		
-		entity = mapper.prepareForUpdate(entity,dto);
+
+		entity = mapper.prepareForUpdate(entity, dto);
 		entity = repository.save(entity);
 
+		log.info("DB operation success! Fetched Visitor : {}", entity);
 		return mapper.entityToDTO(entity);
 	}
 
 	@Override
 	public Boolean deleteVisitorByID(final Integer ID) {
 		Boolean exist = repository.existsById(ID);
-		
-		if(exist)
-		repository.deleteById(ID);
-		
-		log.info("DB operation success! Deleted the visitor : {}", ID);
-		
+
+		if (exist)
+			repository.deleteById(ID);
+
 		exist = repository.existsById(ID);
-		
+		log.info("DB operation success! Deleted the visitor : {}", !exist);
+
 		return !exist;
 	}
 

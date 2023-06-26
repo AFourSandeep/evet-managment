@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/visitor")
 @Api(tags = "Manage Visitors")
 @Slf4j
-public class VistorController {
+public class VisitorController {
 
 	@Autowired
 	VisitorService service;
@@ -46,7 +46,7 @@ public class VistorController {
 	@ApiOperation(value = "Fetch all the visitors without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the visitors!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/organizers")
+	@GetMapping("/visitors")
 	public ResponseEntity<List<VisitorDTO>> fetchAllVisitors() {
 		List<VisitorDTO> result = service.fetchAllVisitors();
 		if (result != null) {
@@ -95,20 +95,20 @@ public class VistorController {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<VisitorDTO> addVisitor(@RequestBody VisitorDTO orgDTO) {
-		if (null == orgDTO) {
+	public ResponseEntity<VisitorDTO> addVisitor(@RequestBody VisitorDTO dto) {
+		if (null == dto) {
 			log.warn(messages.getMessage("failed.empty.request.body", null, null));
 			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
 					HttpStatus.BAD_REQUEST);
 		}
 		
-		VisitorDTO result = service.addVisitor(orgDTO);
+		VisitorDTO result = service.addVisitor(dto);
 
 		if (result != null) {
 			log.info(messages.getMessage("visitor.create.success", new Integer[] { result.getVisitorId() }, null));
 			return new ResponseEntity(result, HttpStatus.CREATED);
 		} else {
-			log.error(messages.getMessage("visitor.create.fail", new VisitorDTO[] { orgDTO }, null));
+			log.error(messages.getMessage("visitor.create.fail", new VisitorDTO[] { dto }, null));
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -138,11 +138,11 @@ public class VistorController {
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@ApiOperation(value = "Delete an Organizer.")
-	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested organizer!"),
+	@ApiOperation(value = "Delete the vistor.")
+	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested visitor!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/deleteById/{ID}", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<VisitorDTO> deleteAnOrganizer(@PathVariable(value = "ID") final Integer ID) {
+	public ResponseEntity<VisitorDTO> deleteVisitorByID(@PathVariable(value = "ID") final Integer ID) {
 		if (null == ID) {
 			log.warn(messages.getMessage("failed.empty.request.body", null, null));
 			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),

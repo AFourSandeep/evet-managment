@@ -35,6 +35,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 		log.info("DB operation success!");
 		if (null == entities)
 			return null;
+		log.info("DB operation success! Fetched {} Organizers!",entities.size());
 		return mapper.entityToDTO(entities);
 	}
 
@@ -44,8 +45,8 @@ public class OrganizerServiceImpl implements OrganizerService {
 		log.info("DB operation success!");
 		if (null == entity)
 			return null;
-		else
-			return mapper.entityToDTO(entity);
+		log.info("DB operation success! Fetched Organizer:{} by ID: {}", entity.getOrganizerId(), ID);
+		return mapper.entityToDTO(entity);
 	}
 
 	@Override
@@ -54,14 +55,15 @@ public class OrganizerServiceImpl implements OrganizerService {
 		log.info("DB operation success!");
 		if (null == entity)
 			return null;
-		else
-			return mapper.entityToDTO(entity);
+
+		log.info("DB operation success! Fetched Organizer:{} by username: {}", entity.getOrganizerId(), USERNAME);
+		return mapper.entityToDTO(entity);
 	}
 
 	@Override
-	public OrganizerDTO addAnOrganizer(OrganizerDTO orgDTO) {
-		Organizer entity = mapper.DTOToEntity(orgDTO);
-		if (null == orgDTO.getOrganizerId()) {
+	public OrganizerDTO addAnOrganizer(final OrganizerDTO dto) {
+		Organizer entity = mapper.DTOToEntity(dto);
+		if (null == dto.getOrganizerId()) {
 			entity.setCreatedAt(LocalDateTime.now());
 			entity.setCreatedBy("System");
 		}
@@ -69,36 +71,33 @@ public class OrganizerServiceImpl implements OrganizerService {
 		entity.setUpdatedBy("System");
 
 		entity = repository.save(entity);
-		log.info("DB operation success!");
+		log.info("DB operation success! Added Organizer : {}", entity.getOrganizerId());
 		return mapper.entityToDTO(entity);
 	}
 
 	@Override
-	public OrganizerDTO updateAnOrganizer(OrganizerDTO orgDTO) {
-
-		Organizer entity = repository.findById(orgDTO.getOrganizerId()).get();
-
-		log.info("DB operation success! Fetched Organizer : {}", entity);
+	public OrganizerDTO updateAnOrganizer(final OrganizerDTO dto) {
+		Organizer entity = repository.findById(dto.getOrganizerId()).get();
 
 		if (null == entity)
 			return null;
 
-		entity = mapper.prepareForUpdate(entity, orgDTO);
+		entity = mapper.prepareForUpdate(entity, dto);
 		entity = repository.save(entity);
 
+		log.info("DB operation success! Updated Organizer : {}", entity);
 		return mapper.entityToDTO(entity);
 	}
 
 	@Override
-	public Boolean deleteAnOrganizerByID(Integer ID) {
+	public Boolean deleteAnOrganizerByID(final Integer ID) {
 		Boolean exist = repository.existsById(ID);
 
 		if (exist)
 			repository.deleteById(ID);
 
-		log.info("DB operation success! Deleted the visitor : {}", ID);
-
 		exist = repository.existsById(ID);
+		log.info("DB operation success! Deleted the Organizer : {}", !exist);
 
 		return !exist;
 	}
