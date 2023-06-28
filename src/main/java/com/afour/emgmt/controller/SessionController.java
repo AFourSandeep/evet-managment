@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.afour.emgmt.model.AppResponse;
 import com.afour.emgmt.model.EsessionDTO;
 import com.afour.emgmt.service.SessionService;
 
@@ -33,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RestController
 @RequestMapping("/session")
-@Api(tags = "Manage Session of An Event")
+@Api(tags = "Manage Sessions")
 @Slf4j
 public class SessionController {
 
@@ -42,21 +43,40 @@ public class SessionController {
 
 	@Autowired
 	MessageSource messages;
-
+	
+	private AppResponse response;
+	
+	private String message;
+	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all Session by its Event Id.")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the sessions!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/byEventId/{eventId}")
-	public ResponseEntity<List<EsessionDTO>> findSessionEventByID(
+	@GetMapping(value="/byEventId/{eventId}", produces = "application/json")
+	public ResponseEntity<AppResponse> findSessionEventByID(
 			@PathVariable(value = "eventId") final Integer eventId) {
+		response = new AppResponse();
+		if (null == eventId) {
+			message =messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+		}
 		List<EsessionDTO> result = service.findSessionEventByID(eventId);
 		if (null != result) {
-			log.info(messages.getMessage("success.data.found.size", null, Locale.US));
-			return new ResponseEntity(result, HttpStatus.OK);
+			message = messages.getMessage("success.data.found.size", new Integer[] { result.size() }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.OK);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
+			message = messages.getMessage("no.data.found", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		}
 	}
 
@@ -64,15 +84,30 @@ public class SessionController {
 	@ApiOperation(value = "Fetch Session by Session Id.")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the sessions!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/byId/{ID}")
+	@GetMapping(value = "/byId/{ID}", produces = "application/json")
 	public ResponseEntity<EsessionDTO> findSessionByID(@PathVariable(value = "ID") final Integer ID) {
+		response = new AppResponse();
+		if (null == ID) {
+			message =messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+		}
 		EsessionDTO result = service.findSessionByID(ID);
 		if (null != result) {
-			log.info(messages.getMessage("success.data.found.size", null, Locale.US));
-			return new ResponseEntity(result, HttpStatus.OK);
+			message = messages.getMessage("success.data.found.size", new Integer[] { 1 }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.OK);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
+			message = messages.getMessage("no.data.found", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		}
 	}
 
@@ -82,21 +117,28 @@ public class SessionController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<EsessionDTO> addSession(@RequestBody EsessionDTO dto) {
+		response = new AppResponse();
 		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
-
 		EsessionDTO result = service.addSession(dto);
-
 		if (result != null) {
-			log.info(
-					messages.getMessage("session.create.success", new Integer[] { result.getEsessionId() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.CREATED);
+			message = messages.getMessage("session.create.success", new Integer[] { result.getEsessionId() }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.CREATED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("session.create.fail", new EsessionDTO[] { dto }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("session.create.fail", new EsessionDTO[] { dto }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -106,22 +148,28 @@ public class SessionController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<EsessionDTO> updateSession(@RequestBody EsessionDTO dto) {
-
+		response = new AppResponse();
 		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
-
 		EsessionDTO result = service.updateSession(dto);
-
 		if (result != null) {
-			log.info(
-					messages.getMessage("session.update.success", new Integer[] { result.getEsessionId() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.ACCEPTED);
+			message = messages.getMessage("session.update.success", new Integer[] { result.getEsessionId() }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.ACCEPTED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("session.update.fail", new Integer[] { dto.getEsessionId() }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("session.update.fail", new Integer[] { dto.getEsessionId() }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -131,20 +179,28 @@ public class SessionController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/deleteById/{ID}", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<EsessionDTO> deleteSession(@PathVariable(value = "ID") final Integer ID) {
+		response = new AppResponse();
 		if (null == ID) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+			message =messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
-
 		Boolean result = service.deleteSessionByID(ID);
-
 		if (result) {
-			log.info(messages.getMessage("session.delete.success", new Integer[] { ID }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.ACCEPTED);
+			message = messages.getMessage("session.delete.success", new Integer[] { ID }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.ACCEPTED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("session.delete.fail", new Integer[] { ID }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("session.delete.fail", new Integer[] { ID }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 

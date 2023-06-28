@@ -4,6 +4,7 @@
 package com.afour.emgmt.mapper;
 
 import java.util.List;
+import java.util.Set;
 
 import com.afour.emgmt.entity.Visitor;
 import com.afour.emgmt.model.VisitorDTO;
@@ -22,5 +23,9 @@ public interface VisitorMapper {
 	List<Visitor> DTOToEntity(List<VisitorDTO> dtos);
 
 	Visitor prepareForUpdate(Visitor entity, VisitorDTO orgDTO);
+
+	Set<VisitorDTO> entityToDTO(Set<Visitor> entities);
+	
+	Set<Visitor> DTOToEntity(Set<VisitorDTO> dtos);
 
 }

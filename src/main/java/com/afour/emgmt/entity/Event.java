@@ -19,6 +19,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +30,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "event", schema = "event_management")
 public class Event {
@@ -47,7 +49,7 @@ public class Event {
 	@Column(name="end_at")
 	private LocalDateTime endAt;
 	
-	@OneToOne
+	@OneToOne(cascade= CascadeType.MERGE)
 	@JoinColumn(name="owner")
 	private Organizer owner;
 	

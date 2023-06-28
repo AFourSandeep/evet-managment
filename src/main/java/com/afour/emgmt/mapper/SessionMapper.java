@@ -4,6 +4,7 @@
 package com.afour.emgmt.mapper;
 
 import java.util.List;
+import java.util.Set;
 
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.model.EsessionDTO;
@@ -22,5 +23,9 @@ public interface SessionMapper {
 	List<Esession> DTOToEntity(List<EsessionDTO> dtos);
 
 	Esession prepareForUpdate(Esession entity, EsessionDTO dto);
+
+	Set<EsessionDTO> entityToDTO(Set<Esession> sessions);
+	
+	Set<Esession> DTOToEntity(Set<EsessionDTO> sessions);
 
 }

@@ -24,7 +24,6 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
 @Entity
 @Table(name = "visitor_event_map", schema = "event_management")
 public class VisitorEventMap {

@@ -33,10 +33,10 @@ public class SessionServiceImpl implements SessionService {
 	@Override
 	public List<EsessionDTO> findSessionEventByID(final Integer eventId) {
 		List<Esession> entities= repository.findSessionEventByID(eventId);
-		if(entities ==null)
+		if(entities ==null || entities.isEmpty())
 		return null;
 		
-		log.info("DB operation success! Fetched {0} Sessions using EventID:{1}",entities.size(),eventId);
+		log.info("DB operation success! Fetched {} Sessions using EventID:{}",entities.size(),eventId);
 		return mapper.entityToDTO(entities);
 	}
 

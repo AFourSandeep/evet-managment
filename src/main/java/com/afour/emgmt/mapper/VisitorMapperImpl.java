@@ -5,6 +5,7 @@ package com.afour.emgmt.mapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -25,7 +26,6 @@ public class VisitorMapperImpl implements VisitorMapper {
 
 	@Override
 	public VisitorDTO entityToDTO(Visitor entity) {
-		
 		return modelMapper.map(entity, VisitorDTO.class);
 	}
 
@@ -64,6 +64,22 @@ public class VisitorMapperImpl implements VisitorMapper {
 		entity.setUpdatedAt(LocalDateTime.now());
 		entity.setUpdatedBy("System");
 		return entity;
+	}
+
+	@Override
+	public Set<VisitorDTO> entityToDTO(Set<Visitor> entities) {
+		return entities
+				.stream()
+				.map(entity -> entityToDTO(entity))
+				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<Visitor> DTOToEntity(Set<VisitorDTO> dtos) {
+		return dtos
+				.stream()
+				.map(dto -> DTOToEntity(dto))
+				.collect(Collectors.toSet());
 	}
 
 }

@@ -5,6 +5,7 @@ package com.afour.emgmt.mapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -61,6 +62,22 @@ public class SessionMapperImpl implements SessionMapper {
 		entity.setUpdatedAt(LocalDateTime.now());
 		entity.setUpdatedBy("System");
 		return entity;
+	}
+
+	@Override
+	public Set<EsessionDTO> entityToDTO(Set<Esession> entities) {
+		return entities
+				.stream()
+				.map(entity -> entityToDTO(entity))
+				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<Esession> DTOToEntity(Set<EsessionDTO> dtos) {
+		return dtos
+				.stream()
+				.map(dto -> DTOToEntity(dto))
+				.collect(Collectors.toSet());
 	}
 
 }

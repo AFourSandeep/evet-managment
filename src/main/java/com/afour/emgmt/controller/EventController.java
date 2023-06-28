@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.afour.emgmt.model.AppResponse;
 import com.afour.emgmt.model.EventDTO;
 import com.afour.emgmt.service.EventService;
 
@@ -36,128 +37,189 @@ import lombok.extern.slf4j.Slf4j;
 @Api(tags = "Manage Events")
 @Slf4j
 public class EventController {
-	
+
 	@Autowired
 	EventService service;
 
 	@Autowired
 	MessageSource messages;
-	
+
+	AppResponse response;
+
+	private String message;
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the events without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the events!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/events")
+	@GetMapping(value = "/events", produces = "application/json")
 	public ResponseEntity<List<EventDTO>> fetchAllEvents() {
+		response = new AppResponse();
 		List<EventDTO> result = service.fetchAllEvents();
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", new Object[] { result.size() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.OK);
+			message = messages.getMessage("success.data.found.size", new Object[] { result.size() }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.OK);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
+			message = messages.getMessage("no.data.found", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the OPEN evets!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the OPEN/Active events!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/openEvents")
+	@GetMapping(value = "/openEvents", produces = "application/json")
 	public ResponseEntity<List<EventDTO>> fetchAllOpenEvents() {
+		response = new AppResponse();
 		List<EventDTO> result = service.fetchAllOpenEvents();
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", new Object[] { result.size() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.OK);
+			message = messages.getMessage("success.data.found.size", new Object[] { result.size() }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.OK);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
+			message = messages.getMessage("no.data.found", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch an Event by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Event!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/byId/{ID}")
+	@GetMapping(value = "/byId/{ID}", produces = "application/json")
 	public ResponseEntity<EventDTO> findEventByID(@PathVariable(value = "ID") final Integer ID) {
+		response = new AppResponse();
+		if (null == ID) {
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+		}
 		EventDTO result = service.findEventByID(ID);
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", null, Locale.US));
-			return new ResponseEntity(result, HttpStatus.OK);
+			message = messages.getMessage("success.data.found.size", new Integer[] { 1 }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.OK);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
+			message = messages.getMessage("no.data.found", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Event.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<EventDTO> addVisitor(@RequestBody EventDTO dto) {
-		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+	public ResponseEntity<EventDTO> addEvent(@RequestBody EventDTO eventDTO) {
+		response = new AppResponse();
+		if (null == eventDTO) {
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
-		
-		EventDTO result = service.addEvent(dto);
 
+		EventDTO result = service.addEvent(eventDTO);
 		if (result != null) {
-			log.info(messages.getMessage("event.create.success", new Integer[] { result.getEventId() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.CREATED);
+			message = messages.getMessage("event.create.success", new Integer[] { result.getEventId() }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.CREATED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("event.create.fail", new EventDTO[] { dto }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("event.create.fail", new EventDTO[] { eventDTO }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(result, HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update an Event.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<EventDTO> updateVisitor(@RequestBody EventDTO dto) {
-		
-		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+	public ResponseEntity<EventDTO> updateEvent(@RequestBody EventDTO eventDTO) {
+		response = new AppResponse();
+		if (null == eventDTO) {
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
-		
-		EventDTO result = service.updateEvent(dto);
 
+		EventDTO result = service.updateEvent(eventDTO);
 		if (result != null) {
-			log.info(messages.getMessage("event.update.success", new Integer[] { result.getEventId() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.ACCEPTED);
+			message = messages.getMessage("event.update.success", new Integer[] { result.getEventId() }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.ACCEPTED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("event.update.fail", new Integer[] { dto.getEventId() }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("event.update.fail", new Integer[] { eventDTO.getEventId() }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(result, HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete the Event.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested event!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/deleteById/{ID}", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<EventDTO> deleteEventByID(@PathVariable(value = "ID") final Integer ID) {
+		response = new AppResponse();
 		if (null == ID) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Boolean result = service.deleteEventByID(ID);
-		
 		if (result) {
-			log.info(messages.getMessage("event.delete.success", new Integer[] { ID }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.ACCEPTED);
+			message = messages.getMessage("event.delete.success", new Integer[] { ID }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.ACCEPTED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("event.delete.fail", new Integer[] { ID }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("event.delete.fail", new Integer[] { ID }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(result, HttpStatus.BAD_REQUEST);
 		}
 	}
 

@@ -3,24 +3,30 @@
  */
 package com.afour.emgmt.model;
 
-import java.util.Set;
+import org.springframework.http.HttpStatus;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 
  */
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VisitorRegistrationDTO {
+@ToString
+@Builder
+public class  AppResponse{
 	
-	private Integer visitorId;
+	private String message;
 	
-	private Set<Integer> eventIds;
+	private Object body;
+	
+	private HttpStatus status;
 
 }

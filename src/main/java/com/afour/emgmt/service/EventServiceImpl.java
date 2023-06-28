@@ -6,14 +6,21 @@ package com.afour.emgmt.service;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
+import com.afour.emgmt.entity.Visitor;
 import com.afour.emgmt.mapper.EventMapper;
+import com.afour.emgmt.mapper.SessionMapper;
+import com.afour.emgmt.mapper.VisitorMapper;
+import com.afour.emgmt.model.EsessionDTO;
 import com.afour.emgmt.model.EventDTO;
+import com.afour.emgmt.model.VisitorDTO;
 import com.afour.emgmt.repository.EventRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +34,12 @@ public class EventServiceImpl implements EventService {
 
 	@Autowired
 	EventMapper mapper;
+
+	@Autowired
+	SessionMapper sessionMapper;
+	
+	@Autowired
+	VisitorMapper visitorMapper;
 
 	@Autowired
 	EventRepository repository;
@@ -51,12 +64,22 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public EventDTO findEventByID(final Integer ID) {
-		Event entity = repository.findById(ID).get();
-		if (null == entity)
+		Optional<Event> optional = repository.findById(ID);
+		if (optional.isEmpty())
 			return null;
-		log.info("DB operation success! Fetched Event:{} ", entity.getEventId());
-		return mapper.entityToDTO(entity);
-	}
+		Event event = optional.get();
+		EventDTO  dto = mapper.entityToDTO(event);
+		
+		Set<Esession> sessions = event.getSessions();
+		Set<EsessionDTO> sessionDtos = sessionMapper.entityToDTO(sessions);
+		dto.setSessions(sessionDtos);
+		
+		Set<Visitor> visitors = event.getVisitors();
+		Set<VisitorDTO> visitorDtos = visitorMapper.entityToDTO(visitors);
+		dto.setVisitors(visitorDtos);
+		log.info("DB operation success! Fetched Event:{} ", dto.getEventId());
+		return dto;
+	}	
 
 	@Override
 	public EventDTO addEvent(EventDTO dto) {

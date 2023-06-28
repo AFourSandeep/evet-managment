@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.afour.emgmt.model.AppResponse;
 import com.afour.emgmt.model.VisitorDTO;
 import com.afour.emgmt.model.VisitorRegistrationDTO;
 import com.afour.emgmt.service.VisitorService;
@@ -43,20 +44,32 @@ public class VisitorController {
 
 	@Autowired
 	MessageSource messages;
+	
+	private AppResponse response;
+
+	private String message;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the visitors without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the visitors!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/visitors")
+	@GetMapping(value="/visitors", produces = "application/json")
 	public ResponseEntity<List<VisitorDTO>> fetchAllVisitors() {
+		response = new AppResponse();
 		List<VisitorDTO> result = service.fetchAllVisitors();
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", new Object[] { result.size() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.OK);
+			message = messages.getMessage("success.data.found.size", new Object[] { result.size() }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.OK);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, null));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
+			message = messages.getMessage("no.data.found", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		}
 	}
 	
@@ -64,15 +77,30 @@ public class VisitorController {
 	@ApiOperation(value = "Fetch one Visitor by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/byId/{ID}")
+	@GetMapping(value ="/byId/{ID}", produces = "application/json")
 	public ResponseEntity<VisitorDTO> findVisitorByID(@PathVariable(value = "ID") final Integer ID) {
+		response = new AppResponse();
+		if (null == ID) {
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+		}
 		VisitorDTO result = service.findVisitorByID(ID);
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", null, Locale.US));
-			return new ResponseEntity(result, HttpStatus.OK);
+			message = messages.getMessage("success.data.found.size", new Object[] { new Integer[] { 1 } }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.OK);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
+			message = messages.getMessage("no.data.found", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		}
 	}
 	
@@ -82,13 +110,28 @@ public class VisitorController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value="/byName/{username}", produces = "application/json")
 	public ResponseEntity<VisitorDTO> findVisitorByUserName(@PathVariable(value = "username") final String USERNAME) {
+		response = new AppResponse();
+		if (null == USERNAME) {
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+		}
 		VisitorDTO result = service.findVisitorByUserName(USERNAME);
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", null, Locale.US));
-			return new ResponseEntity(result, HttpStatus.OK);
+			message = messages.getMessage("success.data.found.size", new Object[] { new Integer[] { 1 } }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.OK);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
+			message = messages.getMessage("no.data.found", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		}
 	}
 
@@ -98,20 +141,29 @@ public class VisitorController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<VisitorDTO> addVisitor(@RequestBody VisitorDTO dto) {
+		response = new AppResponse();
 		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 		
 		VisitorDTO result = service.addVisitor(dto);
-
 		if (result != null) {
-			log.info(messages.getMessage("visitor.create.success", new Integer[] { result.getVisitorId() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.CREATED);
+			message = messages.getMessage("visitor.create.success", new Object[] { new Integer[] { result.getVisitorId() } }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.CREATED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("visitor.create.fail", new VisitorDTO[] { dto }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("visitor.create.fail", new VisitorDTO[] { dto }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -121,21 +173,29 @@ public class VisitorController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<VisitorDTO> updateVisitor(@RequestBody VisitorDTO dto) {
-		
+		response = new AppResponse();
 		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 		
 		VisitorDTO result = service.updateVisitor(dto);
-
 		if (result != null) {
-			log.info(messages.getMessage("visitor.update.success", new Integer[] { result.getVisitorId() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.ACCEPTED);
+			message = messages.getMessage("visitor.update.success", new Integer[] { result.getVisitorId() }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.ACCEPTED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("visitor.update.fail", new Integer[] { dto.getVisitorId() }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("visitor.update.fail", new Integer[] { dto.getVisitorId() }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -145,20 +205,29 @@ public class VisitorController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/deleteById/{ID}", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<VisitorDTO> deleteVisitorByID(@PathVariable(value = "ID") final Integer ID) {
+		response = new AppResponse();
 		if (null == ID) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 		
 		Boolean result = service.deleteVisitorByID(ID);
-		
 		if (result) {
-			log.info(messages.getMessage("visitor.delete.success", new Integer[] { ID }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.ACCEPTED);
+			message = messages.getMessage("visitor.delete.success", new Integer[] { ID }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.ACCEPTED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("visitor.delete.fail", new Integer[] { ID }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("visitor.delete.fail", new Integer[] { ID }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 	
@@ -168,20 +237,29 @@ public class VisitorController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/registerForEvent", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<VisitorDTO> registerVisitorForEvent(@RequestBody VisitorRegistrationDTO dto) {
+		response = new AppResponse();
 		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 		
 		VisitorDTO result = service.registerVisitorForEvent(dto);
-
 		if (result != null) {
-			log.info(messages.getMessage("visitor.register.success", new Object[] { result.getVisitorId() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.CREATED);
+			message = messages.getMessage("visitor.register.success", new Object[] { result.getVisitorId() }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.CREATED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("visitor.register.fail", new Object[] { dto }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("visitor.register.fail", new Object[] { dto }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 	

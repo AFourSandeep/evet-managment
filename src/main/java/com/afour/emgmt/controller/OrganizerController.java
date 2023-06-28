@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.afour.emgmt.model.AppResponse;
 import com.afour.emgmt.model.OrganizerDTO;
 import com.afour.emgmt.service.OrganizerService;
 
@@ -43,51 +44,95 @@ public class OrganizerController {
 	@Autowired
 	MessageSource messages;
 
+	
+	private AppResponse response;
+
+	private String message;
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the organizers without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the organizers!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/organizers")
-	public ResponseEntity<List<OrganizerDTO>> fetchAllOrganizers() {
+	@GetMapping(value = "/organizers", produces = "application/json")
+	public ResponseEntity<AppResponse> fetchAllOrganizers() {
 		List<OrganizerDTO> result = service.fetchAllOrganizers();
+		response = new AppResponse();
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", new Object[] { result.size() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.OK);
+			message = messages.getMessage("success.data.found.size", new Object[] { result.size() }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.OK);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
+			message = messages.getMessage("no.data.found", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one organizer by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizer!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/byId/{ID}")
-	public ResponseEntity<OrganizerDTO> findOrganizerByID(@PathVariable(value = "ID") final Integer ID) {
+	@GetMapping(value = "/byId/{ID}", produces = "application/json")
+	public ResponseEntity<AppResponse> findOrganizerByID(@PathVariable(value = "ID") final Integer ID) {
+		response = new AppResponse();
+		if (null == ID) {
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+		}
 		OrganizerDTO result = service.findOrganizerByID(ID);
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", null, Locale.US));
-			return new ResponseEntity(result, HttpStatus.OK);
+			message = messages.getMessage("success.data.found.size", new Integer[] { 1 }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.OK);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
+			message = messages.getMessage("no.data.found", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one organizers by USERNAME!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizer!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping("/byName/{username}")
-	public ResponseEntity<OrganizerDTO> findOrganizerByUserName(@PathVariable(value = "username") final String USERNAME) {
+	@GetMapping(value = "/byName/{username}", produces = "application/json")
+	public ResponseEntity<AppResponse> findOrganizerByUserName(
+			@PathVariable(value = "username") final String USERNAME) {
+		response = new AppResponse();
+		if (null == USERNAME) {
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.error(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
+		}
 		OrganizerDTO result = service.findOrganizerByUserName(USERNAME);
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", null, Locale.US));
-			return new ResponseEntity(result, HttpStatus.OK);
+			message = messages.getMessage("success.data.found.size", new Integer[] { 1 }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.OK);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
+			message = messages.getMessage("no.data.found", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		}
 	}
 
@@ -96,68 +141,96 @@ public class OrganizerController {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<OrganizerDTO> addOrganizer(@RequestBody OrganizerDTO dto) {
+	public ResponseEntity<AppResponse> addOrganizer(@RequestBody OrganizerDTO dto) {
+		response = new AppResponse();
 		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.NO_CONTENT);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
-		
-		OrganizerDTO result = service.addOrganizer(dto);
 
+		OrganizerDTO result = service.addOrganizer(dto);
 		if (result != null) {
-			log.info(messages.getMessage("organizer.create.success", new Integer[] { result.getOrganizerId() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.CREATED);
+			message = messages.getMessage("organizer.create.success", new Integer[] { result.getOrganizerId() },
+					Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.CREATED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("organizer.create.fail", new OrganizerDTO[] { dto }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("organizer.create.fail", new OrganizerDTO[] { dto }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update an Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<OrganizerDTO> updateOrganizer(@RequestBody OrganizerDTO dto) {
-		
+	public ResponseEntity<AppResponse> updateOrganizer(@RequestBody OrganizerDTO dto) {
+		response = new AppResponse();
 		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
-		
-		OrganizerDTO result = service.updateOrganizer(dto);
 
+		OrganizerDTO result = service.updateOrganizer(dto);
 		if (result != null) {
-			log.info(messages.getMessage("organizer.update.success", new Integer[] { result.getOrganizerId() }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.ACCEPTED);
+			message = messages.getMessage("organizer.update.success", new Integer[] { result.getOrganizerId() },
+					Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.ACCEPTED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("organizer.update.fail", new Integer[] { dto.getOrganizerId() }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("organizer.update.fail", new Integer[] { dto.getOrganizerId() }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete an Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested organizer!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/deleteById/{ID}", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<OrganizerDTO> deleteOrganizer(@PathVariable(value = "ID") final Integer ID) {
+	public ResponseEntity<AppResponse> deleteOrganizer(@PathVariable(value = "ID") final Integer ID) {
+		response = new AppResponse();
 		if (null == ID) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
-					HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Boolean result = service.deleteOrganizerByID(ID);
-		
 		if (result) {
-			log.info(messages.getMessage("organizer.delete.success", new Integer[] { ID }, Locale.US));
-			return new ResponseEntity(result, HttpStatus.ACCEPTED);
+			message = messages.getMessage("organizer.delete.success", new Integer[] { ID }, Locale.US);
+			response.setMessage(message);
+			response.setBody(result);
+			response.setStatus(HttpStatus.ACCEPTED);
+			log.info(message);
+			return new ResponseEntity(response, HttpStatus.OK);
 		} else {
-			log.error(messages.getMessage("organizer.delete.fail", new Integer[] { ID }, Locale.US));
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			message = messages.getMessage("organizer.delete.fail", new Integer[] { ID }, Locale.US);
+			response.setMessage(message);
+			response.setStatus(HttpStatus.BAD_REQUEST);
+			log.warn(message);
+			return new ResponseEntity(response, HttpStatus.BAD_REQUEST);
 		}
 	}
 

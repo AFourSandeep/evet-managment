@@ -1,6 +1,5 @@
 package com.afour.emgmt.config;
 
-import java.security.Principal;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
@@ -16,12 +15,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import com.afour.emgmt.model.AppResponse;
+
 
 @Configuration
 @ComponentScan(basePackages = "com.afour.emgmt")
@@ -50,17 +49,14 @@ public class EventMgmtConfiguration implements WebMvcConfigurer {
 				.dateTimeFormatter(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 				.dateFormatter(DateTimeFormatter.ISO_LOCAL_DATE).zoneId(ZoneOffset.UTC).build();
 
+		// Conf to avoid chaining of lazy loaded objects.
 		modelMapper.getConfiguration().setPropertyCondition(new Condition<Object, Object>() {
 			public boolean applies(MappingContext<Object, Object> context) {
 				return !(context.getSource() instanceof PersistentCollection);
 			}
 		});
+
 		return modelMapper.registerModule(new Jsr310Module(config));
-	}
-	
-	@RequestMapping("/user")
-	public ResponseEntity<Principal> user(Principal user) {
-		return  new ResponseEntity<>(user,HttpStatus.OK);
 	}
 	
 }
