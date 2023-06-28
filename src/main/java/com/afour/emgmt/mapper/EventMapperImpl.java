@@ -5,6 +5,7 @@ package com.afour.emgmt.mapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
@@ -59,10 +60,28 @@ public class EventMapperImpl implements EventMapper {
 			entity.setStartAt(dto.getStartAt());
 		if (null != dto.getEndAt())
 			entity.setEndAt(dto.getEndAt());
+		if (null != dto.getLocation())
+			entity.setLocation(dto.getLocation());
 		
 		entity.setUpdatedAt(LocalDateTime.now());
 		entity.setUpdatedBy("System");
 		return entity;
+	}
+
+	@Override
+	public Set<EventDTO> entityToDTO(Set<Event> entities) {
+		return entities
+				.stream()
+				.map(entity -> entityToDTO(entity))
+				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public Set<Event> DTOToEntity(Set<EventDTO> dtos) {
+		return dtos
+				.stream()
+				.map(entity -> DTOToEntity(entity))
+				.collect(Collectors.toSet());
 	}
 
 }

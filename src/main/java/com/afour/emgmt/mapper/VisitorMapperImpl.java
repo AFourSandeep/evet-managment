@@ -25,6 +25,7 @@ public class VisitorMapperImpl implements VisitorMapper {
 
 	@Override
 	public VisitorDTO entityToDTO(Visitor entity) {
+		
 		return modelMapper.map(entity, VisitorDTO.class);
 	}
 

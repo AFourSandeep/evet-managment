@@ -4,6 +4,7 @@
 package com.afour.emgmt.controller;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -50,11 +51,11 @@ public class EventController {
 	public ResponseEntity<List<EventDTO>> fetchAllEvents() {
 		List<EventDTO> result = service.fetchAllEvents();
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", new Object[] { result.size() }, null));
+			log.info(messages.getMessage("success.data.found.size", new Object[] { result.size() }, Locale.US));
 			return new ResponseEntity(result, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, null));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
+			log.warn(messages.getMessage("no.data.found", null, Locale.US));
+			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
 		}
 	}
 	
@@ -66,11 +67,11 @@ public class EventController {
 	public ResponseEntity<List<EventDTO>> fetchAllOpenEvents() {
 		List<EventDTO> result = service.fetchAllOpenEvents();
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", new Object[] { result.size() }, null));
+			log.info(messages.getMessage("success.data.found.size", new Object[] { result.size() }, Locale.US));
 			return new ResponseEntity(result, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, null));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
+			log.warn(messages.getMessage("no.data.found", null, Locale.US));
+			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
 		}
 	}
 	
@@ -82,11 +83,11 @@ public class EventController {
 	public ResponseEntity<EventDTO> findEventByID(@PathVariable(value = "ID") final Integer ID) {
 		EventDTO result = service.findEventByID(ID);
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", null, null));
+			log.info(messages.getMessage("success.data.found.size", null, Locale.US));
 			return new ResponseEntity(result, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, null));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
+			log.warn(messages.getMessage("no.data.found", null, Locale.US));
+			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
 		}
 	}
 	
@@ -97,18 +98,18 @@ public class EventController {
 	@PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<EventDTO> addVisitor(@RequestBody EventDTO dto) {
 		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, null));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
+			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
+			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
 					HttpStatus.BAD_REQUEST);
 		}
 		
 		EventDTO result = service.addEvent(dto);
 
 		if (result != null) {
-			log.info(messages.getMessage("event.create.success", new Integer[] { result.getEventId() }, null));
+			log.info(messages.getMessage("event.create.success", new Integer[] { result.getEventId() }, Locale.US));
 			return new ResponseEntity(result, HttpStatus.CREATED);
 		} else {
-			log.error(messages.getMessage("event.create.fail", new EventDTO[] { dto }, null));
+			log.error(messages.getMessage("event.create.fail", new EventDTO[] { dto }, Locale.US));
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -121,18 +122,18 @@ public class EventController {
 	public ResponseEntity<EventDTO> updateVisitor(@RequestBody EventDTO dto) {
 		
 		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, null));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
+			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
+			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
 					HttpStatus.BAD_REQUEST);
 		}
 		
 		EventDTO result = service.updateEvent(dto);
 
 		if (result != null) {
-			log.info(messages.getMessage("event.update.success", new Integer[] { result.getEventId() }, null));
+			log.info(messages.getMessage("event.update.success", new Integer[] { result.getEventId() }, Locale.US));
 			return new ResponseEntity(result, HttpStatus.ACCEPTED);
 		} else {
-			log.error(messages.getMessage("event.update.fail", new Integer[] { dto.getEventId() }, null));
+			log.error(messages.getMessage("event.update.fail", new Integer[] { dto.getEventId() }, Locale.US));
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -144,18 +145,18 @@ public class EventController {
 	@DeleteMapping(value = "/deleteById/{ID}", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<EventDTO> deleteEventByID(@PathVariable(value = "ID") final Integer ID) {
 		if (null == ID) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, null));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
+			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
+			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
 					HttpStatus.BAD_REQUEST);
 		}
 		
 		Boolean result = service.deleteEventByID(ID);
 		
 		if (result) {
-			log.info(messages.getMessage("event.delete.success", new Integer[] { ID }, null));
+			log.info(messages.getMessage("event.delete.success", new Integer[] { ID }, Locale.US));
 			return new ResponseEntity(result, HttpStatus.ACCEPTED);
 		} else {
-			log.error(messages.getMessage("event.delete.fail", new Integer[] { ID }, null));
+			log.error(messages.getMessage("event.delete.fail", new Integer[] { ID }, Locale.US));
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}

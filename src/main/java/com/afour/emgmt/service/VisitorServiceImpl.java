@@ -3,16 +3,29 @@
  */
 package com.afour.emgmt.service;
 
+
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.afour.emgmt.entity.Event;
+import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.entity.Visitor;
+import com.afour.emgmt.mapper.EventMapper;
 import com.afour.emgmt.mapper.VisitorMapper;
+import com.afour.emgmt.model.EventDTO;
 import com.afour.emgmt.model.VisitorDTO;
+import com.afour.emgmt.model.VisitorRegistrationDTO;
+import com.afour.emgmt.repository.EventRepository;
+import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.VisitorRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,14 +34,27 @@ import lombok.extern.slf4j.Slf4j;
  * 
  */
 @Service
+@Transactional
 @Slf4j
 public class VisitorServiceImpl implements VisitorService {
 
 	@Autowired
 	VisitorMapper mapper;
+	
+	@Autowired
+	EventMapper eventMapper;
 
 	@Autowired
 	VisitorRepository repository;
+
+	@Autowired
+	EventRepository eventRepository;
+	
+	@Autowired
+	EventService eventService;
+
+	@Autowired
+	RoleRepository roleRepository;
 
 	@Override
 	public List<VisitorDTO> fetchAllVisitors() {
@@ -60,13 +86,30 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public VisitorDTO addVisitor(final VisitorDTO dto) {
+		Set<EventDTO> newEventDtos = dto.getEventDtos();
 
+		dto.setCreatedAt(LocalDateTime.now());
+		dto.setCreatedBy("System");
+		dto.setUpdatedAt(LocalDateTime.now());
+		dto.setUpdatedBy("System");
+		dto.setIsActive(true);
+		
+		Set<Event> eventsToBeAdded = new HashSet<>();
+
+		if (newEventDtos != null && !newEventDtos.isEmpty()) {
+//			Set<Integer> newEventIds = newEventDtos.stream().map(EventDTO::getEventId).collect(Collectors.toSet());
+			eventsToBeAdded = eventMapper.DTOToEntity(newEventDtos);
+//			newEvents.stream().forEach(e->eventsToBeAdded.add(new Event));
+		}
+		
+		
 		Visitor entity = mapper.DTOToEntity(dto);
-
-		entity.setCreatedAt(LocalDateTime.now());
-		entity.setCreatedBy("System");
-		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy("System");
+		
+		Integer ROLE_VISITOR = Integer.valueOf(2);
+		Role role = roleRepository.findById(ROLE_VISITOR).get();
+		entity.setRole(role);
+		
+		entity.setEvents(eventsToBeAdded);
 
 		entity = repository.save(entity);
 		log.info("DB operation success! Added Visitor : {}", entity.getVisitorId());
@@ -79,6 +122,16 @@ public class VisitorServiceImpl implements VisitorService {
 
 		if (null == entity)
 			return null;
+		
+		Set<Event> existingEvents = entity.getEvents();
+
+//		Set<Integer> existingEventIds = existingEvents.stream().map(Event::getEventId).collect(Collectors.toSet());
+		Set<EventDTO> newEvents = dto.getEventDtos();
+		if (newEvents != null && !newEvents.isEmpty()) {
+			Set<Integer> newEventIds = newEvents.stream().map(EventDTO::getEventId).collect(Collectors.toSet());
+			eventRepository.findAllById(newEventIds).stream().map(e->existingEvents.add(e));
+			entity.setEvents(existingEvents);
+		}
 
 		entity = mapper.prepareForUpdate(entity, dto);
 		entity = repository.save(entity);
@@ -101,12 +154,23 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public List<VisitorDTO> findVisitorsByEventId(final Integer eventId) {
-		List<Visitor> entities = repository.findVisitorsByEventId(eventId);
-		if (null == entities)
+	public VisitorDTO registerVisitorForEvent(VisitorRegistrationDTO dto) {
+		Optional<Visitor> optional = repository.findById(dto.getVisitorId());
+
+		if (optional.isEmpty())
 			return null;
-		log.info("DB operation success! Fetched {0} Visitors using Event ID:{1}", entities.size(), eventId);
-		return mapper.entityToDTO(entities);
+
+		Visitor entity = optional.get();
+
+		Set<Integer> eventsTobeRegistere = dto.getEventIds();
+		List<Event> newEvents = eventRepository.findAllById(eventsTobeRegistere);
+		Set<Event> existingEvents = entity.getEvents();
+		newEvents.forEach(ne -> existingEvents.add(ne));
+		entity.setEvents(existingEvents);
+		Visitor updated = repository.save(entity);
+		log.info("DB operation success! Registered the visitor : {} with sessions{}", dto.getVisitorId(),
+				eventsTobeRegistere);
+		return mapper.entityToDTO(updated);
 	}
 
 }

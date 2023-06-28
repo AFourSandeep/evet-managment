@@ -4,7 +4,9 @@
 package com.afour.emgmt.service;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,6 +96,15 @@ public class EventServiceImpl implements EventService {
 		log.info("DB operation success! Deleted the Eevent : {}", !exist);
 
 		return !exist;
+	}
+
+	@Override
+	public Set<Event> findAllById(Set<Integer> eventIds) {
+		List<Event> entities = repository.findAllById(eventIds);
+		if (null == entities)
+			return null;
+		log.info("DB operation success! Fetched total {} Events ", entities.size());
+		return new HashSet<>(entities);
 	}
 
 }

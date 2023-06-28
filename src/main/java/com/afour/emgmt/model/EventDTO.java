@@ -4,7 +4,7 @@
 package com.afour.emgmt.model;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,6 +28,8 @@ public class EventDTO {
 	
 	private OrganizerDTO owner;
 	
+	private String location;
+	
 	private Boolean isClosed;
 	
 	private String createdBy;
@@ -38,8 +40,8 @@ public class EventDTO {
 	
 	private LocalDateTime updatedAt;
 	
-	private List<EsessionDTO> sessions;
+	private Set<EsessionDTO> sessions;
 	
-	private List<VisitorDTO> visitors;
+	private Set<VisitorDTO> visitors;
 
 }

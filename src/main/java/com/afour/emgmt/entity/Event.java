@@ -4,7 +4,7 @@
 package com.afour.emgmt.entity;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,11 +12,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -51,6 +51,9 @@ public class Event {
 	@Column(name="is_closed", nullable=false)
 	private boolean isClosed;
 	
+	@Column(name="location")
+	private String location;
+	
 	@Column(name="created_by")
 	private String createdBy;
 	
@@ -63,11 +66,14 @@ public class Event {
 	@Column(name="updated_at")
 	private LocalDateTime updatedAt;
 	
-	@JsonIgnore
 	@OneToMany( mappedBy = "event")
-	private List<Esession> sessions;
+	private Set<Esession> sessions;
 	
-	@OneToMany( mappedBy = "event")
-	private List<Visitor> visitors;
+	@ManyToMany()
+	@JoinTable(
+	  name = "visitor_event_map", 
+	  joinColumns = @JoinColumn(name = "event_id"), 
+	  inverseJoinColumns = @JoinColumn(name = "visitor_id"))
+	private Set<Visitor> visitors;
 
 }

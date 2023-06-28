@@ -7,10 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.hibernate.collection.spi.PersistentCollection;
-import org.modelmapper.Condition;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.spi.MappingContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,19 +23,6 @@ public class SessionMapperImpl implements SessionMapper {
 	@Autowired
 	ModelMapper modelMapper;
 	
-	/*
-	 * @Autowired public SessionMapperImpl(ModelMapper modelMapper) {
-	 * this.modelMapper = modelMapper;
-	 * this.modelMapper.addMappings(skipModifiedFieldsMap); }
-	 * 
-	 * PropertyMap<EsessionDTO, Esession> skipModifiedFieldsMap = new
-	 * PropertyMap<EsessionDTO, Esession>() { protected void configure() {
-	 * skip().setEvent(null); } };
-	 */
-	
-	
-	
-
 	@Override
 	public EsessionDTO entityToDTO(Esession entity) {
 		return modelMapper.map(entity, EsessionDTO.class);

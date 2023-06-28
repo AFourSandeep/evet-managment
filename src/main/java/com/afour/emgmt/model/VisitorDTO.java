@@ -3,7 +3,8 @@
  */
 package com.afour.emgmt.model;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,9 +34,11 @@ public class VisitorDTO {
 	
 	private String createdBy;
 	
-	private Timestamp createdAt;
+	private LocalDateTime createdAt;
 	
 	private String updatedBy;
 	
-	private Timestamp updatedAt;
+	private LocalDateTime updatedAt;
+	
+	private Set<EventDTO> eventDtos;
 }

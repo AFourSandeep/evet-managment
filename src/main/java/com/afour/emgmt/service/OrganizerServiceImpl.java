@@ -41,9 +41,11 @@ public class OrganizerServiceImpl implements OrganizerService {
 
 	@Override
 	public OrganizerDTO findOrganizerByID(final Integer ID) {
-		Organizer entity = repository.findById(ID).get();
-		if (null == entity)
+		Optional<Organizer> optional = repository.findById(ID);
+		if (optional.isEmpty())
 			return null;
+		
+		Organizer entity= optional.get();
 		log.info("DB operation success! Fetched Organizer:{} ", entity.getOrganizerId());
 		return mapper.entityToDTO(entity);
 	}
@@ -60,7 +62,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 	}
 
 	@Override
-	public OrganizerDTO addAnOrganizer(final OrganizerDTO dto) {
+	public OrganizerDTO addOrganizer(final OrganizerDTO dto) {
 		Organizer entity = mapper.DTOToEntity(dto);
 		entity.setCreatedAt(LocalDateTime.now());
 		entity.setCreatedBy("System");
@@ -73,7 +75,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 	}
 
 	@Override
-	public OrganizerDTO updateAnOrganizer(final OrganizerDTO dto) {
+	public OrganizerDTO updateOrganizer(final OrganizerDTO dto) {
 		Optional<Organizer> optional = repository.findById(dto.getOrganizerId());
 
 		if (optional.isEmpty())
@@ -87,7 +89,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 	}
 
 	@Override
-	public Boolean deleteAnOrganizerByID(final Integer ID) {
+	public Boolean deleteOrganizerByID(final Integer ID) {
 		Boolean exist = repository.existsById(ID);
 
 		if (exist)

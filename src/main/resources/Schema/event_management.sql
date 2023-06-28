@@ -35,7 +35,7 @@ CREATE TABLE `esession` (
   PRIMARY KEY (`esession_id`),
   KEY `esession_FK` (`event_id`),
   CONSTRAINT `esession_FK` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,6 +44,7 @@ CREATE TABLE `esession` (
 
 LOCK TABLES `esession` WRITE;
 /*!40000 ALTER TABLE `esession` DISABLE KEYS */;
+INSERT INTO `esession` VALUES (1,'Test Session','2023-06-26 08:52:26','2023-06-27 08:52:26',1,'manual','manual','2023-06-26 13:51:26','2023-06-26 13:51:26'),(2,'Test Session 2','2023-06-27 08:52:26','2023-06-28 08:52:26',1,'manual','manual','2023-06-26 13:51:45','2023-06-26 13:51:45'),(3,'Test Session 3','2023-06-28 08:52:26','2023-06-29 08:52:26',1,'manual','manual','2023-06-26 13:52:17','2023-06-26 13:52:17'),(4,'Test Session 4','2023-06-29 08:52:26','2023-06-30 08:52:26',1,'manual','manual','2023-06-26 13:53:19','2023-06-26 13:53:19');
 /*!40000 ALTER TABLE `esession` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -64,8 +65,12 @@ CREATE TABLE `event` (
   `updated_by` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`event_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `is_closed` tinyint NOT NULL DEFAULT '0',
+  `location` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`event_id`),
+  KEY `event_FK` (`owner`),
+  CONSTRAINT `event_FK` FOREIGN KEY (`owner`) REFERENCES `organizer` (`organizer_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,6 +79,7 @@ CREATE TABLE `event` (
 
 LOCK TABLES `event` WRITE;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
+INSERT INTO `event` VALUES (1,'Test event','2023-06-26 08:52:26','2023-06-30 08:52:26',2,'manual','manual','2023-06-24 08:52:26','2023-06-24 08:52:26',0,'Indore'),(2,'Test event 2','2023-06-30 08:52:26','2023-07-03 08:52:26',2,'manual','manual','2023-06-24 08:52:26','2023-06-24 08:52:26',0,' Pune');
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -155,13 +161,10 @@ CREATE TABLE `visitor` (
   `updated_at` timestamp NULL DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '1',
   `role_id` int DEFAULT NULL,
-  `event_id` int DEFAULT NULL,
   PRIMARY KEY (`visitor_id`),
   KEY `visitor_FK` (`role_id`),
-  KEY `visitor_FK_1` (`event_id`),
-  CONSTRAINT `visitor_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`),
-  CONSTRAINT `visitor_FK_1` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `visitor_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -170,7 +173,36 @@ CREATE TABLE `visitor` (
 
 LOCK TABLES `visitor` WRITE;
 /*!40000 ALTER TABLE `visitor` DISABLE KEYS */;
+INSERT INTO `visitor` VALUES (1,'visitor1','Visitor','First','password','System','System','2023-06-27 14:45:09','2023-06-27 14:45:09',1,2),(2,'visitor2','Visitor2','First','password','System','System','2023-06-27 14:52:32','2023-06-27 14:52:32',1,2),(3,'visitor3','Visitor3','First','password','System','System','2023-06-27 14:55:50','2023-06-27 14:55:50',1,2),(4,'visitor5','Visitor5','First','password','System','System','2023-06-27 15:08:29','2023-06-27 15:08:29',1,2),(5,'visitor6','Visitor6','First','password','System','System','2023-06-27 17:01:38','2023-06-27 17:01:38',1,2),(6,'visitor7','Visitor7','First','passwor7','System','System','2023-06-27 17:09:08','2023-06-27 17:09:08',1,2),(7,'sandeep','sandeep','jariya','password','System','System','2023-06-27 17:49:18','2023-06-27 17:49:18',1,2),(8,'sandeep1','sandeep1','jariya1','password1','System','System','2023-06-27 17:54:52','2023-06-27 17:54:52',1,2),(9,'sandeep1','sandeep1','jariya1','password1','System','System','2023-06-27 17:57:52','2023-06-27 17:57:52',1,2),(10,'sandeep1','sandeep1','jariya1','password1','System','System','2023-06-27 18:28:53','2023-06-27 18:28:53',1,2);
 /*!40000 ALTER TABLE `visitor` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `visitor_event_map`
+--
+
+DROP TABLE IF EXISTS `visitor_event_map`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `visitor_event_map` (
+  `map_id` int NOT NULL AUTO_INCREMENT,
+  `event_id` int NOT NULL,
+  `visitor_id` int NOT NULL,
+  PRIMARY KEY (`map_id`),
+  KEY `visitor_event_map_FK` (`event_id`),
+  KEY `visitor_event_map_FK_1` (`visitor_id`),
+  CONSTRAINT `visitor_event_map_FK` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`),
+  CONSTRAINT `visitor_event_map_FK_1` FOREIGN KEY (`visitor_id`) REFERENCES `visitor` (`visitor_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `visitor_event_map`
+--
+
+LOCK TABLES `visitor_event_map` WRITE;
+/*!40000 ALTER TABLE `visitor_event_map` DISABLE KEYS */;
+/*!40000 ALTER TABLE `visitor_event_map` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -182,4 +214,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-26 10:53:32
+-- Dump completed on 2023-06-28 11:13:18

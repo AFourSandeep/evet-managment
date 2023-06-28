@@ -3,11 +3,13 @@
  */
 package com.afour.emgmt.service;
 
+import org.springframework.stereotype.Service;
+
 /**
  * 
  */
-public class UserDetailsServiceImpl{
-////public class UserDetailsServiceImpl implements UserDetailsService{
+@Service("userDetailsService")
+public class UserDetailsServiceImpl /* implements UserDetailsService */{
 //    @Autowired
 //    private OrganizerRepository userRepository;
 //
@@ -23,4 +25,18 @@ public class UserDetailsServiceImpl{
 //
 //        return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(), grantedAuthorities);
 //    }
+	
+	/*
+	 * @Autowired OrganizerRepository userRepository;
+	 * 
+	 * @Autowired PasswordEncoder passwordEncoder;
+	 * 
+	 * @Override public UserDetails loadUserByUsername(String username) throws
+	 * UsernameNotFoundException { Organizer user =
+	 * userRepository.findByUserName(username); List<GrantedAuthority>
+	 * grantedAuthorities = List.of(new
+	 * SimpleGrantedAuthority(user.getRole().getRoleName())); return new
+	 * org.springframework.security.core.userdetails.User(user.getUserName(),
+	 * user.getPassword(), grantedAuthorities); }
+	 */
 }

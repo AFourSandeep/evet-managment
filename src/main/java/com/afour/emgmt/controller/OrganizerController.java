@@ -4,6 +4,7 @@
 package com.afour.emgmt.controller;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -50,10 +51,10 @@ public class OrganizerController {
 	public ResponseEntity<List<OrganizerDTO>> fetchAllOrganizers() {
 		List<OrganizerDTO> result = service.fetchAllOrganizers();
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", new Object[] { result.size() }, null));
+			log.info(messages.getMessage("success.data.found.size", new Object[] { result.size() }, Locale.US));
 			return new ResponseEntity(result, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, null));
+			log.warn(messages.getMessage("no.data.found", null, Locale.US));
 			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
 		}
 	}
@@ -66,10 +67,10 @@ public class OrganizerController {
 	public ResponseEntity<OrganizerDTO> findOrganizerByID(@PathVariable(value = "ID") final Integer ID) {
 		OrganizerDTO result = service.findOrganizerByID(ID);
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", null, null));
+			log.info(messages.getMessage("success.data.found.size", null, Locale.US));
 			return new ResponseEntity(result, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, null));
+			log.warn(messages.getMessage("no.data.found", null, Locale.US));
 			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
 		}
 	}
@@ -82,11 +83,11 @@ public class OrganizerController {
 	public ResponseEntity<OrganizerDTO> findOrganizerByUserName(@PathVariable(value = "username") final String USERNAME) {
 		OrganizerDTO result = service.findOrganizerByUserName(USERNAME);
 		if (result != null) {
-			log.info(messages.getMessage("success.data.found.size", null, null));
+			log.info(messages.getMessage("success.data.found.size", null, Locale.US));
 			return new ResponseEntity(result, HttpStatus.OK);
 		} else {
-			log.warn(messages.getMessage("no.data.found", null, null));
-			return new ResponseEntity(messages.getMessage("no.data.found", null, null), HttpStatus.NO_CONTENT);
+			log.warn(messages.getMessage("no.data.found", null, Locale.US));
+			return new ResponseEntity(messages.getMessage("no.data.found", null, Locale.US), HttpStatus.NO_CONTENT);
 		}
 	}
 
@@ -95,20 +96,20 @@ public class OrganizerController {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<OrganizerDTO> addAnOrganizer(@RequestBody OrganizerDTO dto) {
+	public ResponseEntity<OrganizerDTO> addOrganizer(@RequestBody OrganizerDTO dto) {
 		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, null));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
+			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
+			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
 					HttpStatus.BAD_REQUEST);
 		}
 		
-		OrganizerDTO result = service.addAnOrganizer(dto);
+		OrganizerDTO result = service.addOrganizer(dto);
 
 		if (result != null) {
-			log.info(messages.getMessage("organizer.create.success", new Integer[] { result.getOrganizerId() }, null));
+			log.info(messages.getMessage("organizer.create.success", new Integer[] { result.getOrganizerId() }, Locale.US));
 			return new ResponseEntity(result, HttpStatus.CREATED);
 		} else {
-			log.error(messages.getMessage("organizer.create.fail", new OrganizerDTO[] { dto }, null));
+			log.error(messages.getMessage("organizer.create.fail", new OrganizerDTO[] { dto }, Locale.US));
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -118,21 +119,21 @@ public class OrganizerController {
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<OrganizerDTO> updateAnOrganizer(@RequestBody OrganizerDTO dto) {
+	public ResponseEntity<OrganizerDTO> updateOrganizer(@RequestBody OrganizerDTO dto) {
 		
 		if (null == dto) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, null));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
+			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
+			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
 					HttpStatus.BAD_REQUEST);
 		}
 		
-		OrganizerDTO result = service.updateAnOrganizer(dto);
+		OrganizerDTO result = service.updateOrganizer(dto);
 
 		if (result != null) {
-			log.info(messages.getMessage("organizer.update.success", new Integer[] { result.getOrganizerId() }, null));
+			log.info(messages.getMessage("organizer.update.success", new Integer[] { result.getOrganizerId() }, Locale.US));
 			return new ResponseEntity(result, HttpStatus.ACCEPTED);
 		} else {
-			log.error(messages.getMessage("organizer.update.fail", new Integer[] { dto.getOrganizerId() }, null));
+			log.error(messages.getMessage("organizer.update.fail", new Integer[] { dto.getOrganizerId() }, Locale.US));
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -142,20 +143,20 @@ public class OrganizerController {
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested organizer!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/deleteById/{ID}", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<OrganizerDTO> deleteAnOrganizer(@PathVariable(value = "ID") final Integer ID) {
+	public ResponseEntity<OrganizerDTO> deleteOrganizer(@PathVariable(value = "ID") final Integer ID) {
 		if (null == ID) {
-			log.warn(messages.getMessage("failed.empty.request.body", null, null));
-			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, null),
+			log.warn(messages.getMessage("failed.empty.request.body", null, Locale.US));
+			return new ResponseEntity(messages.getMessage("failed.empty.request.body", null, Locale.US),
 					HttpStatus.BAD_REQUEST);
 		}
 		
-		Boolean result = service.deleteAnOrganizerByID(ID);
+		Boolean result = service.deleteOrganizerByID(ID);
 		
 		if (result) {
-			log.info(messages.getMessage("organizer.delete.success", new Integer[] { ID }, null));
+			log.info(messages.getMessage("organizer.delete.success", new Integer[] { ID }, Locale.US));
 			return new ResponseEntity(result, HttpStatus.ACCEPTED);
 		} else {
-			log.error(messages.getMessage("organizer.delete.fail", new Integer[] { ID }, null));
+			log.error(messages.getMessage("organizer.delete.fail", new Integer[] { ID }, Locale.US));
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}

@@ -4,6 +4,7 @@
 package com.afour.emgmt.entity;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -65,7 +66,6 @@ public class Visitor {
 	@Column(name="updated_at")
 	private LocalDateTime updatedAt;
 	
-	@ManyToOne()
-	@JoinColumn(name="event_id")
-	private Event event;
+	@ManyToMany(mappedBy = "visitors")
+	private Set<Event> events;
 }

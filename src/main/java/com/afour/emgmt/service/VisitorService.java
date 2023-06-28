@@ -6,6 +6,7 @@ package com.afour.emgmt.service;
 import java.util.List;
 
 import com.afour.emgmt.model.VisitorDTO;
+import com.afour.emgmt.model.VisitorRegistrationDTO;
 
 /**
  * 
@@ -24,6 +25,6 @@ public interface VisitorService {
 
 	Boolean deleteVisitorByID(Integer ID);
 
-	List<VisitorDTO> findVisitorsByEventId(Integer eventId);
+	VisitorDTO registerVisitorForEvent(VisitorRegistrationDTO dto);
 
 }
