@@ -6,25 +6,28 @@ package com.afour.emgmt.entity;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "event", schema = "event_management")
@@ -66,14 +69,10 @@ public class Event {
 	@Column(name="updated_at")
 	private LocalDateTime updatedAt;
 	
-	@OneToMany( mappedBy = "event")
+	@OneToMany( mappedBy = "event",fetch = FetchType.EAGER,cascade= CascadeType.MERGE)
 	private Set<Esession> sessions;
 	
-	@ManyToMany()
-	@JoinTable(
-	  name = "visitor_event_map", 
-	  joinColumns = @JoinColumn(name = "event_id"), 
-	  inverseJoinColumns = @JoinColumn(name = "visitor_id"))
+	@ManyToMany(mappedBy = "events",fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
 	private Set<Visitor> visitors;
 
 }
