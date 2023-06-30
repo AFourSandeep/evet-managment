@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.model.EventDTO;
+import com.afour.emgmt.util.ActorEnum;
 
 /**
  * 
@@ -64,7 +65,7 @@ public class EventMapperImpl implements EventMapper {
 			entity.setLocation(dto.getLocation());
 		
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy("System");
+		entity.setUpdatedBy(ActorEnum.DEFAULT_USER.getUser());
 		return entity;
 	}
 

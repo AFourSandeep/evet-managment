@@ -26,6 +26,8 @@ import com.afour.emgmt.model.VisitorRegistrationDTO;
 import com.afour.emgmt.repository.EventRepository;
 import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.VisitorRepository;
+import com.afour.emgmt.util.ActorEnum;
+import com.afour.emgmt.util.RoleEnum;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,7 +52,7 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Autowired
 	RoleRepository roleRepository;
-
+	
 	@Override
 	public List<VisitorDTO> fetchAllVisitors() {
 		List<Visitor> entities = repository.findAll();
@@ -96,9 +98,9 @@ public class VisitorServiceImpl implements VisitorService {
 		Set<EventDTO> newEventDtos = dto.getEvents();
 
 		dto.setCreatedAt(LocalDateTime.now());
-		dto.setCreatedBy("System");
+		dto.setCreatedBy(ActorEnum.DEFAULT_USER.getUser());
 		dto.setUpdatedAt(LocalDateTime.now());
-		dto.setUpdatedBy("System");
+		dto.setUpdatedBy(ActorEnum.DEFAULT_USER.getUser());
 		dto.setIsActive(true);
 
 		Set<Event> eventsToBeAdded = new HashSet<>();
@@ -111,8 +113,7 @@ public class VisitorServiceImpl implements VisitorService {
 
 		Visitor entity = mapper.DTOToEntity(dto);
 
-		Integer ROLE_VISITOR = Integer.valueOf(2);
-		Role role = roleRepository.findById(ROLE_VISITOR).get();
+		Role role = roleRepository.findById(RoleEnum.VISITOR.getRollId()).get();
 		entity.setRole(role);
 
 		entity.setEvents(eventsToBeAdded);

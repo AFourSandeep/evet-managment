@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.model.EsessionDTO;
+import com.afour.emgmt.util.ActorEnum;
 
 /**
  * 
@@ -60,7 +61,7 @@ public class SessionMapperImpl implements SessionMapper {
 			entity.setEndAt(dto.getEndAt());
 		
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy("System");
+		entity.setUpdatedBy(ActorEnum.DEFAULT_USER.getUser());
 		return entity;
 	}
 

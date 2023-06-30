@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.afour.emgmt.entity.Organizer;
 import com.afour.emgmt.model.OrganizerDTO;
+import com.afour.emgmt.util.ActorEnum;
 
 /**
  * 
@@ -62,7 +63,7 @@ public class OrganizerMapperImpl implements OrganizerMapper {
 			entity.setActive(dto.getIsActive());
 		
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy("System");
+		entity.setUpdatedBy(ActorEnum.DEFAULT_USER.getUser());
 		return entity;
 	}
 

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.afour.emgmt.config;
+package com.afour.emgmt.util;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

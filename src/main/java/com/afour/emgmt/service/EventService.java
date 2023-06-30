@@ -16,7 +16,7 @@ public interface EventService {
 
 	List<EventDTO> fetchAllEvents();
 
-	List<EventDTO> fetchAllOpenEvents();
+	List<EventDTO> fetchEventsByStatus(Boolean status);
 
 	EventDTO findEventByID(Integer ID);
 

@@ -11,9 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.afour.emgmt.entity.Organizer;
+import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.mapper.OrganizerMapper;
 import com.afour.emgmt.model.OrganizerDTO;
 import com.afour.emgmt.repository.OrganizerRepository;
+import com.afour.emgmt.repository.RoleRepository;
+import com.afour.emgmt.util.ActorEnum;
+import com.afour.emgmt.util.RoleEnum;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,6 +33,9 @@ public class OrganizerServiceImpl implements OrganizerService {
 
 	@Autowired
 	OrganizerRepository repository;
+	
+	@Autowired
+	RoleRepository roleRepository;
 
 	@Override
 	public List<OrganizerDTO> fetchAllOrganizers() {
@@ -65,9 +72,12 @@ public class OrganizerServiceImpl implements OrganizerService {
 	public OrganizerDTO addOrganizer(final OrganizerDTO dto) {
 		Organizer entity = mapper.DTOToEntity(dto);
 		entity.setCreatedAt(LocalDateTime.now());
-		entity.setCreatedBy("System");
+		entity.setCreatedBy(ActorEnum.DEFAULT_USER.getUser());
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy("System");
+		entity.setUpdatedBy(ActorEnum.DEFAULT_USER.getUser());
+		
+		Role role = roleRepository.findById(RoleEnum.ORGANIZER.getRollId()).get();
+		entity.setRole(role);
 
 		entity = repository.save(entity);
 		log.info("DB operation success! Added Organizer : {}", entity.getOrganizerId());
@@ -97,7 +107,6 @@ public class OrganizerServiceImpl implements OrganizerService {
 
 		exist = repository.existsById(ID);
 		log.info("DB operation success! Deleted the Organizer : {}", !exist);
-
 		return !exist;
 	}
 

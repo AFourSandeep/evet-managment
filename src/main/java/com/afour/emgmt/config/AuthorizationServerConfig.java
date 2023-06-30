@@ -3,28 +3,28 @@
  */
 package com.afour.emgmt.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.TokenStore;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Qualifier;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.core.userdetails.UserDetailsService;
+//import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
+//import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
+//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+//import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+//import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+//import org.springframework.security.oauth2.provider.token.TokenStore;
 
 /**
  * 
  */
 @SuppressWarnings("deprecation")
-@Configuration
-@EnableAuthorizationServer
-public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
-
+//@Configuration
+//@EnableAuthorizationServer
+public class AuthorizationServerConfig /* extends AuthorizationServerConfigurerAdapter */ {
+/*
 	private final String CLIEN_ID = "afour";
-	private final String CLIENT_SECRET = "$2a$10$iGdYCsr3b9kq1glWqlgnQuOilEQbfd6EOFvCACHjx7G2TahbkOZgG";
+	private final String CLIENT_SECRET = "$2a$10$IzatIm4pAw34.Wp6kt1HKeGH61ICVpGF6cQvccQHe5S4yymEQmu9O";//AFOUR
 	private final String PASSWORD = "password";
 	private final String AUTHORIZATION_CODE = "authorization_code";
 	private final String REFRESH_TOKEN = "refresh_token";
@@ -66,4 +66,5 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 		endpoints.tokenStore(tokenStore).authenticationManager(authenticationManager)
 				.userDetailsService(userDetailsService);
 	}
+	*/
 }

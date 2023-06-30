@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.afour.emgmt.config;
+package com.afour.emgmt.util;
 
 import java.io.IOException;
 
@@ -30,7 +30,8 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint{
 	
 	private final HttpMessageConverter<String> messageConverter;
 
-    private final ModelMapper mapper;
+    @SuppressWarnings("unused")
+	private final ModelMapper mapper;
 
     public CustomAuthenticationEntryPoint(ModelMapper mapper) {
         this.messageConverter = new StringHttpMessageConverter();
@@ -46,7 +47,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint{
 
         ServerHttpResponse outputMessage = new ServletServerHttpResponse(response);
         outputMessage.setStatusCode(HttpStatus.UNAUTHORIZED);
-
         messageConverter.write(apiError.toString(), MediaType.APPLICATION_JSON, outputMessage);
 	}
 

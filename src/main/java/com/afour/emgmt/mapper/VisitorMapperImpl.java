@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.afour.emgmt.entity.Visitor;
 import com.afour.emgmt.model.VisitorDTO;
+import com.afour.emgmt.util.ActorEnum;
 
 /**
  * 
@@ -62,7 +63,7 @@ public class VisitorMapperImpl implements VisitorMapper {
 			entity.setActive(dto.getIsActive());
 		
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy("System");
+		entity.setUpdatedBy(ActorEnum.DEFAULT_USER.getUser());
 		return entity;
 	}
 

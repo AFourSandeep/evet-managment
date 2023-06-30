@@ -54,8 +54,8 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<EventDTO> fetchAllOpenEvents() {
-		List<Event> entities = repository.findAllOpenEvents();
+	public List<EventDTO> fetchEventsByStatus(final Boolean status) {
+		List<Event> entities = repository.fetchEventsByStatus(!status);
 		if (null == entities)
 			return null;
 		log.info("DB operation success! Fetched {} Open Events!", entities.size());
