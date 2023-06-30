@@ -247,5 +247,7 @@ class OrganizerControllerTest {
 		Random random = new Random();
 		return random.nextInt(100);
 	}
+	
+	
 
 }
