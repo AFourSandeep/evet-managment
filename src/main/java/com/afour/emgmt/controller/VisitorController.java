@@ -103,8 +103,6 @@ public class VisitorController {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		response = new AppResponse();
-
 		VisitorDTO result = service.addVisitor(dto);
 		if (result == null)
 			return new ResponseEntity(
@@ -123,8 +121,6 @@ public class VisitorController {
 	public ResponseEntity<AppResponse> updateVisitor(@RequestBody VisitorDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
-
-		response = new AppResponse();
 
 		VisitorDTO result = service.updateVisitor(dto);
 		if (result == null)
@@ -145,8 +141,6 @@ public class VisitorController {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		response = new AppResponse();
-
 		Boolean result = service.deleteVisitorByID(id);
 		if (result == null)
 			return new ResponseEntity(
@@ -165,8 +159,6 @@ public class VisitorController {
 	public ResponseEntity<AppResponse> registerVisitorForEvent(@RequestBody VisitorRegistrationDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
-
-		response = new AppResponse();
 
 		VisitorDTO result = service.registerVisitorForEvent(dto);
 		if (result == null)

@@ -72,7 +72,6 @@ public class EventController {
 		if (null == status)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		response = new AppResponse();
 		List<EventDTO> result = service.fetchEventsByStatus(status);
 		if (result == null)
 			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
@@ -89,7 +88,6 @@ public class EventController {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		response = new AppResponse();
 		EventDTO result = service.findEventByID(id);
 		if (result == null)
 			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
@@ -146,8 +144,7 @@ public class EventController {
 
 		Boolean result = service.deleteEventByID(id);
 		if (result == null)
-			return new ResponseEntity(
-					genericResponse.getRequestFailResponse("event.delete.fail", new Integer[] { id }),
+			return new ResponseEntity(genericResponse.getRequestFailResponse("event.delete.fail", new Integer[] { id }),
 					HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("event.delete.success", result, HttpStatus.ACCEPTED);

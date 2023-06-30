@@ -109,7 +109,6 @@ public class SessionController {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		response = new AppResponse();
 		EsessionDTO result = service.updateSession(dto);
 		if (result == null)
 			return new ResponseEntity(genericResponse.getRequestFailResponse("session.update.fail",
@@ -128,7 +127,6 @@ public class SessionController {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		response = new AppResponse();
 		Boolean result = service.deleteSessionByID(id);
 		
 		if (result == null)
