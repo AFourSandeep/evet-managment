@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.33, for Linux (x86_64)
 --
--- Host: localhost    Database: event_management
+Database: event_management
 -- ------------------------------------------------------
 -- Server version	8.0.33
 
@@ -70,7 +70,7 @@ CREATE TABLE `event` (
   PRIMARY KEY (`event_id`),
   KEY `event_FK` (`owner`),
   CONSTRAINT `event_FK` FOREIGN KEY (`owner`) REFERENCES `organizer` (`organizer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,7 +79,7 @@ CREATE TABLE `event` (
 
 LOCK TABLES `event` WRITE;
 /*!40000 ALTER TABLE `event` DISABLE KEYS */;
-INSERT INTO `event` VALUES (1,'Test event','2023-06-26 08:52:26','2023-06-30 08:52:26',2,'manual','manual','2023-06-24 08:52:26','2023-06-24 08:52:26',0,'Indore'),(2,'Test event 2','2023-06-30 08:52:26','2023-07-03 08:52:26',2,'manual','manual','2023-06-24 08:52:26','2023-06-24 08:52:26',0,' Pune');
+INSERT INTO `event` VALUES (1,'Test event','2023-06-26 08:52:26','2023-06-30 08:52:26',2,'manual','manual','2023-06-24 08:52:26','2023-06-24 08:52:26',0,'Indore'),(2,'Test event 2','2023-06-30 08:52:26','2023-07-03 08:52:26',2,'manual','manual','2023-06-24 08:52:26','2023-06-24 08:52:26',0,' Pune'),(5,'string','2023-06-28 04:13:02','2023-06-30 04:13:02',2,'System','System','2023-06-28 09:47:26','2023-06-28 09:47:26',0,'string'),(6,'Event 4','2023-06-28 04:13:02','2023-06-30 04:13:02',2,'System','System','2023-06-28 09:49:35','2023-06-28 09:49:35',0,'Pune');
 /*!40000 ALTER TABLE `event` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -105,7 +105,7 @@ CREATE TABLE `organizer` (
   PRIMARY KEY (`organizer_id`),
   KEY `organizer_FK` (`role_id`),
   CONSTRAINT `organizer_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -114,7 +114,7 @@ CREATE TABLE `organizer` (
 
 LOCK TABLES `organizer` WRITE;
 /*!40000 ALTER TABLE `organizer` DISABLE KEYS */;
-INSERT INTO `organizer` VALUES (2,'jariyasandeep','sandeep','jariya','pass','System','System','2023-06-24 14:22:26','2023-06-25 17:02:30',1,1);
+INSERT INTO `organizer` VALUES (2,'jariyasandeep','sandeep','jariya','pass','System','System','2023-06-24 14:22:26','2023-06-25 17:02:30',1,1),(3,'Org11','Organizer','lastname','password','System','System','2023-06-30 10:40:39','2023-06-30 10:40:39',0,NULL),(4,'Org11','Organizer','lastname','password','System','System','2023-06-30 10:43:32','2023-06-30 10:43:32',0,NULL),(5,'User101','User','lastname','password','SYSTEM','SYSTEM','2023-06-30 14:11:08','2023-06-30 14:11:08',1,1);
 /*!40000 ALTER TABLE `organizer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,7 +164,7 @@ CREATE TABLE `visitor` (
   PRIMARY KEY (`visitor_id`),
   KEY `visitor_FK` (`role_id`),
   CONSTRAINT `visitor_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +173,7 @@ CREATE TABLE `visitor` (
 
 LOCK TABLES `visitor` WRITE;
 /*!40000 ALTER TABLE `visitor` DISABLE KEYS */;
-INSERT INTO `visitor` VALUES (1,'visitor1','Visitor','First','password','System','System','2023-06-27 14:45:09','2023-06-27 14:45:09',1,2),(2,'visitor2','Visitor2','First','password','System','System','2023-06-27 14:52:32','2023-06-27 14:52:32',1,2),(3,'visitor3','Visitor3','First','password','System','System','2023-06-27 14:55:50','2023-06-27 14:55:50',1,2),(4,'visitor5','Visitor5','First','password','System','System','2023-06-27 15:08:29','2023-06-27 15:08:29',1,2),(5,'visitor6','Visitor6','First','password','System','System','2023-06-27 17:01:38','2023-06-27 17:01:38',1,2),(6,'visitor7','Visitor7','First','passwor7','System','System','2023-06-27 17:09:08','2023-06-27 17:09:08',1,2),(7,'sandeep','sandeep','jariya','password','System','System','2023-06-27 17:49:18','2023-06-27 17:49:18',1,2),(8,'sandeep1','sandeep1','jariya1','password1','System','System','2023-06-27 17:54:52','2023-06-27 17:54:52',1,2),(9,'sandeep1','sandeep1','jariya1','password1','System','System','2023-06-27 17:57:52','2023-06-27 17:57:52',1,2),(10,'sandeep1','sandeep1','jariya1','password1','System','System','2023-06-27 18:28:53','2023-06-27 18:28:53',1,2);
+INSERT INTO `visitor` VALUES (1,'visitor1','Visitor','First','password','System','System','2023-06-27 14:45:09','2023-06-27 14:45:09',1,2),(2,'visitor2','Visitor2','First','password','System','System','2023-06-27 14:52:32','2023-06-27 14:52:32',1,2),(3,'visitor3','Visitor3','First','password','System','System','2023-06-27 14:55:50','2023-06-27 14:55:50',1,2),(4,'visitor5','Visitor5','First','password','System','System','2023-06-27 15:08:29','2023-06-27 15:08:29',1,2),(5,'visitor6','Visitor6','First','password','System','System','2023-06-27 17:01:38','2023-06-27 17:01:38',1,2),(6,'visitor7','Visitor7','First','passwor7','System','System','2023-06-27 17:09:08','2023-06-27 17:09:08',1,2),(7,'sandeep','sandeep','jariya','password','System','System','2023-06-27 17:49:18','2023-06-27 17:49:18',1,2),(8,'sandeep1','sandeep1','jariya1','password1','System','System','2023-06-27 17:54:52','2023-06-27 17:54:52',1,2),(9,'sandeep1','sandeep1','jariya1','password1','System','System','2023-06-27 17:57:52','2023-06-27 17:57:52',1,2),(10,'sandeep1','sandeep1','jariya1','password1','System','System','2023-06-27 18:28:53','2023-06-27 18:28:53',1,2),(11,'sandeepj','sandeepj','lastname','password','System','System','2023-06-28 08:10:58','2023-06-28 08:10:58',1,2),(13,'sandeepj','sandeepj','lastname','password','System','System','2023-06-28 08:17:53','2023-06-28 08:17:53',1,2),(14,'sandeepj','sandeepj','lastname','password','System','System','2023-06-28 08:19:33','2023-06-28 08:19:33',1,2),(15,'sandeepj','sandeepj','lastname','password','System','System','2023-06-28 08:24:23','2023-06-28 08:24:23',1,2);
 /*!40000 ALTER TABLE `visitor` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -193,7 +193,7 @@ CREATE TABLE `visitor_event_map` (
   KEY `visitor_event_map_FK_1` (`visitor_id`),
   CONSTRAINT `visitor_event_map_FK` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`),
   CONSTRAINT `visitor_event_map_FK_1` FOREIGN KEY (`visitor_id`) REFERENCES `visitor` (`visitor_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,6 +202,7 @@ CREATE TABLE `visitor_event_map` (
 
 LOCK TABLES `visitor_event_map` WRITE;
 /*!40000 ALTER TABLE `visitor_event_map` DISABLE KEYS */;
+INSERT INTO `visitor_event_map` VALUES (1,1,15),(2,1,1),(3,1,2),(4,2,1),(5,1,3),(6,2,3);
 /*!40000 ALTER TABLE `visitor_event_map` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -214,4 +215,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-06-28 11:13:18
+-- Dump completed on 2023-06-30 22:09:15

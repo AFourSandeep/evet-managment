@@ -31,7 +31,10 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
+ * This is a Controller class having all the REST (GET POST PUT DELETE) end
+ * points to manage any Visitor.
  * 
+ * @author Sandeep Jariya
  */
 @RestController
 @RequestMapping("/visitor")
@@ -48,7 +51,8 @@ public class VisitorController {
 	GenericResponse genericResponse;
 
 	private AppResponse response;
-
+	
+	/* Get all the visitors without any filter*/
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the visitors without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the visitors!"),
@@ -61,7 +65,8 @@ public class VisitorController {
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
-
+	
+	/* Get a visitor using its id */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one Visitor by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
@@ -77,7 +82,8 @@ public class VisitorController {
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
-
+	
+	/* Get a visitor using its username */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one Visitor by USERNAME!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
@@ -94,6 +100,7 @@ public class VisitorController {
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
+	/* Create a new visitor */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Visitor.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
@@ -112,7 +119,8 @@ public class VisitorController {
 		response = genericResponse.getRequestSuccessResponse("visitor.create.successs", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-
+	
+	/* Update an existing visitor */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update a Visitor.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
@@ -131,7 +139,8 @@ public class VisitorController {
 		response = genericResponse.getRequestSuccessResponse("visitor.update.successs", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-
+	
+	/* Delete an existing visitor using its id */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete the vistor.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested visitor!"),
@@ -150,7 +159,7 @@ public class VisitorController {
 		response = genericResponse.getRequestSuccessResponse("visitor.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-
+	/* Register one existing visitor for one or more events */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Register a Visitor for Events.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Registered!"),

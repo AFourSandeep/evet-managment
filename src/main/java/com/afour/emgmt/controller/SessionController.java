@@ -30,7 +30,10 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
+ * This is a Controller class having all the REST (GET POST PUT DELETE) end
+ * points to manage any Session.
  * 
+ * @author Sandeep Jariya
  */
 @RestController
 @RequestMapping("/session")
@@ -47,7 +50,8 @@ public class SessionController {
 	GenericResponse genericResponse;
 
 	private AppResponse response;
-
+	
+	/* Get all sessions of an event */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all Session by its Event Id.")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the sessions!"),
@@ -63,7 +67,8 @@ public class SessionController {
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
-
+	
+	/* Get a existing session using its id*/
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch Session by Session Id.")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the sessions!"),
@@ -79,7 +84,8 @@ public class SessionController {
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
-
+	
+	/* Create a new session under any event*/
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Session.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
@@ -99,7 +105,8 @@ public class SessionController {
 		response = genericResponse.getRequestSuccessResponse("session.create.successs", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-
+	
+	/* Update an existing session*/
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update the Session.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
@@ -117,7 +124,8 @@ public class SessionController {
 		response = genericResponse.getRequestSuccessResponse("session.update.successs", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-
+	
+	/* Delete one existing session*/
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete the Session.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested session!"),

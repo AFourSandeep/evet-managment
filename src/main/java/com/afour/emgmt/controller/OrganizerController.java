@@ -30,7 +30,10 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
+ * This is a Controller class having all the REST (GET POST PUT DELETE) end
+ * points to manage any Organizer.
  * 
+ * @author Sandeep Jariya
  */
 @RestController
 @RequestMapping("/organizer")
@@ -47,7 +50,8 @@ public class OrganizerController {
 	GenericResponse genericResponse;
 
 	private AppResponse response;
-
+	
+	/* Get all the existing organizers without any filter */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the organizers without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the organizers!"),
@@ -61,7 +65,8 @@ public class OrganizerController {
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
-
+	
+	/* Get one existing organizer using its id */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one organizer by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizer!"),
@@ -77,7 +82,8 @@ public class OrganizerController {
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
-
+	
+	/* Get one existing organizer using its username */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one organizers by USERNAME!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizer!"),
@@ -94,7 +100,8 @@ public class OrganizerController {
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
-
+	
+	/* Create a new organizer*/
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
@@ -114,7 +121,8 @@ public class OrganizerController {
 		response = genericResponse.getRequestSuccessResponse("organizer.create.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-
+	
+	/* update an existing organizer */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update an Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
@@ -133,7 +141,8 @@ public class OrganizerController {
 		response = genericResponse.getRequestSuccessResponse("organizer.update.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-
+	
+	/* Delete one organizer using its id */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete an Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested organizer!"),

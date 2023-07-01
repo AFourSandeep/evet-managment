@@ -89,7 +89,7 @@ public class VisitorServiceImpl implements VisitorService {
 		Set<EventDTO> eventDtos = eventMapper.entityToDTO(events);
 		visitorDto.setEvents(eventDtos);
 		log.info("DB operation success! Fetched Visitor:{} by username: {}", visitor.getVisitorId(), USERNAME);
-		return mapper.entityToDTO(visitor);
+		return visitorDto;
 	}
 
 	@Override
@@ -175,9 +175,16 @@ public class VisitorServiceImpl implements VisitorService {
 
 		entity.setEvents(existingEvents);
 		Visitor updated = repository.save(entity);
+		
+		VisitorDTO visitorDto =mapper.entityToDTO(updated);
+		
+		Set<Event> events = updated.getEvents();
+		Set<EventDTO> eventDtos = eventMapper.entityToDTO(events);
+		visitorDto.setEvents(eventDtos);
+		
 		log.info("DB operation success! Registered the visitor : {} with sessions{}", dto.getVisitorId(),
 				existingEvents);
-		return mapper.entityToDTO(updated);
+		return visitorDto;
 	}
 
 }

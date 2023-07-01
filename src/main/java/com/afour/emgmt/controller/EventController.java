@@ -30,7 +30,10 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 /**
+ * This is a Controller class having all the REST (GET POST PUT DELETE) end
+ * points to manage any Event.
  * 
+ * @author Sandeep Jariya
  */
 @RestController
 @RequestMapping("/event")
@@ -47,7 +50,8 @@ public class EventController {
 	GenericResponse genericResponse;
 
 	private AppResponse response;
-
+	
+	/* Get all the existing events without any filter */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the events without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the events!"),
@@ -61,7 +65,8 @@ public class EventController {
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
-
+	
+	/* Get all the existing events by filtering them on there status */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the OPEN evets!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the OPEN/CLOSED events!"),
@@ -78,7 +83,8 @@ public class EventController {
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
-
+	
+	/* Get one existing event using its id */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch an Event by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Event!"),
@@ -94,7 +100,8 @@ public class EventController {
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
-
+	
+	/* Create a new event */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Event.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
@@ -113,7 +120,8 @@ public class EventController {
 		response = genericResponse.getRequestSuccessResponse("event.create.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-
+	
+	/* update one existing event */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update an Event.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
@@ -132,7 +140,8 @@ public class EventController {
 		response = genericResponse.getRequestSuccessResponse("event.update.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-
+	
+	/* delete one existing event */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete the Event.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested event!"),
