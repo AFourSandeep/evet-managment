@@ -63,15 +63,16 @@ public class SessionServiceImpl implements SessionService {
 
 	@Override
 	public EsessionDTO addSession(EsessionDTO dto) {
+		Optional<Event> optional = eventRepository.findById(dto.getEvent().getEventId());
+		if(optional.isEmpty())
+			return null;
+		
 		Esession entity = mapper.DTOToEntity(dto);
+		
 		entity.setCreatedAt(LocalDateTime.now());
 		entity.setCreatedBy("System");
 		entity.setUpdatedAt(LocalDateTime.now());
 		entity.setUpdatedBy("System");
-		
-		Optional<Event> optional = eventRepository.findById(dto.getEvent().getEventId());
-		if(optional.isEmpty())
-			return null;
 		
 		Event event = optional.get();
 		entity.setEvent(event);

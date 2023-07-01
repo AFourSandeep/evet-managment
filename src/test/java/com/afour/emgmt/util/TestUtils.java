@@ -77,7 +77,7 @@ public class TestUtils {
 	} 
 	
 	public static EsessionDTO buildEsessionDTO(String title, EventDTO event) {
-		return EsessionDTO.builder().esessionTitle(title).build();
+		return EsessionDTO.builder().esessionTitle(title).event(event).build();
 	}
 
 }

@@ -126,7 +126,7 @@ class SessionServiceImplTest {
 		owner = organizerRepository.saveAndFlush(owner);
 
 		Event event = TestUtils.buildEvent("Some Event", owner);
-		event = eventRepository.saveAndFlush(event);
+		event = eventRepository.save(event);
 		
 		EventDTO eventDTO = EventDTO.builder().eventId(event.getEventId()).build();
 		
