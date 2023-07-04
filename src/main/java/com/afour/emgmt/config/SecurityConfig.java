@@ -62,13 +62,17 @@ public class SecurityConfig {
 	public AccessDeniedHandler accessDeniedHandler() {
 		return new CustomAccessDeniedHandler();
 	}
+	
+	private static final String[] AUTH_WHITELIST = {
+			"/auth/**", "/v2/api-docs", "/swagger-resources", "/swagger-resources/**", "/configuration/ui",
+			"/configuration/security", "/webjars/**", "/v3/api-docs/**", "/swagger-ui/**" };
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
 		http.csrf((csrf) -> csrf.disable())
-				.authorizeHttpRequests((authorize) -> authorize.antMatchers("/auth/**").permitAll()
-						.antMatchers("/swagger-ui/**", "/v2/api-docs**").permitAll()
+				.authorizeHttpRequests((authorize) -> authorize.antMatchers(AUTH_WHITELIST).permitAll()
+//						.antMatchers("/swagger-ui/**","/swagger-resources/**","/swagger-ui.html","/webjars/**", "/v2/api-docs**").permitAll()
 						.antMatchers("/organizer/**").hasAuthority("ORGANIZER")
 						.antMatchers("/visitor/**").hasAuthority("VISITOR")
 						.antMatchers("/event/create**","/event/update**","/event/deleted**").hasAuthority("ORGANIZER")
