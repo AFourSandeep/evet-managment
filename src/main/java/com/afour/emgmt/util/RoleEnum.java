@@ -11,13 +11,13 @@ public enum RoleEnum {
 	ORGANIZER(1),
 	VISITOR(2);
 	
-	private Integer rollId;
+	private Integer roleId;
 
-	public Integer getRollId() {
-		return this.rollId;
+	public Integer getRoleId() {
+		return this.roleId;
 	}
 	
 	private RoleEnum(int value) {
-        this.rollId = value;
+        this.roleId = value;
     }
 }

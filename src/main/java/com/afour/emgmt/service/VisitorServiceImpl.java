@@ -113,7 +113,7 @@ public class VisitorServiceImpl implements VisitorService {
 
 		Visitor entity = mapper.DTOToEntity(dto);
 
-		Role role = roleRepository.findById(RoleEnum.VISITOR.getRollId()).get();
+		Role role = roleRepository.findById(RoleEnum.VISITOR.getRoleId()).get();
 		entity.setRole(role);
 
 		entity.setEvents(eventsToBeAdded);

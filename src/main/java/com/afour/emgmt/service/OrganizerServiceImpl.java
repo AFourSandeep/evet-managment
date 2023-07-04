@@ -76,7 +76,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 		entity.setUpdatedAt(LocalDateTime.now());
 		entity.setUpdatedBy(ActorEnum.DEFAULT_USER.getUser());
 		
-		Role role = roleRepository.findById(RoleEnum.ORGANIZER.getRollId()).get();
+		Role role = roleRepository.findById(RoleEnum.ORGANIZER.getRoleId()).get();
 		entity.setRole(role);
 
 		entity = repository.save(entity);
