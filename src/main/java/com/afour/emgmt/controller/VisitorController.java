@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,6 +59,7 @@ public class VisitorController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the visitors!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/visitors", produces = "application/json")
+	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> fetchAllVisitors() {
 		List<VisitorDTO> result = service.fetchAllVisitors();
 		if (result == null)
@@ -72,6 +74,7 @@ public class VisitorController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{id}", produces = "application/json")
+	@PreAuthorize("hasAuthority('VISITOR')")
 	public ResponseEntity<AppResponse> findVisitorByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -89,6 +92,7 @@ public class VisitorController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/", produces = "application/json")
+	@PreAuthorize("hasAuthority('VISITOR')")
 	public ResponseEntity<AppResponse> findVisitorByUserName(@RequestParam(value = "userName") final String userName) {
 		if (null == userName)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -106,6 +110,7 @@ public class VisitorController {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PreAuthorize("hasAuthority('VISITOR')")
 	public ResponseEntity<AppResponse> addVisitor(@RequestBody VisitorDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -126,6 +131,7 @@ public class VisitorController {
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PreAuthorize("hasAuthority('VISITOR')")
 	public ResponseEntity<AppResponse> updateVisitor(@RequestBody VisitorDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -146,6 +152,7 @@ public class VisitorController {
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested visitor!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+	@PreAuthorize("hasAuthority('VISITOR')")
 	public ResponseEntity<AppResponse> deleteVisitorByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);

@@ -61,4 +61,11 @@ public class GenericResponseImpl implements GenericResponse {
 		return AppResponse.builder().message(message).body(result).status(status).build();
 	}
 
+	@Override
+	public AppResponse getAccessDeniedResponse() {
+		message = messages.getMessage("access.denied.handler", null, Locale.US);
+		log.error(message);
+		return AppResponse.builder().message(message).status(HttpStatus.UNAUTHORIZED).build();
+	}
+
 }

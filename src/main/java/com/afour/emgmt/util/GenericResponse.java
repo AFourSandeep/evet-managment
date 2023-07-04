@@ -22,4 +22,6 @@ public interface GenericResponse {
 
 	AppResponse getRequestSuccessResponse(String string, Object result, HttpStatus status);
 
+	AppResponse getAccessDeniedResponse();
+
 }

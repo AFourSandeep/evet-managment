@@ -17,8 +17,6 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -54,7 +52,7 @@ public class EventMgmtConfiguration implements WebMvcConfigurer {
 				.dateTimeFormatter(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 				.dateFormatter(DateTimeFormatter.ISO_LOCAL_DATE).zoneId(ZoneOffset.UTC).build();
 
-		// Conf to avoid chaining of lazy loaded objects.
+		// Configuration to avoid chaining of lazy loaded objects.
 		modelMapper.getConfiguration().setPropertyCondition(new Condition<Object, Object>() {
 			public boolean applies(MappingContext<Object, Object> context) {
 				return !(context.getSource() instanceof PersistentCollection);
@@ -69,9 +67,4 @@ public class EventMgmtConfiguration implements WebMvcConfigurer {
 		return new BCryptPasswordEncoder();
 	}
 
-	@Bean
-	public TokenStore tokenStore() {
-		return new InMemoryTokenStore();
-	}
-	
 }

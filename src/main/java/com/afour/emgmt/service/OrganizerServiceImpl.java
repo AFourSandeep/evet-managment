@@ -59,11 +59,11 @@ public class OrganizerServiceImpl implements OrganizerService {
 
 	@Override
 	public OrganizerDTO findOrganizerByUserName(final String USERNAME) {
-		Organizer entity = repository.findByUserName(USERNAME);
+		Optional<Organizer> optional = repository.findByUserName(USERNAME);
 		log.info("DB operation success!");
-		if (null == entity)
+		if (optional.isEmpty())
 			return null;
-
+		Organizer entity= optional.get(); 
 		log.info("DB operation success! Fetched Organizer:{} by username: {}", entity.getOrganizerId(), USERNAME);
 		return mapper.entityToDTO(entity);
 	}
