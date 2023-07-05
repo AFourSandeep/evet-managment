@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.afour.emgmt.model;
+package com.afour.emgmt.common;
 
 import org.springframework.http.HttpStatus;
 

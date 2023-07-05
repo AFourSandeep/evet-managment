@@ -28,4 +28,6 @@ public interface EventMapper {
 
 	Set<Event> DTOToEntity(Set<EventDTO> dtos);
 
+	Event prepareForCreate(EventDTO dto);
+
 }

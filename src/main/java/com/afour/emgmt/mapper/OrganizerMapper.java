@@ -23,4 +23,6 @@ public interface OrganizerMapper {
 
 	Organizer prepareForUpdate(Organizer entity, OrganizerDTO orgDTO);
 
+	Organizer prepareForCreate(OrganizerDTO dto);
+
 }

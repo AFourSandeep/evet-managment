@@ -9,11 +9,12 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.afour.emgmt.config.AuthenticationFacade;
 import com.afour.emgmt.entity.Organizer;
 import com.afour.emgmt.model.OrganizerDTO;
-import com.afour.emgmt.util.ActorEnum;
 
 /**
  * 
@@ -23,6 +24,13 @@ public class OrganizerMapperImpl implements OrganizerMapper {
 
 	@Autowired
 	ModelMapper modelMapper;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
+	
+	@Autowired
+	AuthenticationFacade authentication;
+
 
 	@Override
 	public OrganizerDTO entityToDTO(Organizer entity) {
@@ -57,13 +65,25 @@ public class OrganizerMapperImpl implements OrganizerMapper {
 			entity.setFirstName(dto.getFirstName());
 		if (null != dto.getLastName())
 			entity.setLastName(dto.getLastName());
-		if (null != dto.getPassword())
-			entity.setPassword(dto.getPassword());
 		if (null != dto.getIsActive())
 			entity.setActive(dto.getIsActive());
+		if(null != dto.getPassword())
+			entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy(ActorEnum.DEFAULT_USER.getUser());
+		entity.setUpdatedBy(authentication.getAuthentication().getName());
+		
+		return entity;
+	}
+
+	@Override
+	public Organizer prepareForCreate(OrganizerDTO dto) {
+		Organizer entity = this.DTOToEntity(dto);
+		entity.setCreatedAt(LocalDateTime.now());
+		entity.setCreatedBy(authentication.getAuthentication().getName());
+		entity.setUpdatedAt(LocalDateTime.now());
+		entity.setUpdatedBy(authentication.getAuthentication().getName());
+		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		return entity;
 	}
 

@@ -3,7 +3,6 @@
  */
 package com.afour.emgmt.service;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -83,11 +82,7 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public EventDTO addEvent(EventDTO dto) {
-		Event entity = mapper.DTOToEntity(dto);
-		entity.setCreatedAt(LocalDateTime.now());
-		entity.setCreatedBy("System");
-		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy("System");
+		Event entity = mapper.prepareForCreate(dto);
 
 		entity = repository.save(entity);
 		log.info("DB operation success! Added Event : {}", entity.getEventId());

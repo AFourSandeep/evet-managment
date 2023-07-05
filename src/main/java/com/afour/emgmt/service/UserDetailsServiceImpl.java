@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.afour.emgmt.common.RoleEnum;
 import com.afour.emgmt.entity.Organizer;
+import com.afour.emgmt.entity.Visitor;
 import com.afour.emgmt.model.UserInfoUserDetails;
 import com.afour.emgmt.repository.OrganizerRepository;
+import com.afour.emgmt.repository.VisitorRepository;
 
 /**
  * 
@@ -23,19 +25,24 @@ import com.afour.emgmt.repository.OrganizerRepository;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Autowired
-	OrganizerRepository userRepository;
-
+	OrganizerRepository orgRepository;
+	
 	@Autowired
-	PasswordEncoder passwordEncoder;
+	VisitorRepository visitorRepository;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Optional<Organizer> user = userRepository.findByUserName(username);
-//		List<GrantedAuthority> grantedAuthorities = List.of(new SimpleGrantedAuthority(user.getRole().getRoleName()));
-//		return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(),
-//				grantedAuthorities);
-		UserInfoUserDetails userDetail = user.map(UserInfoUserDetails::new)
-				.orElseThrow(() -> new UsernameNotFoundException("user not found " + username));
+		UserInfoUserDetails userDetail;
+		if(username.startsWith(RoleEnum.VISITOR.name())) {
+		Optional<Visitor>	user = visitorRepository.findByUserName(username.replaceFirst(RoleEnum.VISITOR.name(), ""));
+			userDetail = user.map(UserInfoUserDetails::new)
+					.orElseThrow(() -> new UsernameNotFoundException("user not found " + username));
+		}
+		else {
+			Optional<Organizer>	user = orgRepository.findByUserName(username);
+			userDetail = user.map(UserInfoUserDetails::new)
+					.orElseThrow(() -> new UsernameNotFoundException("user not found " + username));
+		}
 		return userDetail;
 	}
 

@@ -12,9 +12,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.afour.emgmt.config.AuthenticationFacade;
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.model.EsessionDTO;
-import com.afour.emgmt.util.ActorEnum;
 
 /**
  * 
@@ -24,6 +24,9 @@ public class SessionMapperImpl implements SessionMapper {
 
 	@Autowired
 	ModelMapper modelMapper;
+	
+	@Autowired
+	AuthenticationFacade authentication;
 	
 	@Override
 	public EsessionDTO entityToDTO(Esession entity) {
@@ -61,7 +64,7 @@ public class SessionMapperImpl implements SessionMapper {
 			entity.setEndAt(dto.getEndAt());
 		
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy(ActorEnum.DEFAULT_USER.getUser());
+		entity.setUpdatedBy(authentication.getAuthentication().getName());
 		return entity;
 	}
 
@@ -79,6 +82,16 @@ public class SessionMapperImpl implements SessionMapper {
 				.stream()
 				.map(dto -> DTOToEntity(dto))
 				.collect(Collectors.toSet());
+	}
+	
+	@Override
+	public Esession prepareForCreate(EsessionDTO dto) {
+		Esession entity = this.DTOToEntity(dto);
+		entity.setCreatedAt(LocalDateTime.now());
+		entity.setCreatedBy(authentication.getAuthentication().getName());
+		entity.setUpdatedAt(LocalDateTime.now());
+		entity.setUpdatedBy(authentication.getAuthentication().getName());
+		return entity;
 	}
 
 }

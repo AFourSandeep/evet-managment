@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.afour.emgmt.util;
+package com.afour.emgmt.common;
 
 import java.util.Locale;
 
@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
-
-import com.afour.emgmt.model.AppResponse;
 
 import lombok.extern.slf4j.Slf4j;
 

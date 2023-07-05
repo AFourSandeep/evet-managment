@@ -22,7 +22,7 @@ public class UtilMain {
 	public static void main(String args[]) {
 		UtilMain um = new UtilMain();
 		String given = "Password";
-		System.out.println(given+"Encoded: "+ um.encode(given));
+		System.out.println(given+" and its  Encoded value: \n"+ um.encode(given));
 	}
 
 }

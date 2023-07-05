@@ -6,6 +6,7 @@ package com.afour.emgmt.util;
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import com.afour.emgmt.common.ActorEnum;
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.Organizer;

@@ -3,7 +3,6 @@
  */
 package com.afour.emgmt.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,12 +66,7 @@ public class SessionServiceImpl implements SessionService {
 		if(optional.isEmpty())
 			return null;
 		
-		Esession entity = mapper.DTOToEntity(dto);
-		
-		entity.setCreatedAt(LocalDateTime.now());
-		entity.setCreatedBy("System");
-		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy("System");
+		Esession entity = mapper.prepareForCreate(dto);
 		
 		Event event = optional.get();
 		entity.setEvent(event);

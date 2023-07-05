@@ -23,6 +23,7 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.afour.emgmt.common.ActorEnum;
 import com.afour.emgmt.config.EventMgmtConfiguration;
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.config.SpringMVCWebAppInitializer;
@@ -30,7 +31,6 @@ import com.afour.emgmt.entity.Organizer;
 import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.repository.OrganizerRepository;
 import com.afour.emgmt.repository.RoleRepository;
-import com.afour.emgmt.util.ActorEnum;
 import com.afour.emgmt.util.MySQLTestImage;
 
 import lombok.extern.slf4j.Slf4j;

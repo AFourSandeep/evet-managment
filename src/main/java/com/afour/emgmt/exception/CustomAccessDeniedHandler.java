@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.afour.emgmt.util;
+package com.afour.emgmt.exception;
 
 import java.io.IOException;
 

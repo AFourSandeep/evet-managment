@@ -21,21 +21,21 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.afour.emgmt.exception.CustomAccessDeniedHandler;
-import com.afour.emgmt.service.UserDetailsServiceImpl;
+import com.afour.emgmt.service.UserDetailsServiceVisitor;
 
 /**
  * 
  */
-//@Order(2)
-@Configuration
-public class SecurityConfig {
+//@Order(1)
+//@Configuration
+public class SecurityConfigVisitor {
 
 	@Autowired
 	private JwtAuthFilter authFilter;
 
 	@Bean
 	public UserDetailsService userDetailsService() {
-		return new UserDetailsServiceImpl();
+		return new UserDetailsServiceVisitor();
 	};
 
 	@Autowired
@@ -70,9 +70,10 @@ public class SecurityConfig {
 
 		http.csrf((csrf) -> csrf.disable())
 				.authorizeHttpRequests((authorize) -> authorize.antMatchers(AUTH_WHITELIST).permitAll()
-						.antMatchers("/organizer/**").hasAuthority("ORGANIZER")
+						.antMatchers("/visitor/**").hasAuthority("VISITOR")
 						.antMatchers("/event/create**", "/event/update**", "/event/delete**").hasAuthority("ORGANIZER")
-						.antMatchers("/session/create**", "/session/update**", "/session/delete**").hasAuthority("ORGANIZER")
+						.antMatchers("/session/create**", "/session/update**", "/session/delete**")
+						.hasAuthority("ORGANIZER")
 						.anyRequest().authenticated())
 				.authenticationProvider(authenticationProvider())
 				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

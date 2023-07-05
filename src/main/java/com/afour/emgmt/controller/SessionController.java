@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.afour.emgmt.model.AppResponse;
+import com.afour.emgmt.common.AppResponse;
+import com.afour.emgmt.common.GenericResponse;
 import com.afour.emgmt.model.EsessionDTO;
 import com.afour.emgmt.service.SessionService;
-import com.afour.emgmt.util.GenericResponse;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

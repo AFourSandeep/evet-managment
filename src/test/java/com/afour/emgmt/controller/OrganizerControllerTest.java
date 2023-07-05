@@ -27,10 +27,10 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.afour.emgmt.model.AppResponse;
+import com.afour.emgmt.common.AppResponse;
+import com.afour.emgmt.common.GenericResponse;
 import com.afour.emgmt.model.OrganizerDTO;
 import com.afour.emgmt.service.OrganizerService;
-import com.afour.emgmt.util.GenericResponse;
 import com.afour.emgmt.util.TestUtils;
 
 /**

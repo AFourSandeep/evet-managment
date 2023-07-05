@@ -27,5 +27,7 @@ public interface VisitorMapper {
 	Set<VisitorDTO> entityToDTO(Set<Visitor> entities);
 	
 	Set<Visitor> DTOToEntity(Set<VisitorDTO> dtos);
+	
+	Visitor prepareForCreate(VisitorDTO dto);
 
 }

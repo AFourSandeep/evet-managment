@@ -28,4 +28,6 @@ public interface SessionMapper {
 	
 	Set<Esession> DTOToEntity(Set<EsessionDTO> sessions);
 
+	Esession prepareForCreate(EsessionDTO dto);
+
 }

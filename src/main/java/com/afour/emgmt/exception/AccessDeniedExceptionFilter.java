@@ -1,4 +1,4 @@
-package com.afour.emgmt.util;
+package com.afour.emgmt.exception;
 
 import java.io.IOException;
 
@@ -24,7 +24,6 @@ public class AccessDeniedExceptionFilter extends OncePerRequestFilter {
 			// log error if needed here then redirect
 			RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher(ACCESS_DENIED_REDIRECT);
 			requestDispatcher.forward(request, response);
-
 		}
 
 	}

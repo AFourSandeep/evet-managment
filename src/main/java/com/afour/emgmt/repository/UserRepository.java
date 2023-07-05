@@ -8,14 +8,14 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.afour.emgmt.entity.Visitor;
+import com.afour.emgmt.entity.Organizer;
+import com.afour.emgmt.entity.User;
 
 /**
  * 
  */
 @Repository
-public interface VisitorRepository extends JpaRepository<Visitor, Integer>{
-
-	Optional<Visitor> findByUserName(final String USERNAME);
+public interface UserRepository extends JpaRepository<User, Integer>{
 	
+	public Optional<User> findByUserName(final String username); 
 }

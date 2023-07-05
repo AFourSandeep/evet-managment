@@ -3,7 +3,6 @@
  */
 package com.afour.emgmt.service;
 
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +14,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.afour.emgmt.common.RoleEnum;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.entity.Visitor;
@@ -26,8 +26,6 @@ import com.afour.emgmt.model.VisitorRegistrationDTO;
 import com.afour.emgmt.repository.EventRepository;
 import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.VisitorRepository;
-import com.afour.emgmt.util.ActorEnum;
-import com.afour.emgmt.util.RoleEnum;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,9 +78,10 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public VisitorDTO findVisitorByUserName(final String USERNAME) {
-		Visitor visitor = repository.findByUserName(USERNAME);
-		if (null == visitor)
+		Optional<Visitor> optional = repository.findByUserName(USERNAME);
+		if (optional.isEmpty())
 			return null;
+		Visitor visitor = optional.get();
 		VisitorDTO visitorDto =mapper.entityToDTO(visitor);
 			
 		Set<Event> events = visitor.getEvents();
@@ -95,13 +94,8 @@ public class VisitorServiceImpl implements VisitorService {
 	@Override
 	@Transactional
 	public VisitorDTO addVisitor(final VisitorDTO dto) {
+		
 		Set<EventDTO> newEventDtos = dto.getEvents();
-
-		dto.setCreatedAt(LocalDateTime.now());
-		dto.setCreatedBy(ActorEnum.DEFAULT_USER.getUser());
-		dto.setUpdatedAt(LocalDateTime.now());
-		dto.setUpdatedBy(ActorEnum.DEFAULT_USER.getUser());
-		dto.setIsActive(true);
 
 		Set<Event> eventsToBeAdded = new HashSet<>();
 
@@ -111,8 +105,8 @@ public class VisitorServiceImpl implements VisitorService {
 			newEvents.stream().forEach(e -> eventsToBeAdded.add(e));
 		}
 
-		Visitor entity = mapper.DTOToEntity(dto);
-
+		Visitor entity = mapper.prepareForCreate(dto);
+		
 		Role role = roleRepository.findById(RoleEnum.VISITOR.getRoleId()).get();
 		entity.setRole(role);
 
