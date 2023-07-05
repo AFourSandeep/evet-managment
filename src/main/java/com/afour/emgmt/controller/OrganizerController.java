@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
-import com.afour.emgmt.model.OrganizerDTO;
+import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.service.OrganizerService;
 
 import io.swagger.annotations.Api;
@@ -58,7 +58,7 @@ public class OrganizerController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/organizers", produces = "application/json")
 	public ResponseEntity<AppResponse> fetchAllOrganizers() {
-		List<OrganizerDTO> result = service.fetchAllOrganizers();
+		List<UserDTO> result = service.fetchAllOrganizers();
 		response = new AppResponse();
 		if (result == null)
 			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
@@ -76,7 +76,7 @@ public class OrganizerController {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		OrganizerDTO result = service.findOrganizerByID(id);
+		UserDTO result = service.findOrganizerByID(id);
 		if (result == null)
 			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
@@ -94,7 +94,7 @@ public class OrganizerController {
 		if (null == userName)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		OrganizerDTO result = service.findOrganizerByUserName(userName);
+		UserDTO result = service.findOrganizerByUserName(userName);
 		if (result == null)
 			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
@@ -107,15 +107,15 @@ public class OrganizerController {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<AppResponse> addOrganizer(@RequestBody OrganizerDTO dto) {
+	public ResponseEntity<AppResponse> addOrganizer(@RequestBody UserDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		OrganizerDTO result = service.addOrganizer(dto);
+		UserDTO result = service.addOrganizer(dto);
 
 		if (result == null)
 			return new ResponseEntity(
-					genericResponse.getRequestFailResponse("organizer.create.fail", new OrganizerDTO[] { dto }),
+					genericResponse.getRequestFailResponse("organizer.create.fail", new UserDTO[] { dto }),
 					HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("organizer.create.success", result, HttpStatus.CREATED);
@@ -128,15 +128,15 @@ public class OrganizerController {
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<AppResponse> updateOrganizer(@RequestBody OrganizerDTO dto) {
+	public ResponseEntity<AppResponse> updateOrganizer(@RequestBody UserDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		OrganizerDTO result = service.updateOrganizer(dto);
+		UserDTO result = service.updateOrganizer(dto);
 
 		if (result == null)
 			return new ResponseEntity(genericResponse.getRequestFailResponse("organizer.update.fail",
-					new Integer[] { dto.getOrganizerId() }), HttpStatus.BAD_REQUEST);
+					new Integer[] { dto.getUserId() }), HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("organizer.update.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
@@ -147,7 +147,7 @@ public class OrganizerController {
 	@ApiOperation(value = "Delete an Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested organizer!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@DeleteMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+	@DeleteMapping(value = "/{id}", produces = "application/json")
 	public ResponseEntity<AppResponse> deleteOrganizer(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);

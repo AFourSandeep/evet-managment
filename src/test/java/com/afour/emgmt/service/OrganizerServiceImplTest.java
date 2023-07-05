@@ -23,17 +23,18 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.afour.emgmt.config.EventMgmtConfiguration;
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
-import com.afour.emgmt.entity.Organizer;
-import com.afour.emgmt.model.OrganizerDTO;
-import com.afour.emgmt.repository.OrganizerRepository;
+import com.afour.emgmt.entity.User;
+import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.repository.RoleRepository;
+import com.afour.emgmt.repository.UserRepository;
 import com.afour.emgmt.util.MySQLTestImage;
 import com.afour.emgmt.util.TestUtils;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = { SpringDataJPAConfiguration.class })
+@ContextConfiguration(classes = { SpringDataJPAConfiguration.class, EventMgmtConfiguration.class })
 @Testcontainers
 class OrganizerServiceImplTest {
 
@@ -41,7 +42,7 @@ class OrganizerServiceImplTest {
 	OrganizerService service;
 
 	@Autowired
-	OrganizerRepository repository;
+	UserRepository repository;
 
 	@Autowired
 	RoleRepository roleRepository;
@@ -49,7 +50,7 @@ class OrganizerServiceImplTest {
 	@SuppressWarnings("rawtypes")
 	@Container
 	private static MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer(MySQLTestImage.MYSQL_80_IMAGE)
-			.withDatabaseName("event_management").withInitScript("event_management.sql");
+			.withDatabaseName("event_mgmt").withInitScript("event_mgmt.sql");
 
 	@DynamicPropertySource
 	public static void overrideContainerProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
@@ -67,13 +68,13 @@ class OrganizerServiceImplTest {
 	@DisplayName("fetchAllOrganizers")
 	@Test
 	void fetchAllOrganizers() {
-		List<Organizer> organizers = List.of(TestUtils.buildOrganizer("User1"),
+		List<User> organizers = List.of(TestUtils.buildOrganizer("User1"),
 				TestUtils.buildOrganizer("User2"),
 				TestUtils.buildOrganizer("User3"),
 				TestUtils.buildOrganizer("User4"),
 				TestUtils.buildOrganizer("User5"));
 		repository.saveAll(organizers);
-		List<OrganizerDTO> dtos = service.fetchAllOrganizers();
+		List<UserDTO> dtos = service.fetchAllOrganizers();
 		assertNotNull(dtos);
 		assertTrue(!dtos.isEmpty());
 	}
@@ -82,12 +83,12 @@ class OrganizerServiceImplTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "USER101", "USER201" })
 	void findOrganizerByID(String userName) {
-		Organizer organizer = TestUtils.buildOrganizer(userName);
+		User organizer = TestUtils.buildOrganizer(userName);
 		organizer = repository.saveAndFlush(organizer);
-		Integer id = organizer.getOrganizerId();
-		OrganizerDTO resultDTO = service.findOrganizerByID(id);
+		Integer id = organizer.getUserId();
+		UserDTO resultDTO = service.findOrganizerByID(id);
 		assertNotNull(resultDTO);
-		assertEquals(organizer.getOrganizerId(), resultDTO.getOrganizerId());
+		assertEquals(organizer.getUserId(), resultDTO.getUserId());
 		assertEquals(organizer.getUserName(), resultDTO.getUserName());
 	}
 
@@ -95,11 +96,11 @@ class OrganizerServiceImplTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1011", "USER2011" })
 	void findOrganizerByUserName(String userName) {
-		Organizer organizer = TestUtils.buildOrganizer(userName);
+		User organizer = TestUtils.buildOrganizer(userName);
 		organizer = repository.saveAndFlush(organizer);
-		OrganizerDTO resultDTO = service.findOrganizerByUserName(userName);
+		UserDTO resultDTO = service.findOrganizerByUserName(userName);
 		assertNotNull(resultDTO);
-		assertEquals(organizer.getOrganizerId(), resultDTO.getOrganizerId());
+		assertEquals(organizer.getUserId(), resultDTO.getUserId());
 		assertEquals(organizer.getUserName(), resultDTO.getUserName());
 	}
 
@@ -107,10 +108,10 @@ class OrganizerServiceImplTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1101", "USER2201" })
 	void addOrganizer(String userName) {
-		OrganizerDTO inputDTO = TestUtils.buildOrganizerDTO(userName);
-		OrganizerDTO resultDTO = service.addOrganizer(inputDTO);
+		UserDTO inputDTO = TestUtils.buildOrganizerDTO(userName);
+		UserDTO resultDTO = service.addOrganizer(inputDTO);
 		assertNotNull(resultDTO);
-		assertNotNull(resultDTO.getOrganizerId());
+		assertNotNull(resultDTO.getUserId());
 		assertEquals(inputDTO.getUserName(), resultDTO.getUserName());
 	}
 
@@ -118,15 +119,15 @@ class OrganizerServiceImplTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "USER3101", "USER3201" })
 	void updateOrganizer(String userName) {
-		Organizer exist = TestUtils.buildOrganizer(userName);
+		User exist = TestUtils.buildOrganizer(userName);
 		exist = repository.saveAndFlush(exist);
 
-		OrganizerDTO updateResuest = OrganizerDTO.builder().organizerId(exist.getOrganizerId())
+		UserDTO updateResuest = UserDTO.builder().userId(exist.getUserId())
 				.firstName(userName + "ABCD").password(userName + "456").build();
 
-		OrganizerDTO resultDTO = service.updateOrganizer(updateResuest);
+		UserDTO resultDTO = service.updateOrganizer(updateResuest);
 		assertNotNull(resultDTO);
-		assertEquals(exist.getOrganizerId(), resultDTO.getOrganizerId());
+		assertEquals(exist.getUserId(), resultDTO.getUserId());
 		assertEquals(updateResuest.getFirstName(), resultDTO.getFirstName());
 		assertEquals(updateResuest.getPassword(), resultDTO.getPassword());
 	}
@@ -135,10 +136,10 @@ class OrganizerServiceImplTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1301", "USER2301" })
 	void deleteOrganizerByID(String userName) {
-		Organizer input = TestUtils.buildOrganizer(userName);
+		User input = TestUtils.buildOrganizer(userName);
 		repository.saveAndFlush(input);
 
-		Integer id = input.getOrganizerId();
+		Integer id = input.getUserId();
 
 		boolean result = service.deleteOrganizerByID(id);
 		assertTrue(result);

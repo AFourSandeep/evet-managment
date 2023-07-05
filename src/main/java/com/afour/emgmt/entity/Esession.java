@@ -29,7 +29,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "esession", schema = "event_management")
+@Table(name = "esession", schema = "event_mgmt")
 public class Esession {
 	
 	@Id

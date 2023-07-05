@@ -10,8 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.afour.emgmt.entity.Organizer;
-import com.afour.emgmt.entity.Visitor;
+import com.afour.emgmt.entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,17 +28,12 @@ public class UserInfoUserDetails implements UserDetails{
     private String password;
     private List<GrantedAuthority> authorities;
 
-    public UserInfoUserDetails(Organizer userInfo) {
+    public UserInfoUserDetails(User userInfo) {
         name=userInfo.getUserName();
         password=userInfo.getPassword();
         authorities = List.of(new SimpleGrantedAuthority(userInfo.getRole().getRoleName()));
     }
     
-    public UserInfoUserDetails(Visitor userInfo) {
-        name=userInfo.getUserName();
-        password=userInfo.getPassword();
-        authorities = List.of(new SimpleGrantedAuthority(userInfo.getRole().getRoleName()));
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

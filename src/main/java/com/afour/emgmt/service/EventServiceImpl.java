@@ -13,13 +13,13 @@ import org.springframework.stereotype.Service;
 
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
-import com.afour.emgmt.entity.Visitor;
+import com.afour.emgmt.entity.User;
 import com.afour.emgmt.mapper.EventMapper;
 import com.afour.emgmt.mapper.SessionMapper;
-import com.afour.emgmt.mapper.VisitorMapper;
+import com.afour.emgmt.mapper.UserMapper;
 import com.afour.emgmt.model.EsessionDTO;
 import com.afour.emgmt.model.EventDTO;
-import com.afour.emgmt.model.VisitorDTO;
+import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.repository.EventRepository;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class EventServiceImpl implements EventService {
 	SessionMapper sessionMapper;
 	
 	@Autowired
-	VisitorMapper visitorMapper;
+	UserMapper userMapper;
 
 	@Autowired
 	EventRepository repository;
@@ -73,8 +73,8 @@ public class EventServiceImpl implements EventService {
 		Set<EsessionDTO> sessionDtos = sessionMapper.entityToDTO(sessions);
 		dto.setSessions(sessionDtos);
 		
-		Set<Visitor> visitors = event.getVisitors();
-		Set<VisitorDTO> visitorDtos = visitorMapper.entityToDTO(visitors);
+		Set<User> visitors = event.getVisitors();
+		Set<UserDTO> visitorDtos = userMapper.entityToDTO(visitors);
 		dto.setVisitors(visitorDtos);
 		log.info("DB operation success! Fetched Event:{} ", dto.getEventId());
 		return dto;

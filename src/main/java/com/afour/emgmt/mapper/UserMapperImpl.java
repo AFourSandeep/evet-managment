@@ -14,14 +14,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.afour.emgmt.config.AuthenticationFacade;
-import com.afour.emgmt.entity.Visitor;
-import com.afour.emgmt.model.VisitorDTO;
+import com.afour.emgmt.entity.User;
+import com.afour.emgmt.model.UserDTO;
 
 /**
  * 
  */
 @Component
-public class VisitorMapperImpl implements VisitorMapper {
+public class UserMapperImpl implements UserMapper {
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -32,18 +32,19 @@ public class VisitorMapperImpl implements VisitorMapper {
 	@Autowired
 	AuthenticationFacade authentication;
 
+
 	@Override
-	public VisitorDTO entityToDTO(Visitor entity) {
-		return modelMapper.map(entity, VisitorDTO.class);
+	public UserDTO entityToDTO(User entity) {
+		return modelMapper.map(entity, UserDTO.class);
 	}
 
 	@Override
-	public Visitor DTOToEntity(VisitorDTO dto) {
-		return modelMapper.map(dto, Visitor.class);
+	public User DTOToEntity(UserDTO dto) {
+		return modelMapper.map(dto, User.class);
 	}
 
 	@Override
-	public List<VisitorDTO> entityToDTO(List<Visitor> entities) {
+	public List<UserDTO> entityToDTO(List<User> entities) {
 		return entities
 				.stream()
 				.map(entity -> entityToDTO(entity))
@@ -51,7 +52,7 @@ public class VisitorMapperImpl implements VisitorMapper {
 	}
 
 	@Override
-	public List<Visitor> DTOToEntity(List<VisitorDTO> dtos) {
+	public List<User> DTOToEntity(List<UserDTO> dtos) {
 		return dtos
 				.stream()
 				.map(dto -> DTOToEntity(dto))
@@ -59,7 +60,8 @@ public class VisitorMapperImpl implements VisitorMapper {
 	}
 
 	@Override
-	public Visitor prepareForUpdate(Visitor entity, VisitorDTO dto) {
+	public User prepareForUpdate(User entity, UserDTO dto) {
+		
 		if (null != dto.getFirstName())
 			entity.setFirstName(dto.getFirstName());
 		if (null != dto.getLastName())
@@ -71,34 +73,27 @@ public class VisitorMapperImpl implements VisitorMapper {
 		
 		entity.setUpdatedAt(LocalDateTime.now());
 		entity.setUpdatedBy(authentication.getAuthentication().getName());
+		
 		return entity;
 	}
 
 	@Override
-	public Set<VisitorDTO> entityToDTO(Set<Visitor> entities) {
-		return entities
-				.stream()
-				.map(entity -> entityToDTO(entity))
-				.collect(Collectors.toSet());
-	}
-
-	@Override
-	public Set<Visitor> DTOToEntity(Set<VisitorDTO> dtos) {
-		return dtos
-				.stream()
-				.map(dto -> DTOToEntity(dto))
-				.collect(Collectors.toSet());
-	}
-
-	@Override
-	public Visitor prepareForCreate(VisitorDTO dto) {
-		Visitor entity = this.DTOToEntity(dto);
+	public User prepareForCreate(UserDTO dto) {
+		User entity = this.DTOToEntity(dto);
 		entity.setCreatedAt(LocalDateTime.now());
 		entity.setCreatedBy(authentication.getAuthentication().getName());
 		entity.setUpdatedAt(LocalDateTime.now());
 		entity.setUpdatedBy(authentication.getAuthentication().getName());
 		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		return entity;
+	}
+
+	@Override
+	public Set<UserDTO> entityToDTO(Set<User> entities) {
+		return entities
+				.stream()
+				.map(entity -> entityToDTO(entity))
+				.collect(Collectors.toSet());
 	}
 
 }

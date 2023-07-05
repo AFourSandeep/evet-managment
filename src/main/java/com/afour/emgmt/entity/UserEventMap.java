@@ -25,8 +25,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "visitor_event_map", schema = "event_management")
-public class VisitorEventMap {
+@Table(name = "user_event_map", schema = "event_mgmt")
+public class UserEventMap {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +38,7 @@ public class VisitorEventMap {
 	private Event event;
 
 	@ManyToOne
-	@JoinColumn(name = "visitor_id")
-	private Visitor visitor;
+	@JoinColumn(name = "user_id")
+	private User user;
 
 }

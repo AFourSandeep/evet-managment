@@ -29,7 +29,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
-import com.afour.emgmt.model.OrganizerDTO;
+import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.service.OrganizerService;
 import com.afour.emgmt.util.TestUtils;
 
@@ -56,10 +56,10 @@ class OrganizerControllerTest {
 	@Test
 	void fetchAllOrganizers_for_data() {
 		// given
-		List<OrganizerDTO> dtos = List.of(OrganizerDTO.builder().organizerId(1).userName("User1").build(),
-				OrganizerDTO.builder().organizerId(2).userName("User2").build(),
-				OrganizerDTO.builder().organizerId(3).userName("User3").build(),
-				OrganizerDTO.builder().organizerId(4).userName("User4").build());
+		List<UserDTO> dtos = List.of(UserDTO.builder().userId(1).userName("User1").build(),
+				UserDTO.builder().userId(2).userName("User2").build(),
+				UserDTO.builder().userId(3).userName("User3").build(),
+				UserDTO.builder().userId(4).userName("User4").build());
 		when(orgService.fetchAllOrganizers()).thenReturn(dtos);
 		when(genericResponse.getSuccessDataFoundResponse(dtos,dtos.size())).thenCallRealMethod();
 		when(messages.getMessage(anyString(), any(Object[].class), any()))
@@ -72,13 +72,13 @@ class OrganizerControllerTest {
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		@SuppressWarnings("unchecked")
-		List<OrganizerDTO> resultDtos = (List<OrganizerDTO>) response.getBody().getBody();
+		List<UserDTO> resultDtos = (List<UserDTO>) response.getBody().getBody();
 		assertNotNull(resultDtos);
 		assertEquals(HttpStatus.OK, response.getBody().getStatus());
 		assertEquals(dtos.size(), resultDtos.size());
-		assertAll(() -> assertEquals(1, resultDtos.get(0).getOrganizerId()),
+		assertAll(() -> assertEquals(1, resultDtos.get(0).getUserId()),
 				() -> assertEquals("User1", resultDtos.get(0).getUserName()),
-				() -> assertEquals(2, resultDtos.get(1).getOrganizerId()),
+				() -> assertEquals(2, resultDtos.get(1).getUserId()),
 				() -> assertEquals("User2", resultDtos.get(1).getUserName()));
 	}
 
@@ -99,7 +99,7 @@ class OrganizerControllerTest {
 	@ValueSource(ints = { 101, 102, 103, 104 })
 	void findOrganizerByID_for_data(Integer ID) {
 		// given
-		when(orgService.findOrganizerByID(ID)).thenReturn(OrganizerDTO.builder().organizerId(ID).userName("User"+ID).build());
+		when(orgService.findOrganizerByID(ID)).thenReturn(UserDTO.builder().userId(ID).userName("User"+ID).build());
 
 		// when
 		var response = orgController.findOrganizerByID(ID);
@@ -108,10 +108,10 @@ class OrganizerControllerTest {
 		assertNotNull(response);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		OrganizerDTO resultDto = (OrganizerDTO) response.getBody().getBody();
+		UserDTO resultDto = (UserDTO) response.getBody().getBody();
 		assertNotNull(resultDto);
 		assertEquals(HttpStatus.OK, response.getBody().getStatus());
-		assertAll(() -> assertEquals(ID, resultDto.getOrganizerId()),
+		assertAll(() -> assertEquals(ID, resultDto.getUserId()),
 				() -> assertEquals("User"+ID, resultDto.getUserName()));
 	}
 
@@ -148,7 +148,7 @@ class OrganizerControllerTest {
 		// given
 		Integer ID = TestUtils.getRandomNumber();
 		when(orgService.findOrganizerByUserName(username))
-				.thenReturn(OrganizerDTO.builder().organizerId(ID).userName(username).build());
+				.thenReturn(UserDTO.builder().userId(ID).userName(username).build());
 
 		// when
 		var response = orgController.findOrganizerByUserName(username);
@@ -157,10 +157,10 @@ class OrganizerControllerTest {
 		assertNotNull(response);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		OrganizerDTO resultDto = (OrganizerDTO) response.getBody().getBody();
+		UserDTO resultDto = (UserDTO) response.getBody().getBody();
 		assertNotNull(resultDto);
 		assertEquals(HttpStatus.OK, response.getBody().getStatus());
-		assertAll(() -> assertEquals(ID, resultDto.getOrganizerId()),
+		assertAll(() -> assertEquals(ID, resultDto.getUserId()),
 				() -> assertEquals(username, resultDto.getUserName()));
 	}
 
@@ -196,13 +196,13 @@ class OrganizerControllerTest {
 	void addOrganizer_for_data(String firstName,String username) {
 		// given
 		Integer ID  = TestUtils.getRandomNumber();
-		OrganizerDTO request = OrganizerDTO.builder()
+		UserDTO request = UserDTO.builder()
 		.firstName(firstName)
 		.userName(username)
 		.build();
 		when(orgService.addOrganizer(request))
-				.thenReturn(OrganizerDTO.builder()
-						.organizerId(ID)
+				.thenReturn(UserDTO.builder()
+						.userId(ID)
 						.firstName(firstName)
 						.userName(username)
 						.build());
@@ -214,10 +214,10 @@ class OrganizerControllerTest {
 		assertNotNull(response);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		OrganizerDTO resultDto = (OrganizerDTO) response.getBody().getBody();
+		UserDTO resultDto = (UserDTO) response.getBody().getBody();
 		assertNotNull(resultDto);
 		assertEquals(HttpStatus.CREATED, response.getBody().getStatus());
-		assertAll(() -> assertEquals(ID, resultDto.getOrganizerId()),
+		assertAll(() -> assertEquals(ID, resultDto.getUserId()),
 				() -> assertEquals(firstName, resultDto.getFirstName()),
 				() -> assertEquals(username, resultDto.getUserName()));
 	}
@@ -227,7 +227,7 @@ class OrganizerControllerTest {
 	@CsvSource({"User1,User101", "User2,User202", "User3,User303"})
 	void addOrganizer_for_no_data(String firstName,String username) {
 		//given
-		OrganizerDTO request = OrganizerDTO.builder()
+		UserDTO request = UserDTO.builder()
 				.firstName(firstName)
 				.userName(username)
 				.build();

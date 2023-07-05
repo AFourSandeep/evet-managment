@@ -34,7 +34,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "event", schema = "event_management")
+@Table(name = "event", schema = "event_mgmt")
 public class Event {
 	
 	@Id
@@ -53,7 +53,7 @@ public class Event {
 	
 	@OneToOne(cascade= CascadeType.MERGE)
 	@JoinColumn(name="owner")
-	private Organizer owner;
+	private User owner;
 	
 	@Column(name="is_closed", nullable=false)
 	private boolean isClosed;
@@ -77,6 +77,6 @@ public class Event {
 	private Set<Esession> sessions;
 	
 	@ManyToMany(mappedBy = "events",fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
-	private Set<Visitor> visitors;
+	private Set<User> visitors;
 
 }

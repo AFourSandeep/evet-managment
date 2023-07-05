@@ -24,13 +24,11 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.afour.emgmt.common.ActorEnum;
-import com.afour.emgmt.config.EventMgmtConfiguration;
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
-import com.afour.emgmt.config.SpringMVCWebAppInitializer;
-import com.afour.emgmt.entity.Organizer;
 import com.afour.emgmt.entity.Role;
-import com.afour.emgmt.repository.OrganizerRepository;
+import com.afour.emgmt.entity.User;
 import com.afour.emgmt.repository.RoleRepository;
+import com.afour.emgmt.repository.UserRepository;
 import com.afour.emgmt.util.MySQLTestImage;
 
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +47,7 @@ public class TestContainerExampleTest {
 	@SuppressWarnings("rawtypes")
 	@Container
 	private static MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer(MySQLTestImage.MYSQL_80_IMAGE)
-			.withDatabaseName("event_management").withInitScript("event_management.sql");
+			.withDatabaseName("event_mgmt").withInitScript("event_mgmt.sql");
 //            .withUsername("Test")
 //            .withPassword("Test");
 
@@ -67,7 +65,7 @@ public class TestContainerExampleTest {
 	}
 
 	@Autowired
-	private OrganizerRepository repository;
+	private UserRepository repository;
 
 	@Autowired
 	private RoleRepository roleRepository;
@@ -75,7 +73,7 @@ public class TestContainerExampleTest {
 	@Test
 	void addNewOrganizer_andGetCount() {
 		Role role = Role.builder().roleId(1).build();
-		Organizer organizer = Organizer.builder().userName("User1011").firstName("User").lastName("lastname")
+		User organizer = User.builder().userName("User1011").firstName("User").lastName("lastname")
 				.createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).password("password").role(role)
 				.createdBy(ActorEnum.DEFAULT_USER.getUser()).updatedBy(ActorEnum.DEFAULT_USER.getUser()).isActive(true)
 				.build();
@@ -84,11 +82,11 @@ public class TestContainerExampleTest {
 		log.info("" + mySQLContainer.getJdbcDriverInstance());
 		log.info("" + mySQLContainer.getPortBindings());
 
-		Organizer savedUser = repository.save(organizer);
+		User savedUser = repository.save(organizer);
 
-		List<Organizer> userList = repository.findAll();
+		List<User> userList = repository.findAll();
 
-		assertNotNull(savedUser.getOrganizerId());
+		assertNotNull(savedUser.getUserId());
 
 		assertEquals(1, userList.size());
 

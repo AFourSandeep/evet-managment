@@ -5,26 +5,26 @@ package com.afour.emgmt.service;
 
 import java.util.List;
 
-import com.afour.emgmt.model.VisitorDTO;
-import com.afour.emgmt.model.VisitorRegistrationDTO;
+import com.afour.emgmt.model.UserDTO;
+import com.afour.emgmt.model.UserRegistrationDTO;
 
 /**
  * 
  */
 public interface VisitorService {
 
-	List<VisitorDTO> fetchAllVisitors();
+	List<UserDTO> fetchAllVisitors();
 
-	VisitorDTO findVisitorByID(Integer ID);
+	UserDTO findVisitorByID(Integer ID);
 
-	VisitorDTO findVisitorByUserName(String USERNAME);
+	UserDTO findVisitorByUserName(String USERNAME);
 
-	VisitorDTO addVisitor(VisitorDTO orgDTO);
+	UserDTO addVisitor(UserDTO orgDTO);
 
-	VisitorDTO updateVisitor(VisitorDTO dto);
+	UserDTO updateVisitor(UserDTO dto);
 
 	Boolean deleteVisitorByID(Integer ID);
 
-	VisitorDTO registerVisitorForEvent(VisitorRegistrationDTO dto);
+	UserDTO registerVisitorForEvent(UserRegistrationDTO dto);
 
 }

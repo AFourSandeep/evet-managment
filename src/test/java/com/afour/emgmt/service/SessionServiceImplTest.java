@@ -25,12 +25,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
-import com.afour.emgmt.entity.Organizer;
+import com.afour.emgmt.entity.User;
 import com.afour.emgmt.model.EsessionDTO;
 import com.afour.emgmt.model.EventDTO;
 import com.afour.emgmt.repository.EventRepository;
-import com.afour.emgmt.repository.OrganizerRepository;
 import com.afour.emgmt.repository.SessionRepository;
+import com.afour.emgmt.repository.UserRepository;
 import com.afour.emgmt.util.MySQLTestImage;
 import com.afour.emgmt.util.TestUtils;
 
@@ -47,7 +47,7 @@ class SessionServiceImplTest {
 	SessionRepository repository;
 	
 	@Autowired
-	OrganizerRepository organizerRepository;
+	UserRepository userRepository;
 	
 	@Autowired
 	SessionRepository sessionRepository;
@@ -58,7 +58,7 @@ class SessionServiceImplTest {
 	@SuppressWarnings("rawtypes")
 	@Container
 	private static MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer(MySQLTestImage.MYSQL_80_IMAGE)
-			.withDatabaseName("event_management").withInitScript("event_management.sql");
+			.withDatabaseName("event_mgmt").withInitScript("event_mgmt.sql");
 
 	@DynamicPropertySource
 	public static void overrideContainerProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
@@ -78,8 +78,8 @@ class SessionServiceImplTest {
 	@ValueSource(strings = { "Session-101", "Session-201" })
 	void findSessionEventByID(String title) {
 		
-		Organizer owner = TestUtils.buildOrganizer("Event Owner");
-		owner = organizerRepository.saveAndFlush(owner);
+		User owner = TestUtils.buildOrganizer("Event Owner");
+		owner = userRepository.saveAndFlush(owner);
 
 		Event event = TestUtils.buildEvent("Some Event", owner);
 		event = eventRepository.saveAndFlush(event);
@@ -100,8 +100,8 @@ class SessionServiceImplTest {
 	@ValueSource(strings = { "Session-101", "Session-201" })
 	void findSessionByID(String title) {
 		
-		Organizer owner = TestUtils.buildOrganizer("Event Owner");
-		owner = organizerRepository.saveAndFlush(owner);
+		User owner = TestUtils.buildOrganizer("Event Owner");
+		owner = userRepository.saveAndFlush(owner);
 
 		Event event = TestUtils.buildEvent("Some Event", owner);
 		event = eventRepository.saveAndFlush(event);
@@ -122,8 +122,8 @@ class SessionServiceImplTest {
 	@ValueSource(strings = { "Session-101", "Session-201" })
 	void addSession(String title) {
 		
-		Organizer owner = TestUtils.buildOrganizer("Event Owner");
-		owner = organizerRepository.saveAndFlush(owner);
+		User owner = TestUtils.buildOrganizer("Event Owner");
+		owner = userRepository.saveAndFlush(owner);
 
 		Event event = TestUtils.buildEvent("Some Event", owner);
 		event = eventRepository.save(event);
@@ -143,8 +143,8 @@ class SessionServiceImplTest {
 	@ValueSource(strings = { "Session-101", "Session-201" })
 	void updateSession(String title) {
 		
-		Organizer owner = TestUtils.buildOrganizer("Event Owner");
-		owner = organizerRepository.saveAndFlush(owner);
+		User owner = TestUtils.buildOrganizer("Event Owner");
+		owner = userRepository.saveAndFlush(owner);
 
 		Event event = TestUtils.buildEvent("Some Event", owner);
 		event = eventRepository.saveAndFlush(event);
@@ -170,8 +170,8 @@ class SessionServiceImplTest {
 	@ValueSource(strings = { "Session-101", "Session-201" })
 	void deleteSessionByID(String title) {
 		
-		Organizer owner = TestUtils.buildOrganizer("Event Owner");
-		owner = organizerRepository.saveAndFlush(owner);
+		User owner = TestUtils.buildOrganizer("Event Owner");
+		owner = userRepository.saveAndFlush(owner);
 
 		Event event = TestUtils.buildEvent("Some Event", owner);
 		event = eventRepository.saveAndFlush(event);
