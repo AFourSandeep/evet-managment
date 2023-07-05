@@ -5,22 +5,22 @@ package com.afour.emgmt.service;
 
 import java.util.List;
 
-import com.afour.emgmt.model.OrganizerDTO;
+import com.afour.emgmt.model.UserDTO;
 
 /**
  * 
  */
 public interface OrganizerService {
 	
-	public List<OrganizerDTO> fetchAllOrganizers();
+	public List<UserDTO> fetchAllOrganizers();
 
-	public OrganizerDTO addOrganizer(OrganizerDTO orgDTO);
+	public UserDTO addOrganizer(UserDTO orgDTO);
 
-	public OrganizerDTO findOrganizerByID(final Integer ID);
+	public UserDTO findOrganizerByID(final Integer ID);
 
-	public OrganizerDTO findOrganizerByUserName(final String USERNAME);
+	public UserDTO findOrganizerByUserName(final String USERNAME);
 
-	public OrganizerDTO updateOrganizer(OrganizerDTO orgDTO);
+	public UserDTO updateOrganizer(UserDTO orgDTO);
 
 	public Boolean deleteOrganizerByID(Integer iD);
 

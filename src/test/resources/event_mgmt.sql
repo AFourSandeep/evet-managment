@@ -1,8 +1,8 @@
 
 
-CREATE DATABASE IF NOT EXISTS `event_management` ;
+CREATE DATABASE IF NOT EXISTS `event_mgmt` ;
 
-USE `event_management`;
+USE `event_mgmt`;
 
 DROP TABLE IF EXISTS `role`;
 
@@ -19,23 +19,25 @@ INSERT INTO `role` VALUES (1,'Organiser'),(2,'Visitor');
 
 --UNLOCK TABLES;
 
-DROP TABLE IF EXISTS `organizer`;
-CREATE TABLE `organizer` (
-  `organizer_id` int NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `user`;
+
+CREATE TABLE `user` (
+  `user_id` int NOT NULL AUTO_INCREMENT,
   `user_name` varchar(100) NOT NULL,
   `first_name` varchar(100) NOT NULL,
   `last_name` varchar(100) DEFAULT NULL,
-  `password` varchar(100) DEFAULT NULL,
+  `password` varchar(100) NOT NULL,
   `created_by` varchar(100) DEFAULT NULL,
   `updated_by` varchar(100) DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '1',
   `role_id` int DEFAULT NULL,
-  PRIMARY KEY (`organizer_id`),
-  KEY `organizer_FK` (`role_id`),
-  CONSTRAINT `organizer_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
+  PRIMARY KEY (`user_id`),
+  KEY `user_FK` (`role_id`),
+  CONSTRAINT `user_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
+
 
 DROP TABLE IF EXISTS `event`;
 
@@ -53,7 +55,7 @@ CREATE TABLE `event` (
   `location` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`event_id`),
   KEY `event_FK` (`owner`),
-  CONSTRAINT `event_FK` FOREIGN KEY (`owner`) REFERENCES `organizer` (`organizer_id`)
+  CONSTRAINT `event_FK` FOREIGN KEY (`owner`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
 
 
@@ -77,36 +79,19 @@ CREATE TABLE `esession` (
 
 
 
-DROP TABLE IF EXISTS `visitor`;
-
-CREATE TABLE `visitor` (
-  `visitor_id` int NOT NULL AUTO_INCREMENT,
-  `user_name` varchar(100) NOT NULL,
-  `first_name` varchar(100) NOT NULL,
-  `last_name` varchar(100) DEFAULT NULL,
-  `password` varchar(100) NOT NULL,
-  `created_by` varchar(100) DEFAULT NULL,
-  `updated_by` varchar(100) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `is_active` tinyint NOT NULL DEFAULT '1',
-  `role_id` int DEFAULT NULL,
-  PRIMARY KEY (`visitor_id`),
-  KEY `visitor_FK` (`role_id`),
-  CONSTRAINT `visitor_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
 
 
-DROP TABLE IF EXISTS `visitor_event_map`;
 
-CREATE TABLE `visitor_event_map` (
+DROP TABLE IF EXISTS `user_event_map`;
+
+CREATE TABLE `user_event_map` (
   `map_id` int NOT NULL AUTO_INCREMENT,
   `event_id` int NOT NULL,
-  `visitor_id` int NOT NULL,
+  `user_id` int NOT NULL,
   PRIMARY KEY (`map_id`),
-  KEY `visitor_event_map_FK` (`event_id`),
-  KEY `visitor_event_map_FK_1` (`visitor_id`),
-  CONSTRAINT `visitor_event_map_FK` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`),
-  CONSTRAINT `visitor_event_map_FK_1` FOREIGN KEY (`visitor_id`) REFERENCES `visitor` (`visitor_id`)
+  KEY `user_event_map_FK` (`event_id`),
+  KEY `user_event_map_FK_1` (`user_id`),
+  CONSTRAINT `user_event_map_FK` FOREIGN KEY (`event_id`) REFERENCES `event` (`event_id`),
+  CONSTRAINT `user_event_map_FK_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 ;
 

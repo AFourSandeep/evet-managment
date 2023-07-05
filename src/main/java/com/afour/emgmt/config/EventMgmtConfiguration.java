@@ -23,15 +23,12 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
 
 @Configuration
-@EnableSwagger2
 @ComponentScan(basePackages = "com.afour.emgmt")
 @PropertySource("classpath:application.properties")
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true, proxyTargetClass = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, proxyTargetClass = true)
 @EnableWebMvc
 public class EventMgmtConfiguration implements WebMvcConfigurer {
 

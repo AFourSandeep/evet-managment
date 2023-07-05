@@ -8,7 +8,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.afour.emgmt.entity.Organizer;
 import com.afour.emgmt.entity.User;
 
 /**

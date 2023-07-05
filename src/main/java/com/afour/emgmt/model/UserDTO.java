@@ -4,6 +4,7 @@
 package com.afour.emgmt.model;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,9 +20,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OrganizerDTO {
+public class UserDTO {
 	
-	private Integer organizerId;
+	private Integer userId;
 	
 	private String userName;
 	
@@ -42,6 +43,8 @@ public class OrganizerDTO {
 	private String updatedBy;
 	
 	private LocalDateTime updatedAt;
+	
+	private Set<EventDTO> events;
 	
 
 }

@@ -34,7 +34,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "visitor", schema = "event_mgmt")
+@Table(name = "user", schema = "event_mgmt")
 public class User {
 	
 	@Id

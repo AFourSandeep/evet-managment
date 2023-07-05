@@ -22,8 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
-import com.afour.emgmt.model.VisitorDTO;
-import com.afour.emgmt.model.VisitorRegistrationDTO;
+import com.afour.emgmt.model.UserDTO;
+import com.afour.emgmt.model.UserRegistrationDTO;
 import com.afour.emgmt.service.VisitorService;
 
 import io.swagger.annotations.Api;
@@ -61,7 +61,7 @@ public class VisitorController {
 	@GetMapping(value = "/visitors", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> fetchAllVisitors() {
-		List<VisitorDTO> result = service.fetchAllVisitors();
+		List<UserDTO> result = service.fetchAllVisitors();
 		if (result == null)
 			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
@@ -79,7 +79,7 @@ public class VisitorController {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		VisitorDTO result = service.findVisitorByID(id);
+		UserDTO result = service.findVisitorByID(id);
 		if (result == null)
 			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
@@ -97,7 +97,7 @@ public class VisitorController {
 		if (null == userName)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		VisitorDTO result = service.findVisitorByUserName(userName);
+		UserDTO result = service.findVisitorByUserName(userName);
 		if (result == null)
 			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
@@ -111,14 +111,14 @@ public class VisitorController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
 	@PreAuthorize("hasAuthority('VISITOR')")
-	public ResponseEntity<AppResponse> addVisitor(@RequestBody VisitorDTO dto) {
+	public ResponseEntity<AppResponse> addVisitor(@RequestBody UserDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		VisitorDTO result = service.addVisitor(dto);
+		UserDTO result = service.addVisitor(dto);
 		if (result == null)
 			return new ResponseEntity(
-					genericResponse.getRequestFailResponse("visitor.create.fail", new VisitorDTO[] { dto }),
+					genericResponse.getRequestFailResponse("visitor.create.fail", new UserDTO[] { dto }),
 					HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("visitor.create.successs", result, HttpStatus.CREATED);
@@ -132,14 +132,14 @@ public class VisitorController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = "application/json", produces = "application/json")
 	@PreAuthorize("hasAuthority('VISITOR')")
-	public ResponseEntity<AppResponse> updateVisitor(@RequestBody VisitorDTO dto) {
+	public ResponseEntity<AppResponse> updateVisitor(@RequestBody UserDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		VisitorDTO result = service.updateVisitor(dto);
+		UserDTO result = service.updateVisitor(dto);
 		if (result == null)
 			return new ResponseEntity(
-					genericResponse.getRequestFailResponse("visitor.update.fail", new Integer[] { dto.getVisitorId() }),
+					genericResponse.getRequestFailResponse("visitor.update.fail", new Integer[] { dto.getUserId() }),
 					HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("visitor.update.successs", result, HttpStatus.CREATED);
@@ -151,7 +151,7 @@ public class VisitorController {
 	@ApiOperation(value = "Delete the vistor.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested visitor!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@DeleteMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+	@DeleteMapping(value = "/{id}", produces = "application/json")
 	@PreAuthorize("hasAuthority('VISITOR')")
 	public ResponseEntity<AppResponse> deleteVisitorByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
@@ -166,20 +166,21 @@ public class VisitorController {
 		response = genericResponse.getRequestSuccessResponse("visitor.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
+	
 	/* Register one existing visitor for one or more events */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Register a Visitor for Events.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Registered!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/registerForEvent", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<AppResponse> registerVisitorForEvent(@RequestBody VisitorRegistrationDTO dto) {
+	public ResponseEntity<AppResponse> registerVisitorForEvent(@RequestBody UserRegistrationDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
 
-		VisitorDTO result = service.registerVisitorForEvent(dto);
+		UserDTO result = service.registerVisitorForEvent(dto);
 		if (result == null)
 			return new ResponseEntity(genericResponse.getRequestFailResponse("visitor.register.fail",
-					new Integer[] { dto.getVisitorId() }), HttpStatus.BAD_REQUEST);
+					new Integer[] { dto.getUserId() }), HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("visitor.register.successs", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);

@@ -19,9 +19,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class VisitorRegistrationDTO {
+public class UserRegistrationDTO {
 	
-	private Integer visitorId;
+	private Integer userId;
 	
 	private Set<Integer> eventIds;
 

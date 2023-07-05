@@ -27,14 +27,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.Event;
-import com.afour.emgmt.entity.Organizer;
-import com.afour.emgmt.entity.Visitor;
-import com.afour.emgmt.model.VisitorDTO;
-import com.afour.emgmt.model.VisitorRegistrationDTO;
+import com.afour.emgmt.entity.User;
+import com.afour.emgmt.model.UserDTO;
+import com.afour.emgmt.model.UserRegistrationDTO;
 import com.afour.emgmt.repository.EventRepository;
-import com.afour.emgmt.repository.OrganizerRepository;
 import com.afour.emgmt.repository.RoleRepository;
-import com.afour.emgmt.repository.VisitorRepository;
+import com.afour.emgmt.repository.UserRepository;
 import com.afour.emgmt.util.MySQLTestImage;
 import com.afour.emgmt.util.TestUtils;
 
@@ -48,10 +46,7 @@ class VisitorServiceImplTest {
 	VisitorService service;
 
 	@Autowired
-	VisitorRepository repository;
-
-	@Autowired
-	OrganizerRepository organizerRepository;
+	UserRepository repository;
 
 	@Autowired
 	EventRepository eventRepository;
@@ -62,7 +57,7 @@ class VisitorServiceImplTest {
 	@SuppressWarnings("rawtypes")
 	@Container
 	private static MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer(MySQLTestImage.MYSQL_80_IMAGE)
-			.withDatabaseName("event_management").withInitScript("event_management.sql");
+			.withDatabaseName("event_mgmt").withInitScript("event_mgmt.sql");
 
 	@DynamicPropertySource
 	public static void overrideContainerProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
@@ -80,10 +75,10 @@ class VisitorServiceImplTest {
 	@DisplayName("fetchAllVisitors")
 	@Test
 	void fetchAllVisitors() {
-		List<Visitor> visitors = List.of(TestUtils.buildVisitor("User1"), TestUtils.buildVisitor("User2"),
+		List<User> visitors = List.of(TestUtils.buildVisitor("User1"), TestUtils.buildVisitor("User2"),
 				TestUtils.buildVisitor("User3"), TestUtils.buildVisitor("User4"), TestUtils.buildVisitor("User5"));
 		repository.saveAll(visitors);
-		List<VisitorDTO> dtos = service.fetchAllVisitors();
+		List<UserDTO> dtos = service.fetchAllVisitors();
 		assertNotNull(dtos);
 		assertTrue(!dtos.isEmpty());
 	}
@@ -92,12 +87,12 @@ class VisitorServiceImplTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "USER101", "USER201" })
 	void findVisitorByID(String userName) {
-		Visitor entity = TestUtils.buildVisitor(userName);
+		User entity = TestUtils.buildVisitor(userName);
 		entity = repository.saveAndFlush(entity);
-		Integer id = entity.getVisitorId();
-		VisitorDTO resultDTO = service.findVisitorByID(id);
+		Integer id = entity.getUserId();
+		UserDTO resultDTO = service.findVisitorByID(id);
 		assertNotNull(resultDTO);
-		assertEquals(id, resultDTO.getVisitorId());
+		assertEquals(id, resultDTO.getUserId());
 		assertEquals(entity.getUserName(), resultDTO.getUserName());
 	}
 
@@ -105,11 +100,11 @@ class VisitorServiceImplTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1011", "USER2011" })
 	void findVisitorByUserName(String userName) {
-		Visitor entity = TestUtils.buildVisitor(userName);
+		User entity = TestUtils.buildVisitor(userName);
 		entity = repository.saveAndFlush(entity);
-		VisitorDTO resultDTO = service.findVisitorByUserName(userName);
+		UserDTO resultDTO = service.findVisitorByUserName(userName);
 		assertNotNull(resultDTO);
-		assertEquals(entity.getVisitorId(), resultDTO.getVisitorId());
+		assertEquals(entity.getUserId(), resultDTO.getUserId());
 		assertEquals(entity.getUserName(), resultDTO.getUserName());
 	}
 
@@ -117,10 +112,10 @@ class VisitorServiceImplTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1101", "USER2201" })
 	void addVisitor(String userName) {
-		VisitorDTO inputDTO = TestUtils.buildVisitorDTO(userName);
-		VisitorDTO resultDTO = service.addVisitor(inputDTO);
+		UserDTO inputDTO = TestUtils.buildVisitorDTO(userName);
+		UserDTO resultDTO = service.addVisitor(inputDTO);
 		assertNotNull(resultDTO);
-		assertNotNull(resultDTO.getVisitorId());
+		assertNotNull(resultDTO.getUserId());
 		assertEquals(inputDTO.getUserName(), resultDTO.getUserName());
 	}
 
@@ -128,15 +123,15 @@ class VisitorServiceImplTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "USER3101", "USER3201" })
 	void updateVisitor(String userName) {
-		Visitor exist = TestUtils.buildVisitor(userName);
+		User exist = TestUtils.buildVisitor(userName);
 		exist = repository.saveAndFlush(exist);
 
-		VisitorDTO updateResuest = VisitorDTO.builder().visitorId(exist.getVisitorId()).firstName(userName + "ABCD")
+		UserDTO updateResuest = UserDTO.builder().userId(exist.getUserId()).firstName(userName + "ABCD")
 				.password(userName + "456").build();
 
-		VisitorDTO resultDTO = service.updateVisitor(updateResuest);
+		UserDTO resultDTO = service.updateVisitor(updateResuest);
 		assertNotNull(resultDTO);
-		assertEquals(exist.getVisitorId(), resultDTO.getVisitorId());
+		assertEquals(exist.getUserId(), resultDTO.getUserId());
 		assertEquals(updateResuest.getFirstName(), resultDTO.getFirstName());
 		assertEquals(updateResuest.getPassword(), resultDTO.getPassword());
 	}
@@ -145,10 +140,10 @@ class VisitorServiceImplTest {
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1301", "USER2301" })
 	void deleteVisitorByID(String userName) {
-		Visitor input = TestUtils.buildVisitor(userName);
+		User input = TestUtils.buildVisitor(userName);
 		repository.saveAndFlush(input);
 
-		Integer id = input.getVisitorId();
+		Integer id = input.getUserId();
 
 		boolean result = service.deleteVisitorByID(id);
 		assertTrue(result);
@@ -159,10 +154,10 @@ class VisitorServiceImplTest {
 	@ValueSource(strings = { "USER3101", "USER3201" })
 	void registerVisitorForEvent_mutliple_events(String userName) {
 		// Given
-		Organizer owner = TestUtils.buildOrganizer("Event Owner");
-		owner = organizerRepository.saveAndFlush(owner);
+		User owner = TestUtils.buildOrganizer("Event Owner");
+		owner = repository.saveAndFlush(owner);
 
-		Visitor visitor = TestUtils.buildVisitor(userName);
+		User visitor = TestUtils.buildVisitor(userName);
 		visitor = repository.saveAndFlush(visitor);
 
 		List<Event> events = List.of(TestUtils.buildEvent("Some Event", owner),
@@ -170,10 +165,10 @@ class VisitorServiceImplTest {
 		events = eventRepository.saveAll(events);
 		Set<Integer> eventIds = events.stream().map(e -> e.getEventId()).collect(Collectors.toSet());
 
-		VisitorRegistrationDTO registrationRequest = VisitorRegistrationDTO.builder().visitorId(visitor.getVisitorId())
+		UserRegistrationDTO registrationRequest = UserRegistrationDTO.builder().userId(visitor.getUserId())
 				.eventIds(eventIds).build();
 
-		VisitorDTO resultDTO = service.registerVisitorForEvent(registrationRequest);
+		UserDTO resultDTO = service.registerVisitorForEvent(registrationRequest);
 		assertNotNull(resultDTO);
 		assertNotNull(resultDTO.getEvents());
 		assertEquals(2, resultDTO.getEvents().size());

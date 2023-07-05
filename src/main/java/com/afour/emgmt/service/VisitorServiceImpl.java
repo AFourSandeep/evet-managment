@@ -17,15 +17,15 @@ import org.springframework.stereotype.Service;
 import com.afour.emgmt.common.RoleEnum;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.Role;
-import com.afour.emgmt.entity.Visitor;
+import com.afour.emgmt.entity.User;
 import com.afour.emgmt.mapper.EventMapper;
-import com.afour.emgmt.mapper.VisitorMapper;
+import com.afour.emgmt.mapper.UserMapper;
 import com.afour.emgmt.model.EventDTO;
-import com.afour.emgmt.model.VisitorDTO;
-import com.afour.emgmt.model.VisitorRegistrationDTO;
+import com.afour.emgmt.model.UserDTO;
+import com.afour.emgmt.model.UserRegistrationDTO;
 import com.afour.emgmt.repository.EventRepository;
 import com.afour.emgmt.repository.RoleRepository;
-import com.afour.emgmt.repository.VisitorRepository;
+import com.afour.emgmt.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,13 +37,13 @@ import lombok.extern.slf4j.Slf4j;
 public class VisitorServiceImpl implements VisitorService {
 
 	@Autowired
-	VisitorMapper mapper;
+	UserMapper mapper;
 
 	@Autowired
 	EventMapper eventMapper;
 
 	@Autowired
-	VisitorRepository repository;
+	UserRepository repository;
 
 	@Autowired
 	EventRepository eventRepository;
@@ -52,8 +52,8 @@ public class VisitorServiceImpl implements VisitorService {
 	RoleRepository roleRepository;
 	
 	@Override
-	public List<VisitorDTO> fetchAllVisitors() {
-		List<Visitor> entities = repository.findAll();
+	public List<UserDTO> fetchAllVisitors() {
+		List<User> entities = repository.findAll();
 		if (null == entities)
 			return null;
 		log.info("DB operation success! Fetched {} visitors!", entities.size());
@@ -61,39 +61,39 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public VisitorDTO findVisitorByID(final Integer ID) {
-		Optional<Visitor> optional = repository.findById(ID);
+	public UserDTO findVisitorByID(final Integer ID) {
+		Optional<User> optional = repository.findById(ID);
 		if (optional.isEmpty())
 			return null;
 		
-		Visitor visitor=  optional.get();
-		VisitorDTO visitorDto =mapper.entityToDTO(visitor);
+		User visitor=  optional.get();
+		UserDTO UserDTO =mapper.entityToDTO(visitor);
 			
 		Set<Event> events = visitor.getEvents();
 		Set<EventDTO> eventDtos = eventMapper.entityToDTO(events);
-		visitorDto.setEvents(eventDtos);
- 		log.info("DB operation success! Fetched Visitor:{}", visitor.getVisitorId());
-		return visitorDto;
+		UserDTO.setEvents(eventDtos);
+ 		log.info("DB operation success! Fetched Visitor:{}", visitor.getUserId());
+		return UserDTO;
 	}
 
 	@Override
-	public VisitorDTO findVisitorByUserName(final String USERNAME) {
-		Optional<Visitor> optional = repository.findByUserName(USERNAME);
+	public UserDTO findVisitorByUserName(final String USERNAME) {
+		Optional<User> optional = repository.findByUserName(USERNAME);
 		if (optional.isEmpty())
 			return null;
-		Visitor visitor = optional.get();
-		VisitorDTO visitorDto =mapper.entityToDTO(visitor);
+		User visitor = optional.get();
+		UserDTO UserDTO =mapper.entityToDTO(visitor);
 			
 		Set<Event> events = visitor.getEvents();
 		Set<EventDTO> eventDtos = eventMapper.entityToDTO(events);
-		visitorDto.setEvents(eventDtos);
-		log.info("DB operation success! Fetched Visitor:{} by username: {}", visitor.getVisitorId(), USERNAME);
-		return visitorDto;
+		UserDTO.setEvents(eventDtos);
+		log.info("DB operation success! Fetched Visitor:{} by username: {}", visitor.getUserId(), USERNAME);
+		return UserDTO;
 	}
 
 	@Override
 	@Transactional
-	public VisitorDTO addVisitor(final VisitorDTO dto) {
+	public UserDTO addVisitor(final UserDTO dto) {
 		
 		Set<EventDTO> newEventDtos = dto.getEvents();
 
@@ -105,7 +105,7 @@ public class VisitorServiceImpl implements VisitorService {
 			newEvents.stream().forEach(e -> eventsToBeAdded.add(e));
 		}
 
-		Visitor entity = mapper.prepareForCreate(dto);
+		User entity = mapper.prepareForCreate(dto);
 		
 		Role role = roleRepository.findById(RoleEnum.VISITOR.getRoleId()).get();
 		entity.setRole(role);
@@ -113,13 +113,13 @@ public class VisitorServiceImpl implements VisitorService {
 		entity.setEvents(eventsToBeAdded);
 
 		entity = repository.save(entity);
-		log.info("DB operation success! Added Visitor : {}", entity.getVisitorId());
+		log.info("DB operation success! Added Visitor : {}", entity.getUserId());
 		return mapper.entityToDTO(entity);
 	}
 
 	@Override
-	public VisitorDTO updateVisitor(final VisitorDTO dto) {
-		Visitor entity = repository.findById(dto.getVisitorId()).get();
+	public UserDTO updateVisitor(final UserDTO dto) {
+		User entity = repository.findById(dto.getUserId()).get();
 
 		if (null == entity)
 			return null;
@@ -136,7 +136,7 @@ public class VisitorServiceImpl implements VisitorService {
 		entity = mapper.prepareForUpdate(entity, dto);
 		entity = repository.save(entity);
 
-		log.info("DB operation success! Fetched Visitor : {}", entity.getVisitorId());
+		log.info("DB operation success! Fetched Visitor : {}", entity.getUserId());
 		return mapper.entityToDTO(entity);
 	}
 
@@ -154,13 +154,13 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public VisitorDTO registerVisitorForEvent(VisitorRegistrationDTO dto) {
-		Optional<Visitor> optional = repository.findById(dto.getVisitorId());
+	public UserDTO registerVisitorForEvent(UserRegistrationDTO dto) {
+		Optional<User> optional = repository.findById(dto.getUserId());
 
 		if (optional.isEmpty())
 			return null;
 
-		Visitor entity = optional.get();
+		User entity = optional.get();
 
 		Set<Integer> newEventIds = dto.getEventIds();
 		List<Event> newEvents = eventRepository.findAllById(newEventIds);
@@ -168,17 +168,17 @@ public class VisitorServiceImpl implements VisitorService {
 		newEvents.forEach(e -> existingEvents.add(e));
 
 		entity.setEvents(existingEvents);
-		Visitor updated = repository.save(entity);
+		User updated = repository.save(entity);
 		
-		VisitorDTO visitorDto =mapper.entityToDTO(updated);
+		UserDTO UserDTO =mapper.entityToDTO(updated);
 		
 		Set<Event> events = updated.getEvents();
 		Set<EventDTO> eventDtos = eventMapper.entityToDTO(events);
-		visitorDto.setEvents(eventDtos);
+		UserDTO.setEvents(eventDtos);
 		
-		log.info("DB operation success! Registered the visitor : {} with sessions{}", dto.getVisitorId(),
+		log.info("DB operation success! Registered the visitor : {} with sessions{}", dto.getUserId(),
 				existingEvents);
-		return visitorDto;
+		return UserDTO;
 	}
 
 }

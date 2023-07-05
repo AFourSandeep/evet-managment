@@ -130,7 +130,7 @@ public class SessionController {
 	@ApiOperation(value = "Delete the Session.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested session!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@DeleteMapping(value = "/{ID}", consumes = "application/json", produces = "application/json")
+	@DeleteMapping(value = "/{ID}", produces = "application/json")
 	public ResponseEntity<AppResponse> deleteSession(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);

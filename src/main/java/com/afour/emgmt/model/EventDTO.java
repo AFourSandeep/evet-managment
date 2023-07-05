@@ -30,7 +30,7 @@ public class EventDTO {
 	
 	private LocalDateTime endAt;
 	
-	private OrganizerDTO owner;
+	private UserDTO owner;
 	
 	private String location;
 	
@@ -46,6 +46,6 @@ public class EventDTO {
 	
 	private Set<EsessionDTO> sessions;
 	
-	private Set<VisitorDTO> visitors;
+	private Set<UserDTO> visitors;
 
 }

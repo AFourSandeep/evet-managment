@@ -146,7 +146,7 @@ public class EventController {
 	@ApiOperation(value = "Delete the Event.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested event!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@DeleteMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+	@DeleteMapping(value = "/{id}",  produces = "application/json")
 	public ResponseEntity<AppResponse> deleteEventByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
