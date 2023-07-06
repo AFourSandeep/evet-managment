@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,6 +58,7 @@ public class EventController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the events!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/events", produces = "application/json")
+	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> fetchAllEvents() {
 		List<EventDTO> result = service.fetchAllEvents();
 
@@ -72,6 +74,7 @@ public class EventController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the OPEN/CLOSED events!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/", produces = "application/json")
+	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> fetchEventsByStatus(
 			@RequestParam(value = "open", defaultValue = "true") final Boolean status) {
 		if (null == status)
@@ -90,6 +93,7 @@ public class EventController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Event!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{id}", produces = "application/json")
+	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> findEventByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -107,6 +111,7 @@ public class EventController {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> addEvent(@RequestBody EventDTO eventDTO) {
 		if (null == eventDTO)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -127,6 +132,7 @@ public class EventController {
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> updateEvent(@RequestBody EventDTO eventDTO) {
 		if (null == eventDTO)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -147,6 +153,7 @@ public class EventController {
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested event!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/{id}",  produces = "application/json")
+	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> deleteEventByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);

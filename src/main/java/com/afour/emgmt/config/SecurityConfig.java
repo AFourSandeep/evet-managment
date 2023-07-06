@@ -68,9 +68,6 @@ public class SecurityConfig {
 
 		http.csrf((csrf) -> csrf.disable())
 				.authorizeHttpRequests((authorize) -> authorize.antMatchers(AUTH_WHITELIST).permitAll()
-						.antMatchers("/organizer/**").hasAuthority("ORGANIZER")
-						.antMatchers("/event/create**", "/event/update**", "/event/delete**").hasAuthority("ORGANIZER")
-						.antMatchers("/session/create**", "/session/update**", "/session/delete**").hasAuthority("ORGANIZER")
 						.anyRequest().authenticated())
 				.authenticationProvider(authenticationProvider())
 				.sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
