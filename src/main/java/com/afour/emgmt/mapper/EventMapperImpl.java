@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.afour.emgmt.common.ActorEnum;
 import com.afour.emgmt.config.AuthenticationFacade;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.model.EventDTO;
@@ -56,6 +57,8 @@ public class EventMapperImpl implements EventMapper {
 
 	@Override
 	public Event prepareForUpdate(Event entity, EventDTO dto) {
+		final String ACTOR = authentication.getAuthentication()!=null ?
+				authentication.getAuthentication().getName():ActorEnum.DEFAULT_USER.getUser();
 		if (null != dto.getEventName())
 			entity.setEventName(dto.getEventName());
 		if (null != dto.getIsClosed())
@@ -68,7 +71,7 @@ public class EventMapperImpl implements EventMapper {
 			entity.setLocation(dto.getLocation());
 		
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy(authentication.getAuthentication().getName());
+		entity.setUpdatedBy(ACTOR);
 		return entity;
 	}
 
@@ -90,11 +93,13 @@ public class EventMapperImpl implements EventMapper {
 	
 	@Override
 	public Event prepareForCreate(EventDTO dto) {
+		final String ACTOR = authentication.getAuthentication()!=null ?
+				authentication.getAuthentication().getName():ActorEnum.DEFAULT_USER.getUser();
 		Event entity = this.DTOToEntity(dto);
 		entity.setCreatedAt(LocalDateTime.now());
-		entity.setCreatedBy(authentication.getAuthentication().getName());
+		entity.setCreatedBy(ACTOR);
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy(authentication.getAuthentication().getName());
+		entity.setUpdatedBy(ACTOR);
 		return entity;
 	}
 

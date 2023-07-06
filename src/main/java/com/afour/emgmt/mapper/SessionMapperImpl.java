@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.afour.emgmt.common.ActorEnum;
 import com.afour.emgmt.config.AuthenticationFacade;
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.model.EsessionDTO;
@@ -56,6 +57,8 @@ public class SessionMapperImpl implements SessionMapper {
 
 	@Override
 	public Esession prepareForUpdate(Esession entity, EsessionDTO dto) {
+		final String ACTOR = authentication.getAuthentication()!=null ?
+				authentication.getAuthentication().getName():ActorEnum.DEFAULT_USER.getUser();
 		if (null != dto.getEsessionTitle())
 			entity.setEsessionTitle(dto.getEsessionTitle());
 		if (null != dto.getStartAt())
@@ -64,7 +67,7 @@ public class SessionMapperImpl implements SessionMapper {
 			entity.setEndAt(dto.getEndAt());
 		
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy(authentication.getAuthentication().getName());
+		entity.setUpdatedBy(ACTOR);
 		return entity;
 	}
 
@@ -86,11 +89,13 @@ public class SessionMapperImpl implements SessionMapper {
 	
 	@Override
 	public Esession prepareForCreate(EsessionDTO dto) {
+		final String ACTOR = authentication.getAuthentication()!=null ?
+				authentication.getAuthentication().getName():ActorEnum.DEFAULT_USER.getUser();
 		Esession entity = this.DTOToEntity(dto);
 		entity.setCreatedAt(LocalDateTime.now());
-		entity.setCreatedBy(authentication.getAuthentication().getName());
+		entity.setCreatedBy(ACTOR);
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy(authentication.getAuthentication().getName());
+		entity.setUpdatedBy(ACTOR);
 		return entity;
 	}
 
