@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,6 +58,7 @@ public class SessionController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the sessions!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/", produces = "application/json")
+	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> findSessionEventByID(@RequestParam(value = "eventId") final Integer eventId) {
 		if (null == eventId)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -74,6 +76,7 @@ public class SessionController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the sessions!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{ID}", produces = "application/json")
+	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> findSessionByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -91,6 +94,7 @@ public class SessionController {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> addSession(@RequestBody EsessionDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -112,6 +116,7 @@ public class SessionController {
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> updateSession(@RequestBody EsessionDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -131,6 +136,7 @@ public class SessionController {
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested session!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/{ID}", produces = "application/json")
+	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> deleteSession(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);

@@ -3,6 +3,8 @@
  */
 package com.afour.emgmt.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.AuthRequest;
 import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.common.LoginResponse;
+import com.afour.emgmt.model.UserInfoUserDetails;
 import com.afour.emgmt.service.JwtService;
 
 import springfox.documentation.annotations.ApiIgnore;
@@ -44,18 +49,23 @@ public class AuthenticationController {
 	
 	@PostMapping(value = "/token", consumes = "application/json", produces = "application/json")
 	public ResponseEntity<Object> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+		LoginResponse response;
 		try {
 			Authentication authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
 			if (authentication.isAuthenticated()) {
-//				UserInfoUserDetails user = (UserInfoUserDetails) authentication.getPrincipal();
-				return ResponseEntity.ok()
-		                    .body(jwtService.generateToken(authRequest.getUsername()));
+				UserInfoUserDetails user = (UserInfoUserDetails) authentication.getPrincipal();
+				response = LoginResponse.builder().username(user.getUsername())
+						.message("Login Successu.").authorities((List<GrantedAuthority>) user.getAuthorities())
+						.token(jwtService.generateToken(authRequest.getUsername())).build();
+				return new ResponseEntity<>(response, HttpStatus.OK);
 			} else {
 				throw new UsernameNotFoundException("invalid user request !");
 			}
 		} catch (BadCredentialsException ex) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			response = LoginResponse.builder().username(authRequest.getUsername())
+					.message("Login Fail.").build();
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
 	}
 	

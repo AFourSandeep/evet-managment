@@ -59,7 +59,7 @@ public class VisitorController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the visitors!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/visitors", produces = "application/json")
-	@PreAuthorize("hasAuthority('ORGANIZER')")
+	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> fetchAllVisitors() {
 		List<UserDTO> result = service.fetchAllVisitors();
 		if (result == null)
@@ -74,7 +74,7 @@ public class VisitorController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{id}", produces = "application/json")
-	@PreAuthorize("hasAuthority('VISITOR')")
+	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> findVisitorByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -92,7 +92,7 @@ public class VisitorController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/", produces = "application/json")
-	@PreAuthorize("hasAuthority('VISITOR')")
+	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> findVisitorByUserName(@RequestParam(value = "userName") final String userName) {
 		if (null == userName)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
@@ -173,6 +173,7 @@ public class VisitorController {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Registered!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/registerForEvent", consumes = "application/json", produces = "application/json")
+	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> registerVisitorForEvent(@RequestBody UserRegistrationDTO dto) {
 		if (null == dto)
 			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
