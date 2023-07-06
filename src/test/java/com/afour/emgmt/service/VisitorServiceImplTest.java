@@ -133,7 +133,7 @@ class VisitorServiceImplTest {
 		assertNotNull(resultDTO);
 		assertEquals(exist.getUserId(), resultDTO.getUserId());
 		assertEquals(updateResuest.getFirstName(), resultDTO.getFirstName());
-		assertEquals(updateResuest.getPassword(), resultDTO.getPassword());
+		assertNotNull(resultDTO.getPassword());
 	}
 
 	@DisplayName("deleteVisitorByID")

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.afour.emgmt.common.ActorEnum;
 import com.afour.emgmt.config.AuthenticationFacade;
 import com.afour.emgmt.entity.User;
 import com.afour.emgmt.model.UserDTO;
@@ -61,6 +62,8 @@ public class UserMapperImpl implements UserMapper {
 
 	@Override
 	public User prepareForUpdate(User entity, UserDTO dto) {
+		final String ACTOR = authentication.getAuthentication()!=null ?
+				authentication.getAuthentication().getName():ActorEnum.DEFAULT_USER.getUser();
 		
 		if (null != dto.getFirstName())
 			entity.setFirstName(dto.getFirstName());
@@ -72,18 +75,20 @@ public class UserMapperImpl implements UserMapper {
 			entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy(authentication.getAuthentication().getName());
+		entity.setUpdatedBy(ACTOR);
 		
 		return entity;
 	}
 
 	@Override
 	public User prepareForCreate(UserDTO dto) {
+		final String ACTOR = authentication.getAuthentication()!=null ?
+				authentication.getAuthentication().getName():ActorEnum.DEFAULT_USER.getUser();
 		User entity = this.DTOToEntity(dto);
 		entity.setCreatedAt(LocalDateTime.now());
-		entity.setCreatedBy(authentication.getAuthentication().getName());
+		entity.setCreatedBy(ACTOR);
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy(authentication.getAuthentication().getName());
+		entity.setUpdatedBy(ACTOR);
 		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		return entity;
 	}

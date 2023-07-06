@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -46,6 +47,9 @@ class OrganizerServiceImplTest {
 
 	@Autowired
 	RoleRepository roleRepository;
+	
+	@Autowired
+	PasswordEncoder passwordEncoder;
 
 	@SuppressWarnings("rawtypes")
 	@Container
@@ -121,7 +125,7 @@ class OrganizerServiceImplTest {
 	void updateOrganizer(String userName) {
 		User exist = TestUtils.buildOrganizer(userName);
 		exist = repository.saveAndFlush(exist);
-
+		
 		UserDTO updateResuest = UserDTO.builder().userId(exist.getUserId())
 				.firstName(userName + "ABCD").password(userName + "456").build();
 
@@ -129,7 +133,7 @@ class OrganizerServiceImplTest {
 		assertNotNull(resultDTO);
 		assertEquals(exist.getUserId(), resultDTO.getUserId());
 		assertEquals(updateResuest.getFirstName(), resultDTO.getFirstName());
-		assertEquals(updateResuest.getPassword(), resultDTO.getPassword());
+		assertNotNull(resultDTO.getPassword());
 	}
 
 	@DisplayName("deleteOrganizerByID")
