@@ -24,6 +24,7 @@ import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
 import com.afour.emgmt.exception.EmptyRequestException;
 import com.afour.emgmt.exception.NoDataFoundException;
+import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.service.OrganizerService;
 
@@ -108,7 +109,7 @@ public class OrganizerController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> addOrganizer(@RequestBody UserDTO dto) throws Exception {
+	public ResponseEntity<AppResponse> addOrganizer(@RequestBody UserDTO dto) throws UserAlreadyExistException, Exception {
 		if (null == dto)
 			throw new EmptyRequestException();
 

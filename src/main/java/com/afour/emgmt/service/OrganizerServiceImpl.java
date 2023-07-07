@@ -13,6 +13,7 @@ import com.afour.emgmt.common.RoleEnum;
 import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.entity.User;
 import com.afour.emgmt.exception.NoDataFoundException;
+import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.mapper.UserMapper;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.repository.RoleRepository;
@@ -68,7 +69,11 @@ public class OrganizerServiceImpl implements OrganizerService {
 	}
 
 	@Override
-	public UserDTO addOrganizer(final UserDTO dto) {
+	public UserDTO addOrganizer(final UserDTO dto) throws UserAlreadyExistException {
+		Optional<User> optional = repository.findByUserName(dto.getUserName());
+		if (optional.isPresent())
+			throw new UserAlreadyExistException();
+		
 		User entity = mapper.prepareForCreate(dto);
 
 		Role role = roleRepository.findById(RoleEnum.ORGANIZER.getRoleId()).get();

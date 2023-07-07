@@ -19,6 +19,7 @@ import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.entity.User;
 import com.afour.emgmt.exception.NoDataFoundException;
+import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.mapper.EventMapper;
 import com.afour.emgmt.mapper.UserMapper;
 import com.afour.emgmt.model.EventDTO;
@@ -94,7 +95,10 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	@Transactional
-	public UserDTO addVisitor(final UserDTO dto) {
+	public UserDTO addVisitor(final UserDTO dto) throws UserAlreadyExistException {
+		Optional<User> optional = repository.findByUserName(dto.getUserName());
+		if (optional.isPresent())
+			throw new UserAlreadyExistException();
 		
 		Set<EventDTO> newEventDtos = dto.getEvents();
 

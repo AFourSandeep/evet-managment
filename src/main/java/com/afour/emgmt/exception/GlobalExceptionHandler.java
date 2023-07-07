@@ -48,4 +48,12 @@ public class GlobalExceptionHandler {
 		return AppResponse.builder().message(message).status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
 	
+	@ExceptionHandler(UserAlreadyExistException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public AppResponse handleUserAlreadyExistException() {
+		message = messages.getMessage("user.already.exists", null, Locale.US);
+		log.error(message);
+		return AppResponse.builder().message(message).status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
 }
