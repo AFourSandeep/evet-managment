@@ -18,6 +18,7 @@ import com.afour.emgmt.common.RoleEnum;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.entity.User;
+import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.mapper.EventMapper;
 import com.afour.emgmt.mapper.UserMapper;
 import com.afour.emgmt.model.EventDTO;
@@ -52,19 +53,19 @@ public class VisitorServiceImpl implements VisitorService {
 	RoleRepository roleRepository;
 	
 	@Override
-	public List<UserDTO> fetchAllVisitors() {
+	public List<UserDTO> fetchAllVisitors() throws NoDataFoundException {
 		List<User> entities = repository.findAll();
 		if (null == entities)
-			return null;
+			throw new NoDataFoundException();
 		log.info("DB operation success! Fetched {} visitors!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
 
 	@Override
-	public UserDTO findVisitorByID(final Integer ID) {
+	public UserDTO findVisitorByID(final Integer ID) throws NoDataFoundException {
 		Optional<User> optional = repository.findById(ID);
 		if (optional.isEmpty())
-			return null;
+			throw new NoDataFoundException();
 		
 		User visitor=  optional.get();
 		UserDTO UserDTO =mapper.entityToDTO(visitor);
@@ -77,10 +78,10 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public UserDTO findVisitorByUserName(final String USERNAME) {
+	public UserDTO findVisitorByUserName(final String USERNAME) throws NoDataFoundException {
 		Optional<User> optional = repository.findByUserName(USERNAME);
 		if (optional.isEmpty())
-			return null;
+			throw new NoDataFoundException();
 		User visitor = optional.get();
 		UserDTO UserDTO =mapper.entityToDTO(visitor);
 			
@@ -118,11 +119,11 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public UserDTO updateVisitor(final UserDTO dto) {
+	public UserDTO updateVisitor(final UserDTO dto) throws NoDataFoundException {
 		User entity = repository.findById(dto.getUserId()).get();
 
 		if (null == entity)
-			return null;
+			throw new NoDataFoundException();
 
 		Set<Event> existingEvents = entity.getEvents();
 
@@ -141,10 +142,12 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public Boolean deleteVisitorByID(final Integer ID) {
+	public Boolean deleteVisitorByID(final Integer ID) throws NoDataFoundException {
 		Boolean exist = repository.existsById(ID);
 
-		if (exist)
+		if (!exist)
+			throw new NoDataFoundException();
+		
 			repository.deleteById(ID);
 
 		exist = repository.existsById(ID);
@@ -154,11 +157,11 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public UserDTO registerVisitorForEvent(UserRegistrationDTO dto) {
+	public UserDTO registerVisitorForEvent(UserRegistrationDTO dto) throws NoDataFoundException {
 		Optional<User> optional = repository.findById(dto.getUserId());
 
 		if (optional.isEmpty())
-			return null;
+			throw new NoDataFoundException();
 
 		User entity = optional.get();
 

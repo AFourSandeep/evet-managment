@@ -28,6 +28,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.User;
+import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.model.UserRegistrationDTO;
 import com.afour.emgmt.repository.EventRepository;
@@ -74,7 +75,7 @@ class VisitorServiceImplTest {
 
 	@DisplayName("fetchAllVisitors")
 	@Test
-	void fetchAllVisitors() {
+	void fetchAllVisitors() throws NoDataFoundException, Exception{
 		List<User> visitors = List.of(TestUtils.buildVisitor("User1"), TestUtils.buildVisitor("User2"),
 				TestUtils.buildVisitor("User3"), TestUtils.buildVisitor("User4"), TestUtils.buildVisitor("User5"));
 		repository.saveAll(visitors);
@@ -86,7 +87,7 @@ class VisitorServiceImplTest {
 	@DisplayName("findVisitorByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER101", "USER201" })
-	void findVisitorByID(String userName) {
+	void findVisitorByID(String userName) throws NoDataFoundException, Exception{
 		User entity = TestUtils.buildVisitor(userName);
 		entity = repository.saveAndFlush(entity);
 		Integer id = entity.getUserId();
@@ -99,7 +100,7 @@ class VisitorServiceImplTest {
 	@DisplayName("findVisitorByUserName")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1011", "USER2011" })
-	void findVisitorByUserName(String userName) {
+	void findVisitorByUserName(String userName) throws NoDataFoundException, Exception{
 		User entity = TestUtils.buildVisitor(userName);
 		entity = repository.saveAndFlush(entity);
 		UserDTO resultDTO = service.findVisitorByUserName(userName);
@@ -122,7 +123,7 @@ class VisitorServiceImplTest {
 	@DisplayName("updateVisitor")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER3101", "USER3201" })
-	void updateVisitor(String userName) {
+	void updateVisitor(String userName) throws NoDataFoundException, Exception{
 		User exist = TestUtils.buildVisitor(userName);
 		exist = repository.saveAndFlush(exist);
 
@@ -139,7 +140,7 @@ class VisitorServiceImplTest {
 	@DisplayName("deleteVisitorByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1301", "USER2301" })
-	void deleteVisitorByID(String userName) {
+	void deleteVisitorByID(String userName) throws NoDataFoundException, Exception{
 		User input = TestUtils.buildVisitor(userName);
 		repository.saveAndFlush(input);
 
@@ -152,7 +153,7 @@ class VisitorServiceImplTest {
 	@DisplayName("registerVisitorForEvent")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER3101", "USER3201" })
-	void registerVisitorForEvent_mutliple_events(String userName) {
+	void registerVisitorForEvent_mutliple_events(String userName) throws NoDataFoundException, Exception{
 		// Given
 		User owner = TestUtils.buildOrganizer("Event Owner");
 		owner = repository.saveAndFlush(owner);

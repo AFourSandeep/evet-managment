@@ -55,7 +55,7 @@ public class AuthenticationController {
 					new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
 			if (authentication.isAuthenticated()) {
 				UserInfoUserDetails user = (UserInfoUserDetails) authentication.getPrincipal();
-				response = LoginResponse.builder().username(user.getUsername())
+				response = LoginResponse.builder().username(user.getUsername()).status(HttpStatus.OK)
 						.message("Login Success.").authorities((List<GrantedAuthority>) user.getAuthorities())
 						.token(jwtService.generateToken(authRequest.getUsername())).build();
 				return new ResponseEntity<>(response, HttpStatus.OK);

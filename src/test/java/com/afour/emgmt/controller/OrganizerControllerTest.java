@@ -29,6 +29,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.service.OrganizerService;
 import com.afour.emgmt.util.TestUtils;
@@ -54,7 +55,7 @@ class OrganizerControllerTest {
 
 	@DisplayName("fetchAllOrganizers_for_data")
 	@Test
-	void fetchAllOrganizers_for_data() {
+	void fetchAllOrganizers_for_data() throws Exception {
 		// given
 		List<UserDTO> dtos = List.of(UserDTO.builder().userId(1).userName("User1").build(),
 				UserDTO.builder().userId(2).userName("User2").build(),
@@ -84,7 +85,7 @@ class OrganizerControllerTest {
 
 	@DisplayName("fetchAllOrganizers_for_no_data")
 	@Test
-	void fetchAllOrganizers_for_no_data() {
+	void fetchAllOrganizers_for_no_data() throws Exception {
 		//given
 		when(orgService.fetchAllOrganizers()).thenReturn(null);
 		
@@ -97,7 +98,7 @@ class OrganizerControllerTest {
 	@DisplayName("findOrganizerByID_for_data")
 	@ParameterizedTest
 	@ValueSource(ints = { 101, 102, 103, 104 })
-	void findOrganizerByID_for_data(Integer ID) {
+	void findOrganizerByID_for_data(Integer ID) throws NoDataFoundException, Exception {
 		// given
 		when(orgService.findOrganizerByID(ID)).thenReturn(UserDTO.builder().userId(ID).userName("User"+ID).build());
 
@@ -118,7 +119,7 @@ class OrganizerControllerTest {
 	@DisplayName("findOrganizerByID_for_no_data")
 	@ParameterizedTest
 	@ValueSource(ints = { 101, 102})
-	void findOrganizerByID_for_no_data(Integer ID) {
+	void findOrganizerByID_for_no_data(Integer ID) throws NoDataFoundException, Exception{
 		//given
 		when(orgService.findOrganizerByID(ID)).thenReturn(null);
 		
@@ -131,7 +132,7 @@ class OrganizerControllerTest {
 
 	@DisplayName("findOrganizerByID_for_empty_param")
 	@Test
-	void findOrganizerByID_for_empty_param() {
+	void findOrganizerByID_for_empty_param() throws NoDataFoundException, Exception{
 		// given
 
 		// when
@@ -144,7 +145,7 @@ class OrganizerControllerTest {
 	@DisplayName("findOrganizerByUserName_for_data")
 	@ParameterizedTest
 	@ValueSource(strings = { "User1", "User2", "User3", "User4" })
-	void findOrganizerByUserName_for_data(String username) {
+	void findOrganizerByUserName_for_data(String username) throws NoDataFoundException, Exception{
 		// given
 		Integer ID = TestUtils.getRandomNumber();
 		when(orgService.findOrganizerByUserName(username))
@@ -167,7 +168,7 @@ class OrganizerControllerTest {
 	@DisplayName("findOrganizerByUserName_for_no_data")
 	@ParameterizedTest
 	@ValueSource(strings = { "User1", "User2" })
-	void findOrganizerByUserName_for_no_data(String username) {
+	void findOrganizerByUserName_for_no_data(String username) throws NoDataFoundException, Exception{
 		//given
 		when(orgService.findOrganizerByUserName(username)).thenReturn(null);
 		
@@ -180,7 +181,7 @@ class OrganizerControllerTest {
 
 	@DisplayName("findOrganizerByUserName_for_empty_param")
 	@Test
-	void findOrganizerByUserName_for_empty_param() {
+	void findOrganizerByUserName_for_empty_param() throws NoDataFoundException, Exception{
 		// given
 
 		// when
@@ -193,7 +194,7 @@ class OrganizerControllerTest {
 	@DisplayName("addOrganizer_for_data")
 	@ParameterizedTest
 	@CsvSource({"User1,User101", "User2,User202", "User3,User303"})
-	void addOrganizer_for_data(String firstName,String username) {
+	void addOrganizer_for_data(String firstName,String username) throws NoDataFoundException, Exception{
 		// given
 		Integer ID  = TestUtils.getRandomNumber();
 		UserDTO request = UserDTO.builder()
@@ -225,7 +226,7 @@ class OrganizerControllerTest {
 	@DisplayName("addOrganizer_for_no_data")
 	@ParameterizedTest
 	@CsvSource({"User1,User101", "User2,User202", "User3,User303"})
-	void addOrganizer_for_no_data(String firstName,String username) {
+	void addOrganizer_for_no_data(String firstName,String username) throws NoDataFoundException, Exception{
 		//given
 		UserDTO request = UserDTO.builder()
 				.firstName(firstName)
@@ -242,7 +243,7 @@ class OrganizerControllerTest {
 
 	@DisplayName("addOrganizer_for_empty_param")
 	@Test
-	void addOrganizer_for_empty_param() {
+	void addOrganizer_for_empty_param() throws NoDataFoundException, Exception{
 		// given
 
 		// when

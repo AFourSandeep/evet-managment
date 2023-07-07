@@ -25,24 +25,10 @@ public class GenericResponseImpl implements GenericResponse {
 	private String message;
 
 	@Override
-	public AppResponse getEmtyRequestResponse() {
-		message = messages.getMessage("failed.empty.request.body", null, Locale.US);
-		log.error(message);
-		return AppResponse.builder().message(message).status(HttpStatus.BAD_REQUEST).build();
-	}
-
-	@Override
 	public AppResponse getSuccessDataFoundResponse(final Object result, final Integer size) {
 		message = messages.getMessage("success.data.found.size", new Object[] { size }, Locale.US);
 		log.info(message);
 		return AppResponse.builder().message(message).body(result).status(HttpStatus.OK).build();
-	}
-
-	@Override
-	public AppResponse getNoDataFoundResponse() {
-		message = messages.getMessage("no.data.found", null, Locale.US);
-		log.warn(message);
-		return AppResponse.builder().message(message).status(HttpStatus.NO_CONTENT).build();
 	}
 
 	@Override

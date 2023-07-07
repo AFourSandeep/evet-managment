@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.User;
+import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.mapper.EventMapper;
 import com.afour.emgmt.mapper.SessionMapper;
 import com.afour.emgmt.mapper.UserMapper;
@@ -44,28 +45,28 @@ public class EventServiceImpl implements EventService {
 	EventRepository repository;
 
 	@Override
-	public List<EventDTO> fetchAllEvents() {
+	public List<EventDTO> fetchAllEvents() throws NoDataFoundException {
 		List<Event> entities = repository.findAll();
 		if (null == entities)
-			return null;
+			throw new NoDataFoundException();
 		log.info("DB operation success! Fetched {} Events!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
 
 	@Override
-	public List<EventDTO> fetchEventsByStatus(final Boolean status) {
+	public List<EventDTO> fetchEventsByStatus(final Boolean status) throws NoDataFoundException {
 		List<Event> entities = repository.fetchEventsByStatus(!status);
 		if (null == entities)
-			return null;
+			throw new NoDataFoundException();
 		log.info("DB operation success! Fetched {} Open Events!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
 
 	@Override
-	public EventDTO findEventByID(final Integer ID) {
+	public EventDTO findEventByID(final Integer ID) throws NoDataFoundException {
 		Optional<Event> optional = repository.findById(ID);
 		if (optional.isEmpty())
-			return null;
+			throw new NoDataFoundException();
 		Event event = optional.get();
 		EventDTO  dto = mapper.entityToDTO(event);
 		
@@ -90,11 +91,11 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public EventDTO updateEvent(EventDTO dto) {
+	public EventDTO updateEvent(EventDTO dto) throws NoDataFoundException {
 		Event entity = repository.findById(dto.getEventId()).get();
 
 		if (null == entity)
-			return null;
+			throw new NoDataFoundException();
 
 		entity = mapper.prepareForUpdate(entity, dto);
 		entity = repository.save(entity);
@@ -104,10 +105,12 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Boolean deleteEventByID(Integer ID) {
+	public Boolean deleteEventByID(Integer ID) throws NoDataFoundException {
 		Boolean exist = repository.existsById(ID);
 
-		if (exist)
+		if (!exist)
+			throw new NoDataFoundException();
+		
 			repository.deleteById(ID);
 
 		exist = repository.existsById(ID);
@@ -117,10 +120,10 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Set<Event> findAllById(Set<Integer> eventIds) {
+	public Set<Event> findAllById(Set<Integer> eventIds) throws NoDataFoundException {
 		List<Event> entities = repository.findAllById(eventIds);
 		if (null == entities)
-			return null;
+			throw new NoDataFoundException();
 		log.info("DB operation success! Fetched total {} Events ", entities.size());
 		return new HashSet<>(entities);
 	}

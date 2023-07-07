@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.exception.EmptyRequestException;
+import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.EsessionDTO;
 import com.afour.emgmt.service.SessionService;
 
@@ -51,7 +53,7 @@ public class SessionController {
 	GenericResponse genericResponse;
 
 	private AppResponse response;
-	
+
 	/* Get all sessions of an event */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all Session by its Event Id.")
@@ -59,94 +61,81 @@ public class SessionController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/", produces = "application/json")
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findSessionEventByID(@RequestParam(value = "eventId") final Integer eventId) {
+	public ResponseEntity<AppResponse> findSessionEventByID(@RequestParam(value = "eventId") final Integer eventId)
+			throws NoDataFoundException, Exception {
 		if (null == eventId)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		List<EsessionDTO> result = service.findSessionEventByID(eventId);
-		if (result == null)
-			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
-	
-	/* Get a existing session using its id*/
+
+	/* Get a existing session using its id */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch Session by Session Id.")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the sessions!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{ID}", produces = "application/json")
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findSessionByID(@PathVariable(value = "id") final Integer id) {
+	public ResponseEntity<AppResponse> findSessionByID(@PathVariable(value = "id") final Integer id)
+			throws NoDataFoundException, Exception {
 		if (null == id)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		EsessionDTO result = service.findSessionByID(id);
-		if (result == null)
-			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
-	
-	/* Create a new session under any event*/
+
+	/* Create a new session under any event */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Session.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> addSession(@RequestBody EsessionDTO dto) {
+	public ResponseEntity<AppResponse> addSession(@RequestBody EsessionDTO dto) throws NoDataFoundException, Exception {
 		if (null == dto)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		EsessionDTO result = service.addSession(dto);
-		
-		if (result == null)
-			return new ResponseEntity(
-					genericResponse.getRequestFailResponse("session.create.fail", new EsessionDTO[] { dto }),
-					HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("session.create.successs", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-	
-	/* Update an existing session*/
+
+	/* Update an existing session */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update the Session.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = "application/json", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> updateSession(@RequestBody EsessionDTO dto) {
+	public ResponseEntity<AppResponse> updateSession(@RequestBody EsessionDTO dto)
+			throws NoDataFoundException, Exception {
 		if (null == dto)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		EsessionDTO result = service.updateSession(dto);
-		if (result == null)
-			return new ResponseEntity(genericResponse.getRequestFailResponse("session.update.fail",
-					new Integer[] { dto.getEsessionId() }), HttpStatus.BAD_REQUEST);
-
+		
 		response = genericResponse.getRequestSuccessResponse("session.update.successs", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-	
-	/* Delete one existing session*/
+
+	/* Delete one existing session */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete the Session.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested session!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/{ID}", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> deleteSession(@PathVariable(value = "id") final Integer id) {
+	public ResponseEntity<AppResponse> deleteSession(@PathVariable(value = "id") final Integer id)
+			throws NoDataFoundException, Exception {
 		if (null == id)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		Boolean result = service.deleteSessionByID(id);
-		
-		if (result == null)
-			return new ResponseEntity(
-					genericResponse.getRequestFailResponse("session.delete.fail", new Integer[] { id }),
-					HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("session.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity(response, HttpStatus.OK);

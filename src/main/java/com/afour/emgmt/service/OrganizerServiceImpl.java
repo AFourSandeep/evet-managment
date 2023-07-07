@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.afour.emgmt.common.RoleEnum;
 import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.entity.User;
+import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.mapper.UserMapper;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.repository.RoleRepository;
@@ -36,19 +37,19 @@ public class OrganizerServiceImpl implements OrganizerService {
 	RoleRepository roleRepository;
 
 	@Override
-	public List<UserDTO> fetchAllOrganizers() {
+	public List<UserDTO> fetchAllOrganizers() throws NoDataFoundException {
 		List<User> entities = repository.findAll();
 		if (null == entities)
-			return null;
+			throw new NoDataFoundException();
 		log.info("DB operation success! Fetched {} Organizers!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
 
 	@Override
-	public UserDTO findOrganizerByID(final Integer ID) {
+	public UserDTO findOrganizerByID(final Integer ID) throws NoDataFoundException {
 		Optional<User> optional = repository.findById(ID);
 		if (optional.isEmpty())
-			return null;
+			throw new NoDataFoundException();
 
 		User entity = optional.get();
 		log.info("DB operation success! Fetched User:{} ", entity.getUserId());
@@ -56,11 +57,11 @@ public class OrganizerServiceImpl implements OrganizerService {
 	}
 
 	@Override
-	public UserDTO findOrganizerByUserName(final String USERNAME) {
+	public UserDTO findOrganizerByUserName(final String USERNAME) throws NoDataFoundException{
 		Optional<User> optional = repository.findByUserName(USERNAME);
-		log.info("DB operation success!");
 		if (optional.isEmpty())
-			return null;
+			throw new NoDataFoundException();
+		
 		User entity = optional.get();
 		log.info("DB operation success! Fetched User:{} by username: {}", entity.getUserId(), USERNAME);
 		return mapper.entityToDTO(entity);
@@ -79,10 +80,10 @@ public class OrganizerServiceImpl implements OrganizerService {
 	}
 
 	@Override
-	public UserDTO updateOrganizer(final UserDTO dto) {
+	public UserDTO updateOrganizer(final UserDTO dto) throws NoDataFoundException{
 		Optional<User> optional = repository.findById(dto.getUserId());
 		if (optional.isEmpty())
-			return null;
+			throw new NoDataFoundException();
 
 		User entity = mapper.prepareForUpdate(optional.get(), dto);
 		entity = repository.save(entity);
@@ -92,10 +93,11 @@ public class OrganizerServiceImpl implements OrganizerService {
 	}
 
 	@Override
-	public Boolean deleteOrganizerByID(final Integer ID) {
+	public Boolean deleteOrganizerByID(final Integer ID) throws NoDataFoundException {
 		Boolean exist = repository.existsById(ID);
-
-		if (exist)
+		if (!exist)
+			throw new NoDataFoundException();
+			
 			repository.deleteById(ID);
 
 		exist = repository.existsById(ID);

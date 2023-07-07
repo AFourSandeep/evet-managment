@@ -26,6 +26,7 @@ import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.User;
+import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.EsessionDTO;
 import com.afour.emgmt.model.EventDTO;
 import com.afour.emgmt.repository.EventRepository;
@@ -76,7 +77,7 @@ class SessionServiceImplTest {
 	@DisplayName("findSessionEventByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "Session-101", "Session-201" })
-	void findSessionEventByID(String title) {
+	void findSessionEventByID(String title) throws NoDataFoundException, Exception{
 		
 		User owner = TestUtils.buildOrganizer("Event Owner");
 		owner = userRepository.saveAndFlush(owner);
@@ -98,7 +99,7 @@ class SessionServiceImplTest {
 	@DisplayName("findSessionByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "Session-101", "Session-201" })
-	void findSessionByID(String title) {
+	void findSessionByID(String title) throws NoDataFoundException, Exception{
 		
 		User owner = TestUtils.buildOrganizer("Event Owner");
 		owner = userRepository.saveAndFlush(owner);
@@ -120,7 +121,7 @@ class SessionServiceImplTest {
 	@DisplayName("addSession")
 	@ParameterizedTest
 	@ValueSource(strings = { "Session-101", "Session-201" })
-	void addSession(String title) {
+	void addSession(String title) throws NoDataFoundException, Exception{
 		
 		User owner = TestUtils.buildOrganizer("Event Owner");
 		owner = userRepository.saveAndFlush(owner);
@@ -141,7 +142,7 @@ class SessionServiceImplTest {
 	@DisplayName("updateSession")
 	@ParameterizedTest
 	@ValueSource(strings = { "Session-101", "Session-201" })
-	void updateSession(String title) {
+	void updateSession(String title) throws NoDataFoundException, Exception{
 		
 		User owner = TestUtils.buildOrganizer("Event Owner");
 		owner = userRepository.saveAndFlush(owner);
@@ -168,7 +169,7 @@ class SessionServiceImplTest {
 	@DisplayName("findSessionByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "Session-101", "Session-201" })
-	void deleteSessionByID(String title) {
+	void deleteSessionByID(String title) throws NoDataFoundException, Exception{
 		
 		User owner = TestUtils.buildOrganizer("Event Owner");
 		owner = userRepository.saveAndFlush(owner);

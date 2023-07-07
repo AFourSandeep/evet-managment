@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.exception.EmptyRequestException;
+import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.service.OrganizerService;
 
@@ -51,7 +53,7 @@ public class OrganizerController {
 	GenericResponse genericResponse;
 
 	private AppResponse response;
-	
+
 	/* Get all the existing organizers without any filter */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the organizers without any filter!")
@@ -59,15 +61,12 @@ public class OrganizerController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/organizers", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> fetchAllOrganizers() {
+	public ResponseEntity<AppResponse> fetchAllOrganizers() throws NoDataFoundException, Exception {
 		List<UserDTO> result = service.fetchAllOrganizers();
-		response = new AppResponse();
-		if (result == null)
-			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
-	
+
 	/* Get one existing organizer using its id */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one organizer by ID!")
@@ -75,17 +74,16 @@ public class OrganizerController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{id}", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findOrganizerByID(@PathVariable(value = "id") final Integer id) {
+	public ResponseEntity<AppResponse> findOrganizerByID(@PathVariable(value = "id") final Integer id)
+			throws NoDataFoundException, Exception {
 		if (null == id)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		UserDTO result = service.findOrganizerByID(id);
-		if (result == null)
-			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
-	
+
 	/* Get one existing organizer using its username */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one organizers by USERNAME!")
@@ -93,40 +91,33 @@ public class OrganizerController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findOrganizerByUserName(
-			@RequestParam(value = "userName") final String userName) {
+	public ResponseEntity<AppResponse> findOrganizerByUserName(@RequestParam(value = "userName") final String userName)
+			throws NoDataFoundException, Exception {
 		if (null == userName)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		UserDTO result = service.findOrganizerByUserName(userName);
-		if (result == null)
-			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
-	
-	/* Create a new organizer*/
+
+	/* Create a new organizer */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> addOrganizer(@RequestBody UserDTO dto) {
+	public ResponseEntity<AppResponse> addOrganizer(@RequestBody UserDTO dto) throws Exception {
 		if (null == dto)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		UserDTO result = service.addOrganizer(dto);
-
-		if (result == null)
-			return new ResponseEntity(
-					genericResponse.getRequestFailResponse("organizer.create.fail", new UserDTO[] { dto }),
-					HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("organizer.create.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-	
+
 	/* update an existing organizer */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update an Organizer.")
@@ -134,20 +125,17 @@ public class OrganizerController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = "application/json", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> updateOrganizer(@RequestBody UserDTO dto) {
+	public ResponseEntity<AppResponse> updateOrganizer(@RequestBody UserDTO dto)
+			throws NoDataFoundException, Exception {
 		if (null == dto)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		UserDTO result = service.updateOrganizer(dto);
-
-		if (result == null)
-			return new ResponseEntity(genericResponse.getRequestFailResponse("organizer.update.fail",
-					new Integer[] { dto.getUserId() }), HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("organizer.update.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-	
+
 	/* Delete one organizer using its id */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete an Organizer.")
@@ -155,15 +143,12 @@ public class OrganizerController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/{id}", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> deleteOrganizer(@PathVariable(value = "id") final Integer id) {
+	public ResponseEntity<AppResponse> deleteOrganizer(@PathVariable(value = "id") final Integer id)
+			throws NoDataFoundException, Exception {
 		if (null == id)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		Boolean result = service.deleteOrganizerByID(id);
-		if (result == null)
-			return new ResponseEntity(
-					genericResponse.getRequestFailResponse("organizer.delete.fail", new Integer[] { id }),
-					HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("organizer.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity(response, HttpStatus.OK);

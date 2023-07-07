@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
+import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.mapper.EventMapper;
 import com.afour.emgmt.mapper.SessionMapper;
 import com.afour.emgmt.model.EsessionDTO;
@@ -25,53 +26,53 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class SessionServiceImpl implements SessionService {
-	
+
 	@Autowired
 	SessionRepository repository;
-	
+
 	@Autowired
 	EventRepository eventRepository;
-	
+
 	@Autowired
 	SessionMapper mapper;
-	
+
 	@Autowired
 	EventMapper eventMapper;
 
 	@Override
-	public List<EsessionDTO> findSessionEventByID(final Integer eventId) {
-		List<Esession> entities= repository.findSessionEventByID(eventId);
-		if(entities ==null || entities.isEmpty())
-		return null;
-		
-		log.info("DB operation success! Fetched {} Sessions using EventID:{}",entities.size(),eventId);
+	public List<EsessionDTO> findSessionEventByID(final Integer eventId) throws NoDataFoundException {
+		List<Esession> entities = repository.findSessionEventByID(eventId);
+		if (entities == null || entities.isEmpty())
+			throw new NoDataFoundException();
+
+		log.info("DB operation success! Fetched {} Sessions using EventID:{}", entities.size(), eventId);
 		return mapper.entityToDTO(entities);
 	}
 
 	@Override
-	public EsessionDTO findSessionByID(final Integer ID) {
-		Optional<Esession> optional= repository.findById(ID);
-		if(optional.isEmpty())
-		return null;
-		
+	public EsessionDTO findSessionByID(final Integer ID) throws NoDataFoundException {
+		Optional<Esession> optional = repository.findById(ID);
+		if (optional.isEmpty())
+			throw new NoDataFoundException();
+
 		Esession entity = optional.get();
-		
-		log.info("DB operation success! Fetched Session:{}",entity.getEsessionId());
+
+		log.info("DB operation success! Fetched Session:{}", entity.getEsessionId());
 		return mapper.entityToDTO(entity);
 	}
 
 	@Override
-	public EsessionDTO addSession(EsessionDTO dto) {
+	public EsessionDTO addSession(EsessionDTO dto) throws NoDataFoundException {
 		Optional<Event> optional = eventRepository.findById(dto.getEvent().getEventId());
-		if(optional.isEmpty())
-			return null;
-		
+		if (optional.isEmpty())
+			throw new NoDataFoundException();
+
 		Esession entity = mapper.prepareForCreate(dto);
-		
+
 		Event event = optional.get();
 		entity.setEvent(event);
 		entity = repository.save(entity);
-		
+
 		EsessionDTO created = mapper.entityToDTO(entity);
 		created.setEvent(eventMapper.entityToDTO(event));
 		log.info("DB operation success! Added Session: {}", entity.getEsessionId());
@@ -79,17 +80,17 @@ public class SessionServiceImpl implements SessionService {
 	}
 
 	@Override
-	public EsessionDTO updateSession(EsessionDTO dto) {
+	public EsessionDTO updateSession(EsessionDTO dto) throws NoDataFoundException {
 		Optional<Esession> optional = repository.findById(dto.getEsessionId());
 
 		if (optional.isEmpty())
-			return null;
+			throw new NoDataFoundException();
 
-		Esession entity  = mapper.prepareForUpdate(optional.get(), dto);
-		
+		Esession entity = mapper.prepareForUpdate(optional.get(), dto);
+
 		Event event = entity.getEvent();
-		
-		entity  = repository.save(entity);
+
+		entity = repository.save(entity);
 		EsessionDTO updatedDTO = mapper.entityToDTO(entity);
 		updatedDTO.setEvent(eventMapper.entityToDTO(event));
 		log.info("DB operation success! Updated Session: {}", entity.getEsessionId());
@@ -97,11 +98,12 @@ public class SessionServiceImpl implements SessionService {
 	}
 
 	@Override
-	public Boolean deleteSessionByID(Integer ID) {
+	public Boolean deleteSessionByID(Integer ID) throws NoDataFoundException {
 		Boolean exist = repository.existsById(ID);
 
-		if (exist)
-			repository.deleteById(ID);
+		if (!exist)
+			throw new NoDataFoundException();
+		repository.deleteById(ID);
 
 		exist = repository.existsById(ID);
 		log.info("DB operation success! Deleted the Session : {}", !exist);
