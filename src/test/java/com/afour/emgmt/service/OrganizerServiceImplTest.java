@@ -27,6 +27,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.afour.emgmt.config.EventMgmtConfiguration;
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.User;
+import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.UserRepository;
@@ -71,7 +72,7 @@ class OrganizerServiceImplTest {
 
 	@DisplayName("fetchAllOrganizers")
 	@Test
-	void fetchAllOrganizers() {
+	void fetchAllOrganizers() throws NoDataFoundException, Exception{
 		List<User> organizers = List.of(TestUtils.buildOrganizer("User1"),
 				TestUtils.buildOrganizer("User2"),
 				TestUtils.buildOrganizer("User3"),
@@ -86,7 +87,7 @@ class OrganizerServiceImplTest {
 	@DisplayName("findOrganizerByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER101", "USER201" })
-	void findOrganizerByID(String userName) {
+	void findOrganizerByID(String userName) throws NoDataFoundException, Exception{
 		User organizer = TestUtils.buildOrganizer(userName);
 		organizer = repository.saveAndFlush(organizer);
 		Integer id = organizer.getUserId();
@@ -99,7 +100,7 @@ class OrganizerServiceImplTest {
 	@DisplayName("findOrganizerByUserName")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1011", "USER2011" })
-	void findOrganizerByUserName(String userName) {
+	void findOrganizerByUserName(String userName) throws NoDataFoundException, Exception{
 		User organizer = TestUtils.buildOrganizer(userName);
 		organizer = repository.saveAndFlush(organizer);
 		UserDTO resultDTO = service.findOrganizerByUserName(userName);
@@ -122,7 +123,7 @@ class OrganizerServiceImplTest {
 	@DisplayName("updateOrganizer")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER3101", "USER3201" })
-	void updateOrganizer(String userName) {
+	void updateOrganizer(String userName) throws NoDataFoundException, Exception{
 		User exist = TestUtils.buildOrganizer(userName);
 		exist = repository.saveAndFlush(exist);
 		
@@ -139,7 +140,7 @@ class OrganizerServiceImplTest {
 	@DisplayName("deleteOrganizerByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1301", "USER2301" })
-	void deleteOrganizerByID(String userName) {
+	void deleteOrganizerByID(String userName) throws NoDataFoundException, Exception{
 		User input = TestUtils.buildOrganizer(userName);
 		repository.saveAndFlush(input);
 

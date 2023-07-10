@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.exception.EmptyRequestException;
+import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.EventDTO;
 import com.afour.emgmt.service.EventService;
 
@@ -51,7 +53,7 @@ public class EventController {
 	GenericResponse genericResponse;
 
 	private AppResponse response;
-	
+
 	/* Get all the existing events without any filter */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the events without any filter!")
@@ -59,15 +61,12 @@ public class EventController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/events", produces = "application/json")
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> fetchAllEvents() {
+	public ResponseEntity<AppResponse> fetchAllEvents() throws NoDataFoundException, Exception {
 		List<EventDTO> result = service.fetchAllEvents();
-
-		if (result == null)
-			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
-	
+
 	/* Get all the existing events by filtering them on there status */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the OPEN evets!")
@@ -76,17 +75,16 @@ public class EventController {
 	@GetMapping(value = "/", produces = "application/json")
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> fetchEventsByStatus(
-			@RequestParam(value = "open", defaultValue = "true") final Boolean status) {
+			@RequestParam(value = "open", defaultValue = "true") final Boolean status)
+			throws NoDataFoundException, Exception {
 		if (null == status)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		List<EventDTO> result = service.fetchEventsByStatus(status);
-		if (result == null)
-			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
-	
+
 	/* Get one existing event using its id */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch an Event by ID!")
@@ -94,17 +92,16 @@ public class EventController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{id}", produces = "application/json")
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findEventByID(@PathVariable(value = "id") final Integer id) {
+	public ResponseEntity<AppResponse> findEventByID(@PathVariable(value = "id") final Integer id)
+			throws NoDataFoundException, Exception {
 		if (null == id)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		EventDTO result = service.findEventByID(id);
-		if (result == null)
-			return new ResponseEntity(genericResponse.getNoDataFoundResponse(), HttpStatus.OK);
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
-	
+
 	/* Create a new event */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Event.")
@@ -112,20 +109,16 @@ public class EventController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> addEvent(@RequestBody EventDTO eventDTO) {
+	public ResponseEntity<AppResponse> addEvent(@RequestBody EventDTO eventDTO) throws Exception {
 		if (null == eventDTO)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		EventDTO result = service.addEvent(eventDTO);
-		if (result == null)
-			return new ResponseEntity(
-					genericResponse.getRequestFailResponse("event.create.fail", new EventDTO[] { eventDTO }),
-					HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("event.create.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-	
+
 	/* update one existing event */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update an Event.")
@@ -133,35 +126,30 @@ public class EventController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = "application/json", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> updateEvent(@RequestBody EventDTO eventDTO) {
+	public ResponseEntity<AppResponse> updateEvent(@RequestBody EventDTO eventDTO)
+			throws NoDataFoundException, Exception {
 		if (null == eventDTO)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		EventDTO result = service.updateEvent(eventDTO);
-		if (result == null)
-			return new ResponseEntity(
-					genericResponse.getRequestFailResponse("event.update.fail", new EventDTO[] { eventDTO }),
-					HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("event.update.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
-	
+
 	/* delete one existing event */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete the Event.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested event!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@DeleteMapping(value = "/{id}",  produces = "application/json")
+	@DeleteMapping(value = "/{id}", produces = "application/json")
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> deleteEventByID(@PathVariable(value = "id") final Integer id) {
+	public ResponseEntity<AppResponse> deleteEventByID(@PathVariable(value = "id") final Integer id)
+			throws NoDataFoundException, Exception {
 		if (null == id)
-			return new ResponseEntity(genericResponse.getEmtyRequestResponse(), HttpStatus.BAD_REQUEST);
+			throw new EmptyRequestException();
 
 		Boolean result = service.deleteEventByID(id);
-		if (result == null)
-			return new ResponseEntity(genericResponse.getRequestFailResponse("event.delete.fail", new Integer[] { id }),
-					HttpStatus.BAD_REQUEST);
 
 		response = genericResponse.getRequestSuccessResponse("event.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity(response, HttpStatus.OK);
