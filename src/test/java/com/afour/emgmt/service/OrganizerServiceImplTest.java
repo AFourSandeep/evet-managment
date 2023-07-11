@@ -28,6 +28,7 @@ import com.afour.emgmt.config.EventMgmtConfiguration;
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.User;
 import com.afour.emgmt.exception.NoDataFoundException;
+import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.UserRepository;
@@ -112,7 +113,7 @@ class OrganizerServiceImplTest {
 	@DisplayName("addOrganizer")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1101", "USER2201" })
-	void addOrganizer(String userName) {
+	void addOrganizer(String userName) throws UserAlreadyExistException, Exception {
 		UserDTO inputDTO = TestUtils.buildOrganizerDTO(userName);
 		UserDTO resultDTO = service.addOrganizer(inputDTO);
 		assertNotNull(resultDTO);
