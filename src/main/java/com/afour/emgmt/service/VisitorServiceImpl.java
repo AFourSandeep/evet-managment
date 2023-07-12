@@ -100,7 +100,7 @@ public class VisitorServiceImpl implements VisitorService {
 		}
 
 
-		Role role = roleRepository.findByRoleName(UtilConstant.ROLE_ORGANIZER)
+		Role role = roleRepository.findByRoleNameIgnoreCase(UtilConstant.ROLE_ORGANIZER)
 				.orElseThrow(() -> new UndefinedRoleException());
 		
 		User entity = mapper.prepareForCreate(dto);

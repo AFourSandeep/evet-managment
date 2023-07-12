@@ -29,6 +29,7 @@ import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.User;
 import com.afour.emgmt.exception.NoDataFoundException;
+import com.afour.emgmt.exception.UndefinedRoleException;
 import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.model.UserRegistrationDTO;
@@ -113,7 +114,7 @@ class VisitorServiceImplTest {
 	@DisplayName("addVisitor")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1101", "USER2201" })
-	void addVisitor(String userName) throws UserAlreadyExistException, Exception{
+	void addVisitor(String userName) throws UserAlreadyExistException, UndefinedRoleException, Exception{
 		UserDTO inputDTO = TestUtils.buildVisitorDTO(userName);
 		UserDTO resultDTO = service.addVisitor(inputDTO);
 		assertNotNull(resultDTO);

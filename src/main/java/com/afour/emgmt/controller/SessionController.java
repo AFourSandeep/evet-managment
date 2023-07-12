@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
-import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.common.AppResponseBuilder;
 import com.afour.emgmt.exception.EmptyRequestException;
 import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.EsessionDTO;
@@ -51,7 +51,7 @@ public class SessionController {
 	MessageSource messages;
 
 	@Autowired
-	GenericResponse genericResponse;
+	AppResponseBuilder responseBuilder;
 
 	private AppResponse response;
 
@@ -69,7 +69,7 @@ public class SessionController {
 
 		List<EsessionDTO> result = service.findSessionEventByID(eventId);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity(responseBuilder.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get a existing session using its id */
@@ -86,7 +86,7 @@ public class SessionController {
 
 		EsessionDTO result = service.findSessionByID(id);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity(responseBuilder.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Create a new session under any event */
@@ -102,7 +102,7 @@ public class SessionController {
 
 		EsessionDTO result = service.addSession(dto);
 
-		response = genericResponse.getRequestSuccessResponse("session.create.success", result, HttpStatus.CREATED);
+		response = responseBuilder.getRequestSuccessResponse("session.create.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
@@ -120,7 +120,7 @@ public class SessionController {
 
 		EsessionDTO result = service.updateSession(dto);
 		
-		response = genericResponse.getRequestSuccessResponse("session.update.successs", result, HttpStatus.CREATED);
+		response = responseBuilder.getRequestSuccessResponse("session.update.successs", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
@@ -138,7 +138,7 @@ public class SessionController {
 
 		Boolean result = service.deleteSessionByID(id);
 
-		response = genericResponse.getRequestSuccessResponse("session.delete.success", result, HttpStatus.ACCEPTED);
+		response = responseBuilder.getRequestSuccessResponse("session.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 

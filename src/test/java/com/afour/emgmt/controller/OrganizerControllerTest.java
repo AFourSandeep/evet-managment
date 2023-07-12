@@ -8,11 +8,12 @@ import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Locale;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,13 +24,15 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.afour.emgmt.common.AppResponse;
-import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.common.AppResponseBuilderImpl;
 import com.afour.emgmt.exception.NoDataFoundException;
+import com.afour.emgmt.exception.UndefinedRoleException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.service.OrganizerService;
 import com.afour.emgmt.util.TestUtils;
@@ -39,19 +42,30 @@ import com.afour.emgmt.util.TestUtils;
  */
 @Disabled
 @ExtendWith(MockitoExtension.class)
+@PropertySource("classpath:messages.properties")
 class OrganizerControllerTest {
 
 	@Mock
-	OrganizerService orgService;
+	OrganizerService service;
 	
 	@Mock
-	MessageSource messages;;
+	static ResourceBundleMessageSource messages = new ResourceBundleMessageSource();
 	
 	@Mock
-	GenericResponse genericResponse;
+	AppResponseBuilderImpl responseBuilder;
 
 	@InjectMocks
-	OrganizerController orgController;
+	OrganizerController controller;
+	
+	
+	
+	@BeforeAll
+	public static void setUp() {
+//		messages = Mockito.mock(MessageSource.class);
+//	  when(messages.getMessage(anyString(), any(Object[].class),any(Locale.class))).thenReturn("");
+//	  delegatingMessageSource.setParentMessageSource(messages);
+		messages.setBasename("messages");
+	}
 
 	@DisplayName("fetchAllOrganizers_for_data")
 	@Test
@@ -61,12 +75,11 @@ class OrganizerControllerTest {
 				UserDTO.builder().userId(2).userName("User2").build(),
 				UserDTO.builder().userId(3).userName("User3").build(),
 				UserDTO.builder().userId(4).userName("User4").build());
-		when(orgService.fetchAllOrganizers()).thenReturn(dtos);
-		when(genericResponse.getSuccessDataFoundResponse(dtos,dtos.size())).thenCallRealMethod();
-		when(messages.getMessage(anyString(), any(Object[].class), any()))
-	    .thenReturn("");
+		when(service.fetchAllOrganizers()).thenReturn(dtos);
+		when(responseBuilder.getSuccessDataFoundResponse(dtos, dtos.size())).thenCallRealMethod();
+		when(messages.getMessage("success.data.found.size", new Object[] { dtos.size() }, Locale.US)).thenCallRealMethod();
 		// when
-		ResponseEntity<AppResponse> response = orgController.fetchAllOrganizers();
+		ResponseEntity<AppResponse> response = controller.fetchAllOrganizers();
 
 		// then
 		assertNotNull(response);
@@ -87,10 +100,10 @@ class OrganizerControllerTest {
 	@Test
 	void fetchAllOrganizers_for_no_data() throws Exception {
 		//given
-		when(orgService.fetchAllOrganizers()).thenReturn(null);
+		when(service.fetchAllOrganizers()).thenReturn(null);
 		
 		//when
-		var result= orgController.fetchAllOrganizers();
+		var result= controller.fetchAllOrganizers();
 		//then
 		assertEquals(HttpStatus.OK,result.getStatusCode());
 	}
@@ -100,10 +113,10 @@ class OrganizerControllerTest {
 	@ValueSource(ints = { 101, 102, 103, 104 })
 	void findOrganizerByID_for_data(Integer ID) throws NoDataFoundException, Exception {
 		// given
-		when(orgService.findOrganizerByID(ID)).thenReturn(UserDTO.builder().userId(ID).userName("User"+ID).build());
+		when(service.findOrganizerByID(ID)).thenReturn(UserDTO.builder().userId(ID).userName("User"+ID).build());
 
 		// when
-		var response = orgController.findOrganizerByID(ID);
+		var response = controller.findOrganizerByID(ID);
 
 		// then
 		assertNotNull(response);
@@ -121,10 +134,10 @@ class OrganizerControllerTest {
 	@ValueSource(ints = { 101, 102})
 	void findOrganizerByID_for_no_data(Integer ID) throws NoDataFoundException, Exception{
 		//given
-		when(orgService.findOrganizerByID(ID)).thenReturn(null);
+		when(service.findOrganizerByID(ID)).thenReturn(null);
 		
 		//when
-		var result= orgController.findOrganizerByID(ID);
+		var result= controller.findOrganizerByID(ID);
 		//then
 		assertEquals(HttpStatus.OK,result.getStatusCode());
 		assertNull(result.getBody().getBody());
@@ -132,11 +145,11 @@ class OrganizerControllerTest {
 
 	@DisplayName("findOrganizerByID_for_empty_param")
 	@Test
-	void findOrganizerByID_for_empty_param() throws NoDataFoundException, Exception{
+	void findOrganizerByID_for_empty_param() throws NoDataFoundException, Exception {
 		// given
 
 		// when
-		var result = orgController.findOrganizerByID(null);
+		var result = controller.findOrganizerByID(null);
 		// then
 		assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 		assertNull(result.getBody().getBody());
@@ -145,14 +158,14 @@ class OrganizerControllerTest {
 	@DisplayName("findOrganizerByUserName_for_data")
 	@ParameterizedTest
 	@ValueSource(strings = { "User1", "User2", "User3", "User4" })
-	void findOrganizerByUserName_for_data(String username) throws NoDataFoundException, Exception{
+	void findOrganizerByUserName_for_data(String username) throws NoDataFoundException, Exception {
 		// given
 		Integer ID = TestUtils.getRandomNumber();
-		when(orgService.findOrganizerByUserName(username))
+		when(service.findOrganizerByUserName(username))
 				.thenReturn(UserDTO.builder().userId(ID).userName(username).build());
 
 		// when
-		var response = orgController.findOrganizerByUserName(username);
+		var response = controller.findOrganizerByUserName(username);
 
 		// then
 		assertNotNull(response);
@@ -161,8 +174,7 @@ class OrganizerControllerTest {
 		UserDTO resultDto = (UserDTO) response.getBody().getBody();
 		assertNotNull(resultDto);
 		assertEquals(HttpStatus.OK, response.getBody().getStatus());
-		assertAll(() -> assertEquals(ID, resultDto.getUserId()),
-				() -> assertEquals(username, resultDto.getUserName()));
+		assertAll(() -> assertEquals(ID, resultDto.getUserId()), () -> assertEquals(username, resultDto.getUserName()));
 	}
 
 	@DisplayName("findOrganizerByUserName_for_no_data")
@@ -170,10 +182,10 @@ class OrganizerControllerTest {
 	@ValueSource(strings = { "User1", "User2" })
 	void findOrganizerByUserName_for_no_data(String username) throws NoDataFoundException, Exception{
 		//given
-		when(orgService.findOrganizerByUserName(username)).thenReturn(null);
+		when(service.findOrganizerByUserName(username)).thenReturn(null);
 		
 		//when
-		var result= orgController.findOrganizerByUserName(username);
+		var result= controller.findOrganizerByUserName(username);
 		//then
 		assertEquals(HttpStatus.OK,result.getStatusCode());
 		assertNull(result.getBody().getBody());
@@ -181,35 +193,29 @@ class OrganizerControllerTest {
 
 	@DisplayName("findOrganizerByUserName_for_empty_param")
 	@Test
-	void findOrganizerByUserName_for_empty_param() throws NoDataFoundException, Exception{
+	void findOrganizerByUserName_for_empty_param() throws NoDataFoundException, Exception {
 		// given
 
 		// when
-		var result = orgController.findOrganizerByUserName(null);
+		var result = controller.findOrganizerByUserName(null);
 		// then
 		assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 		assertNull(result.getBody().getBody());
 	}
-	
+
 	@DisplayName("addOrganizer_for_data")
 	@ParameterizedTest
-	@CsvSource({"User1,User101", "User2,User202", "User3,User303"})
-	void addOrganizer_for_data(String firstName,String username) throws NoDataFoundException, Exception{
+	@CsvSource({ "User1,User101", "User2,User202", "User3,User303" })
+	void addOrganizer_for_data(String firstName, String username)
+			throws NoDataFoundException, UndefinedRoleException, Exception {
 		// given
-		Integer ID  = TestUtils.getRandomNumber();
-		UserDTO request = UserDTO.builder()
-		.firstName(firstName)
-		.userName(username)
-		.build();
-		when(orgService.addOrganizer(request))
-				.thenReturn(UserDTO.builder()
-						.userId(ID)
-						.firstName(firstName)
-						.userName(username)
-						.build());
+		Integer ID = TestUtils.getRandomNumber();
+		UserDTO request = UserDTO.builder().firstName(firstName).userName(username).build();
+		when(service.addOrganizer(request))
+				.thenReturn(UserDTO.builder().userId(ID).firstName(firstName).userName(username).build());
 
 		// when
-		var response = orgController.addOrganizer(request);
+		var response = controller.addOrganizer(request);
 
 		// then
 		assertNotNull(response);
@@ -225,29 +231,27 @@ class OrganizerControllerTest {
 
 	@DisplayName("addOrganizer_for_no_data")
 	@ParameterizedTest
-	@CsvSource({"User1,User101", "User2,User202", "User3,User303"})
-	void addOrganizer_for_no_data(String firstName,String username) throws NoDataFoundException, Exception{
-		//given
-		UserDTO request = UserDTO.builder()
-				.firstName(firstName)
-				.userName(username)
-				.build();
-		when(orgService.addOrganizer(any())).thenReturn(null);
-		
-		//when
-		var result= orgController.addOrganizer(request);
-		//then
-		assertEquals(HttpStatus.BAD_REQUEST,result.getStatusCode());
+	@CsvSource({ "User1,User101", "User2,User202", "User3,User303" })
+	void addOrganizer_for_no_data(String firstName, String username)
+			throws NoDataFoundException, UndefinedRoleException, Exception {
+		// given
+		UserDTO request = UserDTO.builder().firstName(firstName).userName(username).build();
+		when(service.addOrganizer(any())).thenReturn(null);
+
+		// when
+		var result = controller.addOrganizer(request);
+		// then
+		assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 		assertNull(result.getBody().getBody());
 	}
 
 	@DisplayName("addOrganizer_for_empty_param")
 	@Test
-	void addOrganizer_for_empty_param() throws NoDataFoundException, Exception{
+	void addOrganizer_for_empty_param() throws NoDataFoundException, Exception {
 		// given
 
 		// when
-		var result = orgController.addOrganizer(null);
+		var result = controller.addOrganizer(null);
 		// then
 		assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
 		assertNull(result.getBody().getBody());

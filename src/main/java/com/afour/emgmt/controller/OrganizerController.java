@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
-import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.common.AppResponseBuilder;
 import com.afour.emgmt.exception.EmptyRequestException;
 import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.exception.UndefinedRoleException;
@@ -53,7 +53,7 @@ public class OrganizerController {
 	MessageSource messages;
 
 	@Autowired
-	GenericResponse genericResponse;
+	AppResponseBuilder responseBuilder;
 
 	private AppResponse response;
 
@@ -67,7 +67,7 @@ public class OrganizerController {
 	public ResponseEntity<AppResponse> fetchAllOrganizers() throws NoDataFoundException, Exception {
 		List<UserDTO> result = service.fetchAllOrganizers();
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity(responseBuilder.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get one existing organizer using its id */
@@ -84,7 +84,7 @@ public class OrganizerController {
 
 		UserDTO result = service.findOrganizerByID(id);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity(responseBuilder.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Get one existing organizer using its username */
@@ -101,7 +101,7 @@ public class OrganizerController {
 
 		UserDTO result = service.findOrganizerByUserName(userName);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity(responseBuilder.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Create a new organizer */
@@ -117,7 +117,7 @@ public class OrganizerController {
 
 		UserDTO result = service.addOrganizer(dto);
 
-		response = genericResponse.getRequestSuccessResponse("organizer.create.success", result, HttpStatus.CREATED);
+		response = responseBuilder.getRequestSuccessResponse("organizer.create.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
@@ -135,7 +135,7 @@ public class OrganizerController {
 
 		UserDTO result = service.updateOrganizer(dto);
 
-		response = genericResponse.getRequestSuccessResponse("organizer.update.success", result, HttpStatus.CREATED);
+		response = responseBuilder.getRequestSuccessResponse("organizer.update.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
@@ -153,7 +153,7 @@ public class OrganizerController {
 
 		Boolean result = service.deleteOrganizerByID(id);
 
-		response = genericResponse.getRequestSuccessResponse("organizer.delete.success", result, HttpStatus.ACCEPTED);
+		response = responseBuilder.getRequestSuccessResponse("organizer.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 

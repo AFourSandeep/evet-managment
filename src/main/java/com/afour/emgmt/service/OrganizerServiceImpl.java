@@ -70,7 +70,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 		repository.findByUserName(dto.getUserName())
 		.ifPresent(u -> new UserAlreadyExistException());
 
-		Role role = roleRepository.findByRoleName(UtilConstant.ROLE_ORGANIZER)
+		Role role = roleRepository.findByRoleNameIgnoreCase(UtilConstant.ROLE_ORGANIZER)
 				.orElseThrow(() -> new UndefinedRoleException());
 
 		User entity = mapper.prepareForCreate(dto);

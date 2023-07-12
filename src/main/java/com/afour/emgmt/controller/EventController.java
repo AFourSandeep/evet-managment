@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
-import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.common.AppResponseBuilder;
 import com.afour.emgmt.exception.EmptyRequestException;
 import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.EventDTO;
@@ -51,7 +51,7 @@ public class EventController {
 	MessageSource messages;
 
 	@Autowired
-	GenericResponse genericResponse;
+	AppResponseBuilder responseBuilder;
 
 	private AppResponse response;
 
@@ -65,7 +65,7 @@ public class EventController {
 	public ResponseEntity<AppResponse> fetchAllEvents() throws NoDataFoundException, Exception {
 		List<EventDTO> result = service.fetchAllEvents();
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity(responseBuilder.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get all the existing events by filtering them on there status */
@@ -83,7 +83,7 @@ public class EventController {
 
 		List<EventDTO> result = service.fetchEventsByStatus(status);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity(responseBuilder.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get one existing event using its id */
@@ -100,7 +100,7 @@ public class EventController {
 
 		EventDTO result = service.findEventByID(id);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity(responseBuilder.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Create a new event */
@@ -116,7 +116,7 @@ public class EventController {
 
 		EventDTO result = service.addEvent(eventDTO);
 
-		response = genericResponse.getRequestSuccessResponse("event.create.success", result, HttpStatus.CREATED);
+		response = responseBuilder.getRequestSuccessResponse("event.create.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
@@ -134,7 +134,7 @@ public class EventController {
 
 		EventDTO result = service.updateEvent(eventDTO);
 
-		response = genericResponse.getRequestSuccessResponse("event.update.success", result, HttpStatus.ACCEPTED);
+		response = responseBuilder.getRequestSuccessResponse("event.update.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
@@ -152,7 +152,7 @@ public class EventController {
 
 		Boolean result = service.deleteEventByID(id);
 
-		response = genericResponse.getRequestSuccessResponse("event.delete.success", result, HttpStatus.ACCEPTED);
+		response = responseBuilder.getRequestSuccessResponse("event.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 

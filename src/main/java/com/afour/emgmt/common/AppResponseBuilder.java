@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 /**
  * 
  */
-public interface GenericResponse {
+public interface AppResponseBuilder {
 
 	AppResponse getSuccessDataFoundResponse(Object result, Integer size);
 

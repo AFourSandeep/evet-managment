@@ -15,7 +15,7 @@ CREATE TABLE `role` (
 
 --LOCK TABLES `role` WRITE;
 
-INSERT INTO `role` VALUES (1,'Organiser'),(2,'Visitor');
+INSERT INTO `role` VALUES (1,'organizer'),(2,'visitor');
 
 --UNLOCK TABLES;
 

@@ -14,6 +14,6 @@ import com.afour.emgmt.entity.Role;
  */
 public interface RoleRepository extends JpaRepository<Role, Integer>{
 
-	Optional<Role> findByRoleName(String roleOrganizer);
+	Optional<Role> findByRoleNameIgnoreCase(String roleOrganizer);
 
 }

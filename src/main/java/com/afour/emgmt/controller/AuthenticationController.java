@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.AuthRequest;
-import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.common.AppResponseBuilder;
 import com.afour.emgmt.common.LoginResponse;
 import com.afour.emgmt.model.UserInfoUserDetails;
 import com.afour.emgmt.service.JwtService;
@@ -46,7 +46,7 @@ public class AuthenticationController {
 	private AuthenticationManager authenticationManager;
 	
 	@Autowired
-	GenericResponse genericResponse;
+	AppResponseBuilder responseBuilder;
 	
 	@PostMapping(value = "/token", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
@@ -72,7 +72,7 @@ public class AuthenticationController {
 	
 	@GetMapping(value = "/access-denied", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<AppResponse> accessDeniedHandler() {
-		return new ResponseEntity(genericResponse.getAccessDeniedResponse(), HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity(responseBuilder.getAccessDeniedResponse(), HttpStatus.UNAUTHORIZED);
 	}
 
 }

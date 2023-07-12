@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
-public class GenericResponseImpl implements GenericResponse {
+public class AppResponseBuilderImpl implements AppResponseBuilder {
 
 	@Autowired
 	MessageSource messages;
