@@ -53,7 +53,7 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<EventDTO> fetchEventsByStatus(final Boolean status) {
+	public List<EventDTO> fetchEventsByStatus(final boolean status) {
 		List<Event> entities = repository.fetchEventsByStatus(!status);
 
 		log.info("DB operation success! Fetched {} Open Events!", entities.size());
@@ -97,16 +97,14 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Boolean deleteEventByID(Integer ID) throws NoDataFoundException {
-		Boolean exist = repository.existsById(ID);
+	public boolean deleteEventByID(Integer ID) {
+		boolean exist = repository.existsById(ID);
 
-		if (!exist)
-			throw new NoDataFoundException();
-		
+		if (exist)
 			repository.deleteById(ID);
 
 		exist = repository.existsById(ID);
-		log.info("DB operation success! Deleted the Eevent : {}", !exist);
+		log.info("DB operation success! Deleted the Event : {}", !exist);
 
 		return !exist;
 	}

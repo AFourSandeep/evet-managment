@@ -135,7 +135,7 @@ public class VisitorController {
 		if (null == id)
 			throw new EmptyRequestException();
 
-		Boolean result = service.deleteVisitorByID(id);
+		boolean result = service.deleteVisitorByID(id);
 
 		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity<>(response, HttpStatus.OK);

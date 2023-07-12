@@ -134,7 +134,7 @@ public class OrganizerController {
 		if (null == id)
 			throw new EmptyRequestException();
 
-		Boolean result = service.deleteOrganizerByID(id);
+		boolean result = service.deleteOrganizerByID(id);
 
 		AppResponse response = genericResponse.getRequestSuccessResponse("organizer.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity<>(response, HttpStatus.OK);

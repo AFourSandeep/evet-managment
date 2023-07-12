@@ -19,6 +19,6 @@ import com.afour.emgmt.entity.Event;
 public interface EventRepository extends JpaRepository<Event, Integer>{
 	
 	@Query(value = "SELECT e from Event e WHERE e.isClosed= :status")
-	List<Event> fetchEventsByStatus(@Param("status") Boolean status);
+	List<Event> fetchEventsByStatus(@Param("status") boolean status);
 
 }

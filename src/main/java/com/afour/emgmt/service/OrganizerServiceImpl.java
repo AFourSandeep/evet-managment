@@ -91,13 +91,12 @@ public class OrganizerServiceImpl implements OrganizerService {
 		return mapper.entityToDTO(user);
 	}
 
-	@Override
-	public Boolean deleteOrganizerByID(final Integer ID) throws NoDataFoundException {
-		Boolean exist = repository.existsById(ID);
-		if (!exist)
-			throw new NoDataFoundException();
+    @Override
+    public boolean deleteOrganizerByID(final Integer ID) {
+        boolean exist = repository.existsById(ID);
+        if (!exist) throw new NoDataFoundException();
 
-		repository.deleteById(ID);
+        repository.deleteById(ID);
 
 		exist = repository.existsById(ID);
 		log.info("DB operation success! Deleted the Organizer : {}", !exist);

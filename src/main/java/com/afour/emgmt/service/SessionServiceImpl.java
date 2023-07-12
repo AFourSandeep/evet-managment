@@ -93,8 +93,8 @@ public class SessionServiceImpl implements SessionService {
 	}
 
 	@Override
-	public Boolean deleteSessionByID(Integer ID) throws NoDataFoundException {
-		Boolean exist = repository.existsById(ID);
+	public Boolean deleteSessionByID(Integer ID) {
+		boolean exist = repository.existsById(ID);
 
 		if (!exist)
 			throw new NoDataFoundException();

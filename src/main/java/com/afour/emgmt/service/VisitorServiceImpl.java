@@ -143,8 +143,8 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public Boolean deleteVisitorByID(final Integer ID) throws NoDataFoundException {
-		Boolean exist = repository.existsById(ID);
+	public boolean deleteVisitorByID(final Integer ID) {
+		boolean exist = repository.existsById(ID);
 
 		if (!exist)
 			throw new NoDataFoundException();

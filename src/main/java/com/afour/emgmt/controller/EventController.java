@@ -135,7 +135,7 @@ public class EventController {
 		if (null == id)
 			throw new EmptyRequestException();
 
-		Boolean result = service.deleteEventByID(id);
+		boolean result = service.deleteEventByID(id);
 
 		AppResponse response = genericResponse.getRequestSuccessResponse("event.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity<>(response, HttpStatus.OK);
