@@ -1,9 +1,5 @@
 package com.afour.emgmt.service;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
@@ -26,7 +22,6 @@ import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.User;
-import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.EsessionDTO;
 import com.afour.emgmt.model.EventDTO;
 import com.afour.emgmt.repository.EventRepository;
@@ -34,6 +29,8 @@ import com.afour.emgmt.repository.SessionRepository;
 import com.afour.emgmt.repository.UserRepository;
 import com.afour.emgmt.util.MySQLTestImage;
 import com.afour.emgmt.util.TestUtils;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -56,9 +53,8 @@ class SessionServiceImplTest {
 	@Autowired
 	EventRepository eventRepository;
 	
-	@SuppressWarnings("rawtypes")
 	@Container
-	private static MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer(MySQLTestImage.MYSQL_80_IMAGE)
+	private static final MySQLContainer<?> mySQLContainer = new MySQLContainer<>(MySQLTestImage.MYSQL_80_IMAGE)
 			.withDatabaseName("event_mgmt").withInitScript("event_mgmt.sql");
 
 	@DynamicPropertySource
@@ -77,7 +73,7 @@ class SessionServiceImplTest {
 	@DisplayName("findSessionEventByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "Session-101", "Session-201" })
-	void findSessionEventByID(String title) throws NoDataFoundException, Exception{
+	void findSessionEventByID(String title) {
 		
 		User owner = TestUtils.buildOrganizer("Event Owner");
 		owner = userRepository.saveAndFlush(owner);
@@ -99,7 +95,7 @@ class SessionServiceImplTest {
 	@DisplayName("findSessionByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "Session-101", "Session-201" })
-	void findSessionByID(String title) throws NoDataFoundException, Exception{
+	void findSessionByID(String title) {
 		
 		User owner = TestUtils.buildOrganizer("Event Owner");
 		owner = userRepository.saveAndFlush(owner);
@@ -121,7 +117,7 @@ class SessionServiceImplTest {
 	@DisplayName("addSession")
 	@ParameterizedTest
 	@ValueSource(strings = { "Session-101", "Session-201" })
-	void addSession(String title) throws NoDataFoundException, Exception{
+	void addSession(String title) {
 		
 		User owner = TestUtils.buildOrganizer("Event Owner");
 		owner = userRepository.saveAndFlush(owner);
@@ -142,7 +138,7 @@ class SessionServiceImplTest {
 	@DisplayName("updateSession")
 	@ParameterizedTest
 	@ValueSource(strings = { "Session-101", "Session-201" })
-	void updateSession(String title) throws NoDataFoundException, Exception{
+	void updateSession(String title) {
 		
 		User owner = TestUtils.buildOrganizer("Event Owner");
 		owner = userRepository.saveAndFlush(owner);
@@ -169,7 +165,7 @@ class SessionServiceImplTest {
 	@DisplayName("findSessionByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "Session-101", "Session-201" })
-	void deleteSessionByID(String title) throws NoDataFoundException, Exception{
+	void deleteSessionByID(String title) {
 		
 		User owner = TestUtils.buildOrganizer("Event Owner");
 		owner = userRepository.saveAndFlush(owner);

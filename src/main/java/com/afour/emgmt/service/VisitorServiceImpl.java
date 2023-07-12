@@ -29,6 +29,7 @@ import com.afour.emgmt.repository.UserRepository;
 import com.afour.emgmt.util.UtilConstant;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 /**
  * 
@@ -101,10 +102,10 @@ public class VisitorServiceImpl implements VisitorService {
 
 		Set<Event> eventsToBeAdded = new HashSet<>();
 
-		if (newEventDtos != null && !newEventDtos.isEmpty()) {
+		if (!CollectionUtils.isEmpty(newEventDtos)) {
 			Set<Integer> newEventIds = newEventDtos.stream().map(EventDTO::getEventId).collect(Collectors.toSet());
 			List<Event> newEvents = eventRepository.findAllById(newEventIds);
-			newEvents.stream().forEach(e -> eventsToBeAdded.add(e));
+			eventsToBeAdded.addAll(newEvents);
 		}
 
 
@@ -125,17 +126,17 @@ public class VisitorServiceImpl implements VisitorService {
 	public UserDTO updateVisitor(final UserDTO dto) {
 		return repository.findById(dto.getUserId()).map(entity -> {
 
-		Set<Event> existingEvents = entity.getEvents();
+			Set<Event> existingEvents = entity.getEvents();
 
-		Set<EventDTO> newEvents = dto.getEvents();
-		if (newEvents != null && !newEvents.isEmpty()) {
-			Set<Integer> newEventIds = newEvents.stream().map(EventDTO::getEventId).collect(Collectors.toSet());
-			eventRepository.findAllById(newEventIds).stream().map(e -> existingEvents.add(e));
-			entity.setEvents(existingEvents);
-		}
+			Set<EventDTO> newEvents = dto.getEvents();
+			if (!CollectionUtils.isEmpty(newEvents)) {
+				Set<Integer> newEventIds = newEvents.stream().map(EventDTO::getEventId).collect(Collectors.toSet());
+				existingEvents.addAll(eventRepository.findAllById(newEventIds));
+				entity.setEvents(existingEvents);
+			}
 
-		entity = mapper.prepareForUpdate(entity, dto);
-		entity = repository.save(entity);
+			entity = mapper.prepareForUpdate(entity, dto);
+			entity = repository.save(entity);
 
 			log.info("DB operation success! Fetched Visitor : {}", entity.getUserId());
 			return mapper.entityToDTO(entity);
@@ -148,7 +149,7 @@ public class VisitorServiceImpl implements VisitorService {
 
 		if (!exist)
 			throw new NoDataFoundException();
-
+		
 		repository.deleteById(ID);
 
 		exist = repository.existsById(ID);
@@ -164,7 +165,7 @@ public class VisitorServiceImpl implements VisitorService {
 		Set<Integer> newEventIds = dto.getEventIds();
 		List<Event> newEvents = eventRepository.findAllById(newEventIds);
 		Set<Event> existingEvents = entity.getEvents();
-		newEvents.forEach(e -> existingEvents.add(e));
+		existingEvents.addAll(newEvents);
 
 		entity.setEvents(existingEvents);
 		User updated = repository.save(entity);

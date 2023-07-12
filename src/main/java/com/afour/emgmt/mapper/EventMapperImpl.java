@@ -47,7 +47,7 @@ public class EventMapperImpl implements EventMapper {
 	public List<EventDTO> entityToDTO(List<Event> entities) {
 		return entities
 				.stream()
-				.map(entity -> entityToDTO(entity))
+				.map(this::entityToDTO)
 				.collect(Collectors.toList());
 	}
 
@@ -55,14 +55,14 @@ public class EventMapperImpl implements EventMapper {
 	public List<Event> DTOToEntity(List<EventDTO> dtos) {
 		return dtos
 				.stream()
-				.map(dto -> DTOToEntity(dto))
+				.map(this::DTOToEntity)
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Event prepareForUpdate(Event entity, EventDTO dto) {
-		final String ACTOR = authentication.getAuthentication()!=null ?
-				authentication.getAuthentication().getName():UtilConstant.DEFAULT_USER;
+		final String ACTOR = authentication.getActor();
+
 		if (null != dto.getEventName())
 			entity.setEventName(dto.getEventName());
 		if (null != dto.getIsClosed())
@@ -83,7 +83,7 @@ public class EventMapperImpl implements EventMapper {
 	public Set<EventDTO> entityToDTO(Set<Event> entities) {
 		return entities
 				.stream()
-				.map(entity -> entityToDTO(entity))
+				.map(this::entityToDTO)
 				.collect(Collectors.toSet());
 	}
 
@@ -91,14 +91,14 @@ public class EventMapperImpl implements EventMapper {
 	public Set<Event> DTOToEntity(Set<EventDTO> dtos) {
 		return dtos
 				.stream()
-				.map(entity -> DTOToEntity(entity))
+				.map(this::DTOToEntity)
 				.collect(Collectors.toSet());
 	}
 	
 	@Override
 	public Event prepareForCreate(EventDTO dto) {
-		final String ACTOR = authentication.getAuthentication()!=null ?
-				authentication.getAuthentication().getName():UtilConstant.DEFAULT_USER;
+		final String ACTOR = authentication.getActor();
+
 		Event entity = this.DTOToEntity(dto);
 		entity.setCreatedAt(LocalDateTime.now());
 		entity.setCreatedBy(ACTOR);

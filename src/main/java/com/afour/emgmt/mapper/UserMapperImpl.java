@@ -50,7 +50,7 @@ public class UserMapperImpl implements UserMapper {
 	public List<UserDTO> entityToDTO(List<User> entities) {
 		return entities
 				.stream()
-				.map(entity -> entityToDTO(entity))
+				.map(this::entityToDTO)
 				.collect(Collectors.toList());
 	}
 
@@ -58,15 +58,12 @@ public class UserMapperImpl implements UserMapper {
 	public List<User> DTOToEntity(List<UserDTO> dtos) {
 		return dtos
 				.stream()
-				.map(dto -> DTOToEntity(dto))
+				.map(this::DTOToEntity)
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public User prepareForUpdate(User entity, UserDTO dto) {
-		final String ACTOR = authentication.getAuthentication()!=null ?
-				authentication.getAuthentication().getName():UtilConstant.DEFAULT_USER;
-		
 		if (null != dto.getFirstName())
 			entity.setFirstName(dto.getFirstName());
 		if (null != dto.getLastName())
@@ -77,15 +74,15 @@ public class UserMapperImpl implements UserMapper {
 			entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		
 		entity.setUpdatedAt(LocalDateTime.now());
-		entity.setUpdatedBy(ACTOR);
+		entity.setUpdatedBy(authentication.getActor());
 		
 		return entity;
 	}
 
 	@Override
 	public User prepareForCreate(UserDTO dto) {
-		final String ACTOR = authentication.getAuthentication()!=null ?
-				authentication.getAuthentication().getName():UtilConstant.DEFAULT_USER;
+		final String ACTOR = authentication.getActor();
+
 		User entity = this.DTOToEntity(dto);
 		entity.setCreatedAt(LocalDateTime.now());
 		entity.setCreatedBy(ACTOR);
@@ -99,7 +96,7 @@ public class UserMapperImpl implements UserMapper {
 	public Set<UserDTO> entityToDTO(Set<User> entities) {
 		return entities
 				.stream()
-				.map(entity -> entityToDTO(entity))
+				.map(this::entityToDTO)
 				.collect(Collectors.toSet());
 	}
 

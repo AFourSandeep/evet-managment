@@ -1,12 +1,9 @@
 /**
- * 
+ *
  */
 package com.afour.emgmt.controller;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -34,23 +31,23 @@ import com.afour.emgmt.service.OrganizerService;
 import com.afour.emgmt.util.TestUtils;
 
 /**
- * 
+ *
  */
 @Disabled
 @ExtendWith(MockitoExtension.class)
 class OrganizerControllerTest {
 
-	@Mock
-	OrganizerService orgService;
-	
-	@Mock
-	MessageSource messages;;
-	
-	@Mock
-	GenericResponse genericResponse;
+    @Mock
+    OrganizerService orgService;
 
-	@InjectMocks
-	OrganizerController orgController;
+    @Mock
+    MessageSource messages;
+
+    @Mock
+    GenericResponse genericResponse;
+
+    @InjectMocks
+    OrganizerController orgController;
 
     @DisplayName("fetchAllOrganizers_for_data")
     @Test
@@ -67,20 +64,20 @@ class OrganizerControllerTest {
         // when
         ResponseEntity<AppResponse> response = orgController.fetchAllOrganizers();
 
-		// then
-		assertNotNull(response);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+        // then
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		@SuppressWarnings("unchecked")
-		List<UserDTO> resultDtos = (List<UserDTO>) response.getBody().getBody();
-		assertNotNull(resultDtos);
-		assertEquals(HttpStatus.OK, response.getBody().getStatus());
-		assertEquals(dtos.size(), resultDtos.size());
-		assertAll(() -> assertEquals(1, resultDtos.get(0).getUserId()),
-				() -> assertEquals("User1", resultDtos.get(0).getUserName()),
-				() -> assertEquals(2, resultDtos.get(1).getUserId()),
-				() -> assertEquals("User2", resultDtos.get(1).getUserName()));
-	}
+        @SuppressWarnings("unchecked")
+        List<UserDTO> resultDtos = (List<UserDTO>) response.getBody().getBody();
+        assertNotNull(resultDtos);
+        assertEquals(HttpStatus.OK, response.getBody().getStatus());
+        assertEquals(dtos.size(), resultDtos.size());
+        assertAll(() -> assertEquals(1, resultDtos.get(0).getUserId()),
+                () -> assertEquals("User1", resultDtos.get(0).getUserName()),
+                () -> assertEquals(2, resultDtos.get(1).getUserId()),
+                () -> assertEquals("User2", resultDtos.get(1).getUserName()));
+    }
 
     @DisplayName("fetchAllOrganizers_for_no_data")
     @Test
@@ -101,19 +98,19 @@ class OrganizerControllerTest {
         // given
         when(orgService.findOrganizerByID(ID)).thenReturn(UserDTO.builder().userId(ID).userName("User" + ID).build());
 
-		// when
-		var response = orgController.findOrganizerByID(ID);
+        // when
+        var response = orgController.findOrganizerByID(ID);
 
-		// then
-		assertNotNull(response);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+        // then
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		UserDTO resultDto = (UserDTO) response.getBody().getBody();
-		assertNotNull(resultDto);
-		assertEquals(HttpStatus.OK, response.getBody().getStatus());
-		assertAll(() -> assertEquals(ID, resultDto.getUserId()),
-				() -> assertEquals("User"+ID, resultDto.getUserName()));
-	}
+        UserDTO resultDto = (UserDTO) response.getBody().getBody();
+        assertNotNull(resultDto);
+        assertEquals(HttpStatus.OK, response.getBody().getStatus());
+        assertAll(() -> assertEquals(ID, resultDto.getUserId()),
+                () -> assertEquals("User" + ID, resultDto.getUserName()));
+    }
 
     @DisplayName("findOrganizerByID_for_no_data")
     @ParameterizedTest
@@ -134,12 +131,12 @@ class OrganizerControllerTest {
     void findOrganizerByID_for_empty_param() {
         // given
 
-		// when
-		var result = orgController.findOrganizerByID(null);
-		// then
-		assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-		assertNull(result.getBody().getBody());
-	}
+        // when
+        var result = orgController.findOrganizerByID(null);
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        assertNull(result.getBody().getBody());
+    }
 
     @DisplayName("findOrganizerByUserName_for_data")
     @ParameterizedTest
@@ -150,19 +147,19 @@ class OrganizerControllerTest {
         when(orgService.findOrganizerByUserName(username))
                 .thenReturn(UserDTO.builder().userId(ID).userName(username).build());
 
-		// when
-		var response = orgController.findOrganizerByUserName(username);
+        // when
+        var response = orgController.findOrganizerByUserName(username);
 
-		// then
-		assertNotNull(response);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+        // then
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		UserDTO resultDto = (UserDTO) response.getBody().getBody();
-		assertNotNull(resultDto);
-		assertEquals(HttpStatus.OK, response.getBody().getStatus());
-		assertAll(() -> assertEquals(ID, resultDto.getUserId()),
-				() -> assertEquals(username, resultDto.getUserName()));
-	}
+        UserDTO resultDto = (UserDTO) response.getBody().getBody();
+        assertNotNull(resultDto);
+        assertEquals(HttpStatus.OK, response.getBody().getStatus());
+        assertAll(() -> assertEquals(ID, resultDto.getUserId()),
+                () -> assertEquals(username, resultDto.getUserName()));
+    }
 
     @DisplayName("findOrganizerByUserName_for_no_data")
     @ParameterizedTest
@@ -207,20 +204,20 @@ class OrganizerControllerTest {
                         .userName(username)
                         .build());
 
-		// when
-		var response = orgController.addOrganizer(request);
+        // when
+        var response = orgController.addOrganizer(request);
 
-		// then
-		assertNotNull(response);
-		assertEquals(HttpStatus.OK, response.getStatusCode());
+        // then
+        assertNotNull(response);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		UserDTO resultDto = (UserDTO) response.getBody().getBody();
-		assertNotNull(resultDto);
-		assertEquals(HttpStatus.CREATED, response.getBody().getStatus());
-		assertAll(() -> assertEquals(ID, resultDto.getUserId()),
-				() -> assertEquals(firstName, resultDto.getFirstName()),
-				() -> assertEquals(username, resultDto.getUserName()));
-	}
+        UserDTO resultDto = (UserDTO) response.getBody().getBody();
+        assertNotNull(resultDto);
+        assertEquals(HttpStatus.CREATED, response.getBody().getStatus());
+        assertAll(() -> assertEquals(ID, resultDto.getUserId()),
+                () -> assertEquals(firstName, resultDto.getFirstName()),
+                () -> assertEquals(username, resultDto.getUserName()));
+    }
 
     @DisplayName("addOrganizer_for_no_data")
     @ParameterizedTest
@@ -245,11 +242,11 @@ class OrganizerControllerTest {
     void addOrganizer_for_empty_param() {
         // given
 
-		// when
-		var result = orgController.addOrganizer(null);
-		// then
-		assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
-		assertNull(result.getBody().getBody());
-	}
+        // when
+        var result = orgController.addOrganizer(null);
+        // then
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
+        assertNull(result.getBody().getBody());
+    }
 
 }

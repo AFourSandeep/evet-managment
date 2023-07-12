@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.afour.emgmt.service;
 
@@ -23,20 +23,20 @@ import com.afour.emgmt.util.UtilConstant;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 
+ *
  */
 @Slf4j
 @Service
 public class OrganizerServiceImpl implements OrganizerService {
 
-	@Autowired
-	UserMapper mapper;
+    @Autowired
+    UserMapper mapper;
 
-	@Autowired
-	UserRepository repository;
+    @Autowired
+    UserRepository repository;
 
-	@Autowired
-	RoleRepository roleRepository;
+    @Autowired
+    RoleRepository roleRepository;
 
     @Override
     public List<UserDTO> fetchAllOrganizers() {
@@ -75,10 +75,10 @@ public class OrganizerServiceImpl implements OrganizerService {
 		User entity = mapper.prepareForCreate(dto);
         entity.setRole(role);
 
-		entity = repository.save(entity);
-		log.info("DB operation success! Added User : {}", entity.getUserId());
-		return mapper.entityToDTO(entity);
-	}
+        entity = repository.save(entity);
+        log.info("DB operation success! Added User : {}", entity.getUserId());
+        return mapper.entityToDTO(entity);
+    }
 
     @Override
     public UserDTO updateOrganizer(final UserDTO dto) {
@@ -89,7 +89,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 		user = repository.save(user);
 		log.info("DB operation success! Updated Organizer : {}", user.getUserId());
 		return mapper.entityToDTO(user);
-	}
+    }
 
     @Override
     public boolean deleteOrganizerByID(final Integer ID) {
@@ -98,9 +98,9 @@ public class OrganizerServiceImpl implements OrganizerService {
 
         repository.deleteById(ID);
 
-		exist = repository.existsById(ID);
-		log.info("DB operation success! Deleted the Organizer : {}", !exist);
-		return !exist;
-	}
+        exist = repository.existsById(ID);
+        log.info("DB operation success! Deleted the Organizer : {}", !exist);
+        return !exist;
+    }
 
 }

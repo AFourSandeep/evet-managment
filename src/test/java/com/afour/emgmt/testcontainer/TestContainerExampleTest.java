@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.afour.emgmt.common.RoleEnum;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import com.afour.emgmt.common.Actor;
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.entity.User;
@@ -44,9 +46,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TestContainerExampleTest {
 
-	@SuppressWarnings("rawtypes")
 	@Container
-	private static MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer(MySQLTestImage.MYSQL_80_IMAGE)
+	private static final MySQLContainer<?> mySQLContainer = new MySQLContainer<>(MySQLTestImage.MYSQL_80_IMAGE)
 			.withDatabaseName("event_mgmt").withInitScript("event_mgmt.sql");
 
 	@DynamicPropertySource
@@ -70,15 +71,15 @@ public class TestContainerExampleTest {
 
 	@Test
 	void addNewOrganizer_andGetCount() {
-		Role role = Role.builder().roleId(1).build();
+		Role role = Role.builder().roleId(RoleEnum.ORGANIZER).build();
 		User organizer = User.builder().userName("User1011").firstName("User").lastName("lastname")
 				.createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).password("password").role(role)
-				.createdBy(UtilConstant.DEFAULT_USER).updatedBy(UtilConstant.DEFAULT_USER).isActive(true)
+				.createdBy(Actor.DEFAULT_USER).updatedBy(Actor.DEFAULT_USER).isActive(true)
 				.build();
 
-		log.info("" + mySQLContainer.getJdbcUrl());
-		log.info("" + mySQLContainer.getJdbcDriverInstance());
-		log.info("" + mySQLContainer.getPortBindings());
+		log.info(mySQLContainer.getJdbcUrl());
+		log.info(String.valueOf(mySQLContainer.getJdbcDriverInstance()));
+		log.info(String.valueOf(mySQLContainer.getPortBindings()));
 
 		User savedUser = repository.save(organizer);
 

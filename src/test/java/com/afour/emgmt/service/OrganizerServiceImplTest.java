@@ -1,15 +1,8 @@
 package com.afour.emgmt.service;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
 import java.util.List;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -35,6 +28,8 @@ import com.afour.emgmt.repository.UserRepository;
 import com.afour.emgmt.util.MySQLTestImage;
 import com.afour.emgmt.util.TestUtils;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = { SpringDataJPAConfiguration.class, EventMgmtConfiguration.class })
@@ -53,9 +48,8 @@ class OrganizerServiceImplTest {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
-	@SuppressWarnings("rawtypes")
 	@Container
-	private static MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer(MySQLTestImage.MYSQL_80_IMAGE)
+	private static final MySQLContainer<?> mySQLContainer = new MySQLContainer<>(MySQLTestImage.MYSQL_80_IMAGE)
 			.withDatabaseName("event_mgmt").withInitScript("event_mgmt.sql");
 
 	@DynamicPropertySource
@@ -73,7 +67,7 @@ class OrganizerServiceImplTest {
 
 	@DisplayName("fetchAllOrganizers")
 	@Test
-	void fetchAllOrganizers() throws NoDataFoundException, Exception{
+	void fetchAllOrganizers() {
 		List<User> organizers = List.of(TestUtils.buildOrganizer("User1"),
 				TestUtils.buildOrganizer("User2"),
 				TestUtils.buildOrganizer("User3"),
@@ -82,13 +76,13 @@ class OrganizerServiceImplTest {
 		repository.saveAll(organizers);
 		List<UserDTO> dtos = service.fetchAllOrganizers();
 		assertNotNull(dtos);
-		assertTrue(!dtos.isEmpty());
+		Assertions.assertFalse(dtos.isEmpty());
 	}
 
 	@DisplayName("findOrganizerByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER101", "USER201" })
-	void findOrganizerByID(String userName) throws NoDataFoundException, Exception{
+	void findOrganizerByID(String userName) {
 		User organizer = TestUtils.buildOrganizer(userName);
 		organizer = repository.saveAndFlush(organizer);
 		Integer id = organizer.getUserId();
@@ -101,7 +95,7 @@ class OrganizerServiceImplTest {
 	@DisplayName("findOrganizerByUserName")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1011", "USER2011" })
-	void findOrganizerByUserName(String userName) throws NoDataFoundException, Exception{
+	void findOrganizerByUserName(String userName) {
 		User organizer = TestUtils.buildOrganizer(userName);
 		organizer = repository.saveAndFlush(organizer);
 		UserDTO resultDTO = service.findOrganizerByUserName(userName);
@@ -124,7 +118,7 @@ class OrganizerServiceImplTest {
 	@DisplayName("updateOrganizer")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER3101", "USER3201" })
-	void updateOrganizer(String userName) throws NoDataFoundException, Exception{
+	void updateOrganizer(String userName) {
 		User exist = TestUtils.buildOrganizer(userName);
 		exist = repository.saveAndFlush(exist);
 		
@@ -141,7 +135,7 @@ class OrganizerServiceImplTest {
 	@DisplayName("deleteOrganizerByID")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1301", "USER2301" })
-	void deleteOrganizerByID(String userName) throws NoDataFoundException, Exception{
+	void deleteOrganizerByID(String userName) {
 		User input = TestUtils.buildOrganizer(userName);
 		repository.saveAndFlush(input);
 

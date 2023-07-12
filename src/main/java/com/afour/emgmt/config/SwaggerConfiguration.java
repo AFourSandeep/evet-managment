@@ -40,8 +40,8 @@ public class SwaggerConfiguration {
 				.paths(PathSelectors.any())
 				.build()
 				.apiInfo(apiInfo())
-				.securitySchemes(Arrays.asList(apiKey()))
-                .securityContexts(Arrays.asList(securityContext()));
+				.securitySchemes(List.of(apiKey()))
+                .securityContexts(List.of(securityContext()));
 	}
 	
 	ApiInfo apiInfo() {
@@ -62,8 +62,7 @@ public class SwaggerConfiguration {
 
 	private List<SecurityReference> defaultAuth() {
 	    AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-	    AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-	    authorizationScopes[0] = authorizationScope;
+	    AuthorizationScope[] authorizationScopes = new AuthorizationScope[] {authorizationScope};
 	    return List.of(new SecurityReference("JWT", authorizationScopes));
 	}
 
