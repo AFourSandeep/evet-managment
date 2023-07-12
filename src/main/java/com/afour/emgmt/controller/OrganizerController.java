@@ -53,8 +53,6 @@ public class OrganizerController {
 		this.genericResponse = genericResponse;
 	}
 
-	private AppResponse response;
-
 	/* Get all the existing organizers without any filter */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the organizers without any filter!")
@@ -115,8 +113,8 @@ public class OrganizerController {
 
 		UserDTO result = service.addOrganizer(dto);
 
-		response = genericResponse.getRequestSuccessResponse("organizer.create.success", result, HttpStatus.CREATED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("organizer.create.success", result, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* update an existing organizer */
@@ -133,8 +131,8 @@ public class OrganizerController {
 
 		UserDTO result = service.updateOrganizer(dto);
 
-		response = genericResponse.getRequestSuccessResponse("organizer.update.success", result, HttpStatus.CREATED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("organizer.update.success", result, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* Delete one organizer using its id */
@@ -151,8 +149,8 @@ public class OrganizerController {
 
 		Boolean result = service.deleteOrganizerByID(id);
 
-		response = genericResponse.getRequestSuccessResponse("organizer.delete.success", result, HttpStatus.ACCEPTED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("organizer.delete.success", result, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }

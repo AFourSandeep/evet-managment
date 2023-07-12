@@ -53,8 +53,6 @@ public class SessionController {
 		this.genericResponse = genericResponse;
 	}
 
-	private AppResponse response;
-
 	/* Get all sessions of an event */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all Session by its Event Id.")
@@ -102,7 +100,7 @@ public class SessionController {
 
 		EsessionDTO result = service.addSession(dto);
 
-		response = genericResponse.getRequestSuccessResponse("session.create.success", result, HttpStatus.CREATED);
+		AppResponse response = genericResponse.getRequestSuccessResponse("session.create.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
@@ -119,9 +117,9 @@ public class SessionController {
 			throw new EmptyRequestException();
 
 		EsessionDTO result = service.updateSession(dto);
-		
-		response = genericResponse.getRequestSuccessResponse("session.update.successs", result, HttpStatus.CREATED);
-		return new ResponseEntity(response, HttpStatus.OK);
+
+		AppResponse response = genericResponse.getRequestSuccessResponse("session.update.success", result, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* Delete one existing session */
@@ -138,8 +136,8 @@ public class SessionController {
 
 		Boolean result = service.deleteSessionByID(id);
 
-		response = genericResponse.getRequestSuccessResponse("session.delete.success", result, HttpStatus.ACCEPTED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("session.delete.success", result, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }

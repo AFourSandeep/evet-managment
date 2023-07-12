@@ -31,14 +31,12 @@ public class GlobalExceptionHandler {
 		this.messages = messages;
 	}
 
-	private String message;
-
 	//To handle the unexpected termination
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public AppResponse handleException(Exception e) {
-		message = messages.getMessage("exception.occured", null, Locale.US);
+		String message = messages.getMessage("exception.occured", null, Locale.US);
 		log.error(message);
 		log.error(e.getMessage());
 		return AppResponse.builder().message(message).status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -48,7 +46,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
 	public AppResponse handleEmptyRequestException() {
-		message = messages.getMessage("failed.empty.request.body", null, Locale.US);
+		String message = messages.getMessage("failed.empty.request.body", null, Locale.US);
 		log.error(message);
 		return AppResponse.builder().message(message).status(HttpStatus.BAD_REQUEST).build();
 	}
@@ -57,7 +55,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public AppResponse handleNoDataFoundException() {
-		message = messages.getMessage("no.data.found", null, Locale.US);
+		String message = messages.getMessage("no.data.found", null, Locale.US);
 		log.error(message);
 		return AppResponse.builder().message(message).status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
@@ -66,7 +64,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public AppResponse handleUserAlreadyExistException() {
-		message = messages.getMessage("user.already.exists", null, Locale.US);
+		String message = messages.getMessage("user.already.exists", null, Locale.US);
 		log.error(message);
 		return AppResponse.builder().message(message).status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}

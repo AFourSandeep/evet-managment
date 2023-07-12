@@ -51,8 +51,6 @@ public class EventController {
 		this.genericResponse = genericResponse;
 	}
 
-	private AppResponse response;
-
 	/* Get all the existing events without any filter */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the events without any filter!")
@@ -114,8 +112,8 @@ public class EventController {
 
 		EventDTO result = service.addEvent(eventDTO);
 
-		response = genericResponse.getRequestSuccessResponse("event.create.success", result, HttpStatus.CREATED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("event.create.success", result, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* update one existing event */
@@ -132,8 +130,8 @@ public class EventController {
 
 		EventDTO result = service.updateEvent(eventDTO);
 
-		response = genericResponse.getRequestSuccessResponse("event.update.success", result, HttpStatus.ACCEPTED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("event.update.success", result, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* delete one existing event */
@@ -150,8 +148,8 @@ public class EventController {
 
 		Boolean result = service.deleteEventByID(id);
 
-		response = genericResponse.getRequestSuccessResponse("event.delete.success", result, HttpStatus.ACCEPTED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("event.delete.success", result, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }

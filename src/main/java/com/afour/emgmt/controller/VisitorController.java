@@ -54,8 +54,6 @@ public class VisitorController {
 		this.genericResponse = genericResponse;
 	}
 
-	private AppResponse response;
-
 	/* Get all the visitors without any filter */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the visitors without any filter!")
@@ -117,8 +115,8 @@ public class VisitorController {
 
 		UserDTO result = service.addVisitor(dto);
 
-		response = genericResponse.getRequestSuccessResponse("visitor.create.successs", result, HttpStatus.CREATED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.create.success", result, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* Update an existing visitor */
@@ -134,8 +132,8 @@ public class VisitorController {
 
 		UserDTO result = service.updateVisitor(dto);
 
-		response = genericResponse.getRequestSuccessResponse("visitor.update.successs", result, HttpStatus.CREATED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.update.success", result, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* Delete an existing visitor using its id */
@@ -152,8 +150,8 @@ public class VisitorController {
 
 		Boolean result = service.deleteVisitorByID(id);
 
-		response = genericResponse.getRequestSuccessResponse("visitor.delete.success", result, HttpStatus.ACCEPTED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.delete.success", result, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* Register one existing visitor for one or more events */
@@ -169,8 +167,8 @@ public class VisitorController {
 			throw new EmptyRequestException();
 
 		UserDTO result = service.registerVisitorForEvent(dto);
-		response = genericResponse.getRequestSuccessResponse("visitor.register.successs", result, HttpStatus.CREATED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.register.successs", result, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }
