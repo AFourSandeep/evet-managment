@@ -65,13 +65,13 @@ public class EventServiceImpl implements EventService {
 			EventDTO dto = mapper.entityToDTO(e);
 			Set<EsessionDTO> sessionDtos = sessionMapper.entityToDTO(e.getSessions());
 			dto.setSessions(sessionDtos);
-			
+
 			Set<UserDTO> visitorDtos = userMapper.entityToDTO(e.getVisitors());
 			dto.setVisitors(visitorDtos);
 			log.info("DB operation success! Fetched Event:{} ", dto.getEventId());
 			return dto;
-		}).orElseThrow(()->new NoDataFoundException());
-	}	
+		}).orElseThrow(NoDataFoundException::new);
+	}
 
 	@Override
 	public EventDTO addEvent(EventDTO dto) {
@@ -83,17 +83,15 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public EventDTO updateEvent(EventDTO dto) throws NoDataFoundException {
-		Event entity = repository.findById(dto.getEventId()).get();
+	public EventDTO updateEvent(EventDTO dto) {
+		return repository.findById(dto.getEventId()).map(entity -> {
+			entity = mapper.prepareForUpdate(entity, dto);
+			entity = repository.save(entity);
 
-		if (null == entity)
-			throw new NoDataFoundException();
+			log.info("DB operation success! Updated Event : {}", entity.getEventId());
+			return mapper.entityToDTO(entity);
+		}).orElse(null);
 
-		entity = mapper.prepareForUpdate(entity, dto);
-		entity = repository.save(entity);
-
-		log.info("DB operation success! Updated Event : {}", entity.getEventId());
-		return mapper.entityToDTO(entity);
 	}
 
 	@Override
