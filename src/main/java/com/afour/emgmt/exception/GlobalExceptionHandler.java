@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody
 	public AppResponse handleUndefinedRoleException() {
-		message = messages.getMessage("role.not.exist", null, Locale.US);
+		String message = messages.getMessage("role.not.exist", null, Locale.US);
 		log.error(message);
 		return AppResponse.builder().message(message).status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}

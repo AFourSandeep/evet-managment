@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.afour.emgmt.common.RoleEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,6 @@ import com.afour.emgmt.model.UserRegistrationDTO;
 import com.afour.emgmt.repository.EventRepository;
 import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.UserRepository;
-import com.afour.emgmt.util.UtilConstant;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
@@ -92,7 +92,6 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	@Transactional
 	public UserDTO addVisitor(final UserDTO dto)  {
 		Optional<User> optional = repository.findByUserName(dto.getUserName());
 		if (optional.isPresent())
@@ -109,8 +108,8 @@ public class VisitorServiceImpl implements VisitorService {
 		}
 
 
-		Role role = roleRepository.findByRoleName(UtilConstant.ROLE_ORGANIZER)
-				.orElseThrow(() -> new UndefinedRoleException());
+		Role role = roleRepository.findById(RoleEnum.ORGANIZER)
+				.orElseThrow(UndefinedRoleException::new);
 
 		User entity = mapper.prepareForCreate(dto);
 		entity.setRole(role);

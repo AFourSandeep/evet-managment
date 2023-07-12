@@ -6,7 +6,7 @@ package com.afour.emgmt.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.afour.emgmt.common.RoleEnum;
 import org.springframework.stereotype.Service;
 
 import com.afour.emgmt.entity.Role;
@@ -18,7 +18,6 @@ import com.afour.emgmt.mapper.UserMapper;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.UserRepository;
-import com.afour.emgmt.util.UtilConstant;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -29,14 +28,20 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class OrganizerServiceImpl implements OrganizerService {
 
-    @Autowired
+    private final
     UserMapper mapper;
 
-    @Autowired
+    private final
     UserRepository repository;
 
-    @Autowired
+    private final
     RoleRepository roleRepository;
+
+    public OrganizerServiceImpl(UserMapper mapper, UserRepository repository, RoleRepository roleRepository) {
+        this.mapper = mapper;
+        this.repository = repository;
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public List<UserDTO> fetchAllOrganizers() {
@@ -66,11 +71,13 @@ public class OrganizerServiceImpl implements OrganizerService {
 
     @Override
     public UserDTO addOrganizer(final UserDTO dto) {
-		repository.findByUserName(dto.getUserName())
-				.ifPresent(u -> new UserAlreadyExistException());
+		Optional<User> user = repository.findByUserName(dto.getUserName());
+        if (user.isPresent()) {
+            throw new UserAlreadyExistException();
+        }
 
-		Role role = roleRepository.findByRoleName(UtilConstant.ROLE_ORGANIZER)
-				.orElseThrow(() -> new UndefinedRoleException());
+		Role role = roleRepository.findById(RoleEnum.ORGANIZER)
+				.orElseThrow(UndefinedRoleException::new);
 
 		User entity = mapper.prepareForCreate(dto);
         entity.setRole(role);

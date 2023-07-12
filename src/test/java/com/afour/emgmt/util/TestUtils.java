@@ -6,7 +6,6 @@ package com.afour.emgmt.util;
 import java.time.LocalDateTime;
 import java.util.Random;
 
-import com.afour.emgmt.common.Actor;
 import com.afour.emgmt.common.RoleEnum;
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
@@ -39,7 +38,7 @@ public class TestUtils {
 
 	public static User buildOrganizer(String userName) {
 		return User.builder().userName(userName).firstName("First").lastName("Last").createdAt(PAST10DAYS)
-				.updatedAt(NOW).password("password").role(buildRole(ORGANIZER))
+				.updatedAt(NOW).password("password").role(buildRole(RoleEnum.ORGANIZER))
 				.createdBy(UtilConstant.DEFAULT_USER).updatedBy(UtilConstant.DEFAULT_USER).isActive(true)
 				.build();
 	}
@@ -51,7 +50,7 @@ public class TestUtils {
 
 	public static User buildVisitor(String UserName) {
 		return User.builder().userName(UserName).firstName("First").lastName("Last").createdAt(PAST10DAYS)
-				.updatedAt(NOW).password("password").role(buildRole(VISITOR))
+				.updatedAt(NOW).password("password").role(buildRole(RoleEnum.VISITOR))
 				.createdBy(UtilConstant.DEFAULT_USER).updatedBy(UtilConstant.DEFAULT_USER).isActive(true)
 				.build();
 	}

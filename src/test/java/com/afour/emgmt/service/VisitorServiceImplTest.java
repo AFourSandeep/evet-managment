@@ -49,6 +49,7 @@ class VisitorServiceImplTest {
 	@Autowired
 	RoleRepository roleRepository;
 
+	@SuppressWarnings("resource")
 	@Container
 	private static final MySQLContainer<?> mySQLContainer = new MySQLContainer<>(MySQLTestImage.MYSQL_80_IMAGE)
 			.withDatabaseName("event_mgmt").withInitScript("event_mgmt.sql");
@@ -105,7 +106,7 @@ class VisitorServiceImplTest {
 	@DisplayName("addVisitor")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1101", "USER2201" })
-	void addVisitor(String userName) throws UserAlreadyExistException, Exception{
+	void addVisitor(String userName) {
 		UserDTO inputDTO = TestUtils.buildVisitorDTO(userName);
 		UserDTO resultDTO = service.addVisitor(inputDTO);
 		assertNotNull(resultDTO);
@@ -120,13 +121,13 @@ class VisitorServiceImplTest {
 		User exist = TestUtils.buildVisitor(userName);
 		exist = repository.saveAndFlush(exist);
 
-		UserDTO updateResuest = UserDTO.builder().userId(exist.getUserId()).firstName(userName + "ABCD")
+		UserDTO updateRequest = UserDTO.builder().userId(exist.getUserId()).firstName(userName + "ABCD")
 				.password(userName + "456").build();
 
-		UserDTO resultDTO = service.updateVisitor(updateResuest);
+		UserDTO resultDTO = service.updateVisitor(updateRequest);
 		assertNotNull(resultDTO);
 		assertEquals(exist.getUserId(), resultDTO.getUserId());
-		assertEquals(updateResuest.getFirstName(), resultDTO.getFirstName());
+		assertEquals(updateRequest.getFirstName(), resultDTO.getFirstName());
 		assertNotNull(resultDTO.getPassword());
 	}
 
@@ -157,7 +158,7 @@ class VisitorServiceImplTest {
 		List<Event> events = List.of(TestUtils.buildEvent("Some Event", owner),
 				TestUtils.buildEvent("Another Event", owner));
 		events = eventRepository.saveAll(events);
-		Set<Integer> eventIds = events.stream().map(e -> e.getEventId()).collect(Collectors.toSet());
+		Set<Integer> eventIds = events.stream().map(Event::getEventId).collect(Collectors.toSet());
 
 		UserRegistrationDTO registrationRequest = UserRegistrationDTO.builder().userId(visitor.getUserId())
 				.eventIds(eventIds).build();
