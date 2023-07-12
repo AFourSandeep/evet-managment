@@ -3,7 +3,10 @@
  */
 package com.afour.emgmt.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -21,11 +24,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.afour.emgmt.common.AppResponse;
-import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.common.AppResponseBuilder;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.service.OrganizerService;
 import com.afour.emgmt.util.TestUtils;
@@ -35,6 +39,7 @@ import com.afour.emgmt.util.TestUtils;
  */
 @Disabled
 @ExtendWith(MockitoExtension.class)
+@PropertySource("classpath:messages.properties")
 class OrganizerControllerTest {
 
     @Mock
@@ -44,7 +49,7 @@ class OrganizerControllerTest {
     MessageSource messages;
 
     @Mock
-    GenericResponse genericResponse;
+    AppResponseBuilder responseBuilder;
 
     @InjectMocks
     OrganizerController orgController;
@@ -58,7 +63,7 @@ class OrganizerControllerTest {
                 UserDTO.builder().userId(3).userName("User3").build(),
                 UserDTO.builder().userId(4).userName("User4").build());
         when(orgService.fetchAllOrganizers()).thenReturn(dtos);
-        when(genericResponse.getSuccessDataFoundResponse(dtos, dtos.size())).thenCallRealMethod();
+        when(responseBuilder.getSuccessDataFoundResponse(dtos, dtos.size())).thenCallRealMethod();
         when(messages.getMessage(anyString(), any(Object[].class), any()))
                 .thenReturn("");
         // when

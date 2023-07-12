@@ -9,10 +9,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.afour.emgmt.common.RoleEnum;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import com.afour.emgmt.common.RoleEnum;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.entity.User;
@@ -29,7 +29,6 @@ import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.UserRepository;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.CollectionUtils;
 
 /**
  * 
@@ -38,31 +37,35 @@ import org.springframework.util.CollectionUtils;
 @Slf4j
 public class VisitorServiceImpl implements VisitorService {
 
-	@Autowired
-	UserMapper mapper;
+	private final UserMapper mapper;
 
-	@Autowired
-	EventMapper eventMapper;
+	private final UserRepository repository;
 
-	@Autowired
-	UserRepository repository;
+	private final RoleRepository roleRepository;
 
-	@Autowired
-	EventRepository eventRepository;
+	private final EventMapper eventMapper;
+	
+	private final EventRepository eventRepository;
 
-	@Autowired
-	RoleRepository roleRepository;
+	public VisitorServiceImpl(UserMapper mapper, UserRepository repository, RoleRepository roleRepository,
+			EventMapper eventMapper, EventRepository eventRepository) {
+		this.mapper = mapper;
+		this.repository = repository;
+		this.roleRepository = roleRepository;
+		this.eventMapper = eventMapper;
+		this.eventRepository = eventRepository;
+	}
 
 	@Override
 	public List<UserDTO> fetchAllVisitors() {
-		List<User> entities = repository.findAll();
+		List<User> entities = repository.findAllByRoleId(RoleEnum.VISITOR);
 
 		log.info("DB operation success! Fetched {} visitors!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
 
 	@Override
-	public UserDTO findVisitorByID(final Integer ID)  {
+	public UserDTO findVisitorByID(final Integer ID) {
 		Optional<User> optional = repository.findById(ID);
 
 		return optional.map(visitor -> {
@@ -73,7 +76,7 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	private UserDTO dtoFromEntity(User visitor) {
-		UserDTO userDTO =mapper.entityToDTO(visitor);
+		UserDTO userDTO = mapper.entityToDTO(visitor);
 
 		Set<Event> events = visitor.getEvents();
 		Set<EventDTO> eventSet = eventMapper.entityToDTO(events);
@@ -82,7 +85,7 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public UserDTO findVisitorByUserName(final String USERNAME)  {
+	public UserDTO findVisitorByUserName(final String USERNAME) {
 		Optional<User> optional = repository.findByUserName(USERNAME);
 		return optional.map(visitor -> {
 			UserDTO userDTO = dtoFromEntity(visitor);
@@ -92,7 +95,7 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public UserDTO addVisitor(final UserDTO dto)  {
+	public UserDTO addVisitor(final UserDTO dto) {
 		Optional<User> optional = repository.findByUserName(dto.getUserName());
 		if (optional.isPresent())
 			throw new UserAlreadyExistException();
@@ -107,9 +110,7 @@ public class VisitorServiceImpl implements VisitorService {
 			eventsToBeAdded.addAll(newEvents);
 		}
 
-
-		Role role = roleRepository.findById(RoleEnum.ORGANIZER)
-				.orElseThrow(UndefinedRoleException::new);
+		Role role = roleRepository.findById(RoleEnum.ORGANIZER).orElseThrow(UndefinedRoleException::new);
 
 		User entity = mapper.prepareForCreate(dto);
 		entity.setRole(role);
@@ -148,7 +149,7 @@ public class VisitorServiceImpl implements VisitorService {
 
 		if (!exist)
 			throw new NoDataFoundException();
-		
+
 		repository.deleteById(ID);
 
 		exist = repository.existsById(ID);

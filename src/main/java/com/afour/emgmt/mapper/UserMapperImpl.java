@@ -9,14 +9,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.afour.emgmt.config.AuthenticationFacade;
 import com.afour.emgmt.entity.User;
 import com.afour.emgmt.model.UserDTO;
-import com.afour.emgmt.util.UtilConstant;
 
 /**
  * 

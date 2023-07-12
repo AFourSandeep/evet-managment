@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import com.afour.emgmt.config.AuthenticationFacade;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.model.EventDTO;
-import com.afour.emgmt.util.UtilConstant;
 
 /**
  * 
