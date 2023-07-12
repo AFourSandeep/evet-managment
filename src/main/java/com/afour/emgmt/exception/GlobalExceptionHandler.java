@@ -30,6 +30,17 @@ public class GlobalExceptionHandler {
 
 	private String message;
 	
+	//To handle the unexpected termination
+	@ExceptionHandler(Exception.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ResponseBody
+	public AppResponse handleException(Exception e) {
+		message = messages.getMessage("exception.occured", null, Locale.US);
+		log.error(message);
+		log.error(e.getMessage());
+		return AppResponse.builder().message(message).status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
 	@ExceptionHandler(EmptyRequestException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
@@ -53,6 +64,15 @@ public class GlobalExceptionHandler {
 	@ResponseBody
 	public AppResponse handleUserAlreadyExistException() {
 		message = messages.getMessage("user.already.exists", null, Locale.US);
+		log.error(message);
+		return AppResponse.builder().message(message).status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+	}
+	
+	@ExceptionHandler(UndefinedRoleException.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ResponseBody
+	public AppResponse handleUndefinedRoleException() {
+		message = messages.getMessage("role.not.exist", null, Locale.US);
 		log.error(message);
 		return AppResponse.builder().message(message).status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}

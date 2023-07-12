@@ -23,13 +23,13 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import com.afour.emgmt.common.ActorEnum;
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.entity.User;
 import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.UserRepository;
 import com.afour.emgmt.util.MySQLTestImage;
+import com.afour.emgmt.util.UtilConstant;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,8 +48,6 @@ public class TestContainerExampleTest {
 	@Container
 	private static MySQLContainer mySQLContainer = (MySQLContainer) new MySQLContainer(MySQLTestImage.MYSQL_80_IMAGE)
 			.withDatabaseName("event_mgmt").withInitScript("event_mgmt.sql");
-//            .withUsername("Test")
-//            .withPassword("Test");
 
 	@DynamicPropertySource
 	public static void overrideContainerProperties(DynamicPropertyRegistry dynamicPropertyRegistry) {
@@ -75,7 +73,7 @@ public class TestContainerExampleTest {
 		Role role = Role.builder().roleId(1).build();
 		User organizer = User.builder().userName("User1011").firstName("User").lastName("lastname")
 				.createdAt(LocalDateTime.now()).updatedAt(LocalDateTime.now()).password("password").role(role)
-				.createdBy(ActorEnum.DEFAULT_USER.getUser()).updatedBy(ActorEnum.DEFAULT_USER.getUser()).isActive(true)
+				.createdBy(UtilConstant.DEFAULT_USER).updatedBy(UtilConstant.DEFAULT_USER).isActive(true)
 				.build();
 
 		log.info("" + mySQLContainer.getJdbcUrl());

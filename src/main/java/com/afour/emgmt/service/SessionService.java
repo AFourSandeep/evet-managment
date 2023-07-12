@@ -13,7 +13,7 @@ import com.afour.emgmt.model.EsessionDTO;
  */
 public interface SessionService {
 
-	List<EsessionDTO> findSessionEventByID(Integer eventId) throws NoDataFoundException;
+	List<EsessionDTO> findSessionEventByID(Integer eventId) throws Exception;
 
 	EsessionDTO findSessionByID(Integer ID) throws NoDataFoundException;
 

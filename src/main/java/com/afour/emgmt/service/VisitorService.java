@@ -6,6 +6,7 @@ package com.afour.emgmt.service;
 import java.util.List;
 
 import com.afour.emgmt.exception.NoDataFoundException;
+import com.afour.emgmt.exception.UndefinedRoleException;
 import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.model.UserRegistrationDTO;
@@ -15,13 +16,13 @@ import com.afour.emgmt.model.UserRegistrationDTO;
  */
 public interface VisitorService {
 
-	List<UserDTO> fetchAllVisitors() throws NoDataFoundException;
+	List<UserDTO> fetchAllVisitors() throws Exception;
 
 	UserDTO findVisitorByID(Integer ID) throws NoDataFoundException;
 
 	UserDTO findVisitorByUserName(String USERNAME) throws NoDataFoundException;
 
-	UserDTO addVisitor(UserDTO orgDTO) throws UserAlreadyExistException;
+	UserDTO addVisitor(UserDTO orgDTO) throws UserAlreadyExistException, UndefinedRoleException;
 
 	UserDTO updateVisitor(UserDTO dto) throws NoDataFoundException;
 

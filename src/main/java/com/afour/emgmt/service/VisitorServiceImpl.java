@@ -9,16 +9,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.afour.emgmt.common.RoleEnum;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.entity.User;
 import com.afour.emgmt.exception.NoDataFoundException;
+import com.afour.emgmt.exception.UndefinedRoleException;
 import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.mapper.EventMapper;
 import com.afour.emgmt.mapper.UserMapper;
@@ -28,6 +26,7 @@ import com.afour.emgmt.model.UserRegistrationDTO;
 import com.afour.emgmt.repository.EventRepository;
 import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.UserRepository;
+import com.afour.emgmt.util.UtilConstant;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,12 +51,10 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Autowired
 	RoleRepository roleRepository;
-	
+
 	@Override
-	public List<UserDTO> fetchAllVisitors() throws NoDataFoundException {
+	public List<UserDTO> fetchAllVisitors() throws Exception {
 		List<User> entities = repository.findAll();
-		if (null == entities)
-			throw new NoDataFoundException();
 		log.info("DB operation success! Fetched {} visitors!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
@@ -65,41 +62,34 @@ public class VisitorServiceImpl implements VisitorService {
 	@Override
 	public UserDTO findVisitorByID(final Integer ID) throws NoDataFoundException {
 		Optional<User> optional = repository.findById(ID);
-		if (optional.isEmpty())
-			throw new NoDataFoundException();
-		
-		User visitor=  optional.get();
-		UserDTO UserDTO =mapper.entityToDTO(visitor);
-			
-		Set<Event> events = visitor.getEvents();
-		Set<EventDTO> eventDtos = eventMapper.entityToDTO(events);
-		UserDTO.setEvents(eventDtos);
- 		log.info("DB operation success! Fetched Visitor:{}", visitor.getUserId());
-		return UserDTO;
+
+		return optional.map(e -> {
+			Set<EventDTO> eventDtos = eventMapper.entityToDTO(e.getEvents());
+			UserDTO user = mapper.entityToDTO(e);
+			user.setEvents(eventDtos);
+			log.info("DB operation success! Fetched Visitor:{}", user.getUserId());
+			return user;
+		}).orElseThrow(() -> new NoDataFoundException());
 	}
 
 	@Override
 	public UserDTO findVisitorByUserName(final String USERNAME) throws NoDataFoundException {
 		Optional<User> optional = repository.findByUserName(USERNAME);
-		if (optional.isEmpty())
-			throw new NoDataFoundException();
-		User visitor = optional.get();
-		UserDTO UserDTO =mapper.entityToDTO(visitor);
-			
-		Set<Event> events = visitor.getEvents();
-		Set<EventDTO> eventDtos = eventMapper.entityToDTO(events);
-		UserDTO.setEvents(eventDtos);
-		log.info("DB operation success! Fetched Visitor:{} by username: {}", visitor.getUserId(), USERNAME);
-		return UserDTO;
+		return optional.map(e -> {
+			Set<EventDTO> eventDtos = eventMapper.entityToDTO(e.getEvents());
+			UserDTO user = mapper.entityToDTO(e);
+			user.setEvents(eventDtos);
+			log.info("DB operation success! Fetched Visitor:{} by username: {}", user.getUserId(), USERNAME);
+			return user;
+		}).orElseThrow(() -> new NoDataFoundException());
 	}
 
 	@Override
-	@Transactional
-	public UserDTO addVisitor(final UserDTO dto) throws UserAlreadyExistException {
+	public UserDTO addVisitor(final UserDTO dto) throws UserAlreadyExistException, UndefinedRoleException {
 		Optional<User> optional = repository.findByUserName(dto.getUserName());
 		if (optional.isPresent())
 			throw new UserAlreadyExistException();
-		
+
 		Set<EventDTO> newEventDtos = dto.getEvents();
 
 		Set<Event> eventsToBeAdded = new HashSet<>();
@@ -110,9 +100,11 @@ public class VisitorServiceImpl implements VisitorService {
 			newEvents.stream().forEach(e -> eventsToBeAdded.add(e));
 		}
 
-		User entity = mapper.prepareForCreate(dto);
+
+		Role role = roleRepository.findByRoleName(UtilConstant.ROLE_ORGANIZER)
+				.orElseThrow(() -> new UndefinedRoleException());
 		
-		Role role = roleRepository.findById(RoleEnum.VISITOR.getRoleId()).get();
+		User entity = mapper.prepareForCreate(dto);
 		entity.setRole(role);
 
 		entity.setEvents(eventsToBeAdded);
@@ -124,10 +116,7 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public UserDTO updateVisitor(final UserDTO dto) throws NoDataFoundException {
-		User entity = repository.findById(dto.getUserId()).get();
-
-		if (null == entity)
-			throw new NoDataFoundException();
+		User entity = repository.findById(dto.getUserId()).orElseThrow(()->new NoDataFoundException());
 
 		Set<Event> existingEvents = entity.getEvents();
 
@@ -151,8 +140,8 @@ public class VisitorServiceImpl implements VisitorService {
 
 		if (!exist)
 			throw new NoDataFoundException();
-		
-			repository.deleteById(ID);
+
+		repository.deleteById(ID);
 
 		exist = repository.existsById(ID);
 		log.info("DB operation success! Deleted the visitor : {}", !exist);
@@ -162,12 +151,7 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public UserDTO registerVisitorForEvent(UserRegistrationDTO dto) throws NoDataFoundException {
-		Optional<User> optional = repository.findById(dto.getUserId());
-
-		if (optional.isEmpty())
-			throw new NoDataFoundException();
-
-		User entity = optional.get();
+		User entity = repository.findById(dto.getUserId()).orElseThrow(()->new NoDataFoundException());
 
 		Set<Integer> newEventIds = dto.getEventIds();
 		List<Event> newEvents = eventRepository.findAllById(newEventIds);
@@ -176,15 +160,14 @@ public class VisitorServiceImpl implements VisitorService {
 
 		entity.setEvents(existingEvents);
 		User updated = repository.save(entity);
-		
-		UserDTO UserDTO =mapper.entityToDTO(updated);
-		
+
+		UserDTO UserDTO = mapper.entityToDTO(updated);
+
 		Set<Event> events = updated.getEvents();
 		Set<EventDTO> eventDtos = eventMapper.entityToDTO(events);
 		UserDTO.setEvents(eventDtos);
-		
-		log.info("DB operation success! Registered the visitor : {} with sessions{}", dto.getUserId(),
-				existingEvents);
+
+		log.info("DB operation success! Registered the visitor : {} with events{}", dto.getUserId(), existingEvents);
 		return UserDTO;
 	}
 
