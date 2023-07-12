@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.afour.emgmt.entity.Event;
@@ -30,17 +29,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EventServiceImpl implements EventService {
 
-	@Autowired
-	EventMapper mapper;
+	private final EventMapper mapper;
 
-	@Autowired
-	SessionMapper sessionMapper;
-	
-	@Autowired
-	UserMapper userMapper;
+	private final SessionMapper sessionMapper;
 
-	@Autowired
-	EventRepository repository;
+	private final UserMapper userMapper;
+
+	private final EventRepository repository;
+
+	public EventServiceImpl(EventMapper eventMapper, SessionMapper sessionMapper, UserMapper userMapper, EventRepository eventRepository) {
+		this.mapper = eventMapper;
+		this.sessionMapper = sessionMapper;
+		this.userMapper = userMapper;
+		this.repository = eventRepository;
+	}
 
 	@Override
 	public List<EventDTO> fetchAllEvents() {

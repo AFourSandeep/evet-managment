@@ -5,7 +5,6 @@ package com.afour.emgmt.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -39,15 +38,18 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
-	@Autowired
-	JwtService jwtService;
+	private final JwtService jwtService;
 
-	@Autowired
-	private AuthenticationManager authenticationManager;
-	
-	@Autowired
-	GenericResponse genericResponse;
-	
+	private final AuthenticationManager authenticationManager;
+
+	private final GenericResponse genericResponse;
+
+	public AuthenticationController(JwtService jwtService, AuthenticationManager authenticationManager, GenericResponse genericResponse) {
+		this.jwtService = jwtService;
+		this.authenticationManager = authenticationManager;
+		this.genericResponse = genericResponse;
+	}
+
 	@PostMapping(value = "/token", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
 		LoginResponse response;

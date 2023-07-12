@@ -5,7 +5,7 @@ package com.afour.emgmt.common;
 
 import java.util.Locale;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -19,8 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GenericResponseImpl implements GenericResponse {
 
-	@Autowired
-	MessageSource messages;
+	private final MessageSource messages;
+
+	public GenericResponseImpl(@Qualifier("messageSource") MessageSource messages) {
+		this.messages = messages;
+	}
 
 	private String message;
 

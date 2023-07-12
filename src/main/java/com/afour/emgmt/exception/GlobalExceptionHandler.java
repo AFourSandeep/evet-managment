@@ -5,7 +5,7 @@ package com.afour.emgmt.exception;
 
 import java.util.Locale;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,11 +25,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GlobalExceptionHandler {
 
-	@Autowired
-	MessageSource messages;
+	private final MessageSource messages;
+
+	public GlobalExceptionHandler(@Qualifier("messageSource") MessageSource messages) {
+		this.messages = messages;
+	}
 
 	private String message;
-	
+
 	//To handle the unexpected termination
 	@ExceptionHandler(Exception.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -40,7 +43,7 @@ public class GlobalExceptionHandler {
 		log.error(e.getMessage());
 		return AppResponse.builder().message(message).status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
+
 	@ExceptionHandler(EmptyRequestException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	@ResponseBody
@@ -67,7 +70,7 @@ public class GlobalExceptionHandler {
 		log.error(message);
 		return AppResponse.builder().message(message).status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	}
-	
+
 	@ExceptionHandler(UndefinedRoleException.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ResponseBody

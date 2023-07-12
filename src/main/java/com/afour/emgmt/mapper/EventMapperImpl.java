@@ -23,11 +23,15 @@ import com.afour.emgmt.util.UtilConstant;
 @Component
 public class EventMapperImpl implements EventMapper {
 
+	private final ModelMapper modelMapper;
+
+	private final AuthenticationFacade authentication;
+
 	@Autowired
-	ModelMapper modelMapper;
-	
-	@Autowired
-	AuthenticationFacade authentication;
+	public EventMapperImpl(ModelMapper modelMapper, AuthenticationFacade authentication) {
+		this.modelMapper = modelMapper;
+		this.authentication = authentication;
+	}
 
 	@Override
 	public EventDTO entityToDTO(Event entity) {

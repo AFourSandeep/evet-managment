@@ -5,8 +5,6 @@ package com.afour.emgmt.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -47,14 +45,14 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = "Manage Visitors")
 public class VisitorController {
 
-	@Autowired
-	VisitorService service;
+	private final VisitorService service;
 
-	@Autowired
-	MessageSource messages;
+	private final GenericResponse genericResponse;
 
-	@Autowired
-	GenericResponse genericResponse;
+	public VisitorController(VisitorService service, GenericResponse genericResponse) {
+		this.service = service;
+		this.genericResponse = genericResponse;
+	}
 
 	private AppResponse response;
 

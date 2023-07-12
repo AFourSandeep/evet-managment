@@ -23,12 +23,15 @@ import com.afour.emgmt.util.UtilConstant;
 @Component
 public class SessionMapperImpl implements SessionMapper {
 
-	@Autowired
-	ModelMapper modelMapper;
-	
-	@Autowired
-	AuthenticationFacade authentication;
-	
+	private final ModelMapper modelMapper;
+
+	private final AuthenticationFacade authentication;
+
+	public SessionMapperImpl(ModelMapper modelMapper, AuthenticationFacade authentication) {
+		this.modelMapper = modelMapper;
+		this.authentication = authentication;
+	}
+
 	@Override
 	public EsessionDTO entityToDTO(Esession entity) {
 		return modelMapper.map(entity, EsessionDTO.class);

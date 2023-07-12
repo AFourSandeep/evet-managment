@@ -44,14 +44,14 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = "Manage Sessions")
 public class SessionController {
 
-	@Autowired
-	SessionService service;
+	private final SessionService service;
 
-	@Autowired
-	MessageSource messages;
+	private final GenericResponse genericResponse;
 
-	@Autowired
-	GenericResponse genericResponse;
+	public SessionController(SessionService service, GenericResponse genericResponse) {
+		this.service = service;
+		this.genericResponse = genericResponse;
+	}
 
 	private AppResponse response;
 

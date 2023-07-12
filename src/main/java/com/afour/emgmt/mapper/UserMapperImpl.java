@@ -24,15 +24,17 @@ import com.afour.emgmt.util.UtilConstant;
 @Component
 public class UserMapperImpl implements UserMapper {
 
-	@Autowired
-	ModelMapper modelMapper;
-	
-	@Autowired
-	PasswordEncoder passwordEncoder;
-	
-	@Autowired
-	AuthenticationFacade authentication;
+	private final ModelMapper modelMapper;
 
+	private final PasswordEncoder passwordEncoder;
+
+	private final AuthenticationFacade authentication;
+
+	public UserMapperImpl(ModelMapper modelMapper, PasswordEncoder passwordEncoder, AuthenticationFacade authentication) {
+		this.modelMapper = modelMapper;
+		this.passwordEncoder = passwordEncoder;
+		this.authentication = authentication;
+	}
 
 	@Override
 	public UserDTO entityToDTO(User entity) {
