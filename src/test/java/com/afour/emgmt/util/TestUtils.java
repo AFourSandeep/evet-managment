@@ -6,7 +6,6 @@ package com.afour.emgmt.util;
 import java.time.LocalDateTime;
 import java.util.Random;
 
-import com.afour.emgmt.common.ActorEnum;
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.Role;
@@ -42,7 +41,7 @@ public class TestUtils {
 	public static User buildOrganizer(String userName) {
 		return User.builder().userName(userName).firstName("First").lastName("Last").createdAt(PAST10DAYS)
 				.updatedAt(NOW).password("password").role(buildRole(ORGANIZER))
-				.createdBy(ActorEnum.DEFAULT_USER.getUser()).updatedBy(ActorEnum.DEFAULT_USER.getUser()).isActive(true)
+				.createdBy(UtilConstant.DEFAULT_USER).updatedBy(UtilConstant.DEFAULT_USER).isActive(true)
 				.build();
 	}
 
@@ -54,7 +53,7 @@ public class TestUtils {
 	public static User buildVisitor(String UserName) {
 		return User.builder().userName(UserName).firstName("First").lastName("Last").createdAt(PAST10DAYS)
 				.updatedAt(NOW).password("password").role(buildRole(VISITOR))
-				.createdBy(ActorEnum.DEFAULT_USER.getUser()).updatedBy(ActorEnum.DEFAULT_USER.getUser()).isActive(true)
+				.createdBy(UtilConstant.DEFAULT_USER).updatedBy(UtilConstant.DEFAULT_USER).isActive(true)
 				.build();
 	}
 
@@ -64,14 +63,14 @@ public class TestUtils {
 
 	public static Event buildEvent(String eventName, User owner) {
 		return Event.builder().eventName(eventName).owner(owner).location("Pune, India").startAt(FUTURE10DAYS).endAt(FUTURE15DAYS)
-				.createdAt(PAST10DAYS).updatedAt(NOW).createdBy(ActorEnum.DEFAULT_USER.getUser())
-				.updatedBy(ActorEnum.DEFAULT_USER.getUser()).isClosed(false).build();
+				.createdAt(PAST10DAYS).updatedAt(NOW).createdBy(UtilConstant.DEFAULT_USER)
+				.updatedBy(UtilConstant.DEFAULT_USER).isClosed(false).build();
 	}
 	
 	public static Esession buildEsession(String title, Event event) {
 		return Esession.builder().esessionTitle(title).event(event)
 				.startAt(FUTURE10DAYS).endAt(FUTURE15DAYS).createdAt(PAST10DAYS).updatedAt(NOW)
-				.createdBy(ActorEnum.DEFAULT_USER.getUser()).updatedBy(ActorEnum.DEFAULT_USER.getUser())
+				.createdBy(UtilConstant.DEFAULT_USER).updatedBy(UtilConstant.DEFAULT_USER)
 				.build();
 	} 
 	

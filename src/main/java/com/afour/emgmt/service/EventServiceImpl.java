@@ -11,9 +11,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
-import com.afour.emgmt.entity.User;
 import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.mapper.EventMapper;
 import com.afour.emgmt.mapper.SessionMapper;
@@ -45,19 +43,15 @@ public class EventServiceImpl implements EventService {
 	EventRepository repository;
 
 	@Override
-	public List<EventDTO> fetchAllEvents() throws NoDataFoundException {
+	public List<EventDTO> fetchAllEvents() {
 		List<Event> entities = repository.findAll();
-		if (null == entities)
-			throw new NoDataFoundException();
 		log.info("DB operation success! Fetched {} Events!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
 
 	@Override
-	public List<EventDTO> fetchEventsByStatus(final Boolean status) throws NoDataFoundException {
+	public List<EventDTO> fetchEventsByStatus(final Boolean status) {
 		List<Event> entities = repository.fetchEventsByStatus(!status);
-		if (null == entities)
-			throw new NoDataFoundException();
 		log.info("DB operation success! Fetched {} Open Events!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
@@ -65,20 +59,16 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public EventDTO findEventByID(final Integer ID) throws NoDataFoundException {
 		Optional<Event> optional = repository.findById(ID);
-		if (optional.isEmpty())
-			throw new NoDataFoundException();
-		Event event = optional.get();
-		EventDTO  dto = mapper.entityToDTO(event);
-		
-		Set<Esession> sessions = event.getSessions();
-		Set<EsessionDTO> sessionDtos = sessionMapper.entityToDTO(sessions);
-		dto.setSessions(sessionDtos);
-		
-		Set<User> visitors = event.getVisitors();
-		Set<UserDTO> visitorDtos = userMapper.entityToDTO(visitors);
-		dto.setVisitors(visitorDtos);
-		log.info("DB operation success! Fetched Event:{} ", dto.getEventId());
-		return dto;
+		return optional.map(e->{
+			EventDTO dto = mapper.entityToDTO(e);
+			Set<EsessionDTO> sessionDtos = sessionMapper.entityToDTO(e.getSessions());
+			dto.setSessions(sessionDtos);
+			
+			Set<UserDTO> visitorDtos = userMapper.entityToDTO(e.getVisitors());
+			dto.setVisitors(visitorDtos);
+			log.info("DB operation success! Fetched Event:{} ", dto.getEventId());
+			return dto;
+		}).orElseThrow(()->new NoDataFoundException());
 	}	
 
 	@Override

@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import com.afour.emgmt.common.ActorEnum;
 import com.afour.emgmt.config.AuthenticationFacade;
 import com.afour.emgmt.entity.User;
 import com.afour.emgmt.model.UserDTO;
+import com.afour.emgmt.util.UtilConstant;
 
 /**
  * 
@@ -63,7 +63,7 @@ public class UserMapperImpl implements UserMapper {
 	@Override
 	public User prepareForUpdate(User entity, UserDTO dto) {
 		final String ACTOR = authentication.getAuthentication()!=null ?
-				authentication.getAuthentication().getName():ActorEnum.DEFAULT_USER.getUser();
+				authentication.getAuthentication().getName():UtilConstant.DEFAULT_USER;
 		
 		if (null != dto.getFirstName())
 			entity.setFirstName(dto.getFirstName());
@@ -83,7 +83,7 @@ public class UserMapperImpl implements UserMapper {
 	@Override
 	public User prepareForCreate(UserDTO dto) {
 		final String ACTOR = authentication.getAuthentication()!=null ?
-				authentication.getAuthentication().getName():ActorEnum.DEFAULT_USER.getUser();
+				authentication.getAuthentication().getName():UtilConstant.DEFAULT_USER;
 		User entity = this.DTOToEntity(dto);
 		entity.setCreatedAt(LocalDateTime.now());
 		entity.setCreatedBy(ACTOR);

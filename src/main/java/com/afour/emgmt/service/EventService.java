@@ -20,9 +20,8 @@ public interface EventService {
 	 * DTO
 	 * 
 	 * @return java.util.List
-	 * @throws NoDataFoundException 
 	 */
-	List<EventDTO> fetchAllEvents() throws NoDataFoundException;
+	List<EventDTO> fetchAllEvents();
 
 	/**
 	 * Fetch all the event based on their status and transform them from entity into
@@ -32,7 +31,7 @@ public interface EventService {
 	 * @return java.util.List
 	 * @throws NoDataFoundException 
 	 */
-	List<EventDTO> fetchEventsByStatus(Boolean status) throws NoDataFoundException;
+	List<EventDTO> fetchEventsByStatus(Boolean status);
 
 	/**
 	 * Fetch a event based on its id and transform it from entity into

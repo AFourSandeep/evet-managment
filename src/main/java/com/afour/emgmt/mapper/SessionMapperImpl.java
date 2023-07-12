@@ -12,10 +12,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.afour.emgmt.common.ActorEnum;
 import com.afour.emgmt.config.AuthenticationFacade;
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.model.EsessionDTO;
+import com.afour.emgmt.util.UtilConstant;
 
 /**
  * 
@@ -58,7 +58,7 @@ public class SessionMapperImpl implements SessionMapper {
 	@Override
 	public Esession prepareForUpdate(Esession entity, EsessionDTO dto) {
 		final String ACTOR = authentication.getAuthentication()!=null ?
-				authentication.getAuthentication().getName():ActorEnum.DEFAULT_USER.getUser();
+				authentication.getAuthentication().getName():UtilConstant.DEFAULT_USER;
 		if (null != dto.getEsessionTitle())
 			entity.setEsessionTitle(dto.getEsessionTitle());
 		if (null != dto.getStartAt())
@@ -90,7 +90,7 @@ public class SessionMapperImpl implements SessionMapper {
 	@Override
 	public Esession prepareForCreate(EsessionDTO dto) {
 		final String ACTOR = authentication.getAuthentication()!=null ?
-				authentication.getAuthentication().getName():ActorEnum.DEFAULT_USER.getUser();
+				authentication.getAuthentication().getName():UtilConstant.DEFAULT_USER;
 		Esession entity = this.DTOToEntity(dto);
 		entity.setCreatedAt(LocalDateTime.now());
 		entity.setCreatedBy(ACTOR);

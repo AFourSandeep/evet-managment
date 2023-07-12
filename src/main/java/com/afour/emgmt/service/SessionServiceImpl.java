@@ -40,11 +40,8 @@ public class SessionServiceImpl implements SessionService {
 	EventMapper eventMapper;
 
 	@Override
-	public List<EsessionDTO> findSessionEventByID(final Integer eventId) throws NoDataFoundException {
+	public List<EsessionDTO> findSessionEventByID(final Integer eventId) throws Exception {
 		List<Esession> entities = repository.findSessionEventByID(eventId);
-		if (entities == null || entities.isEmpty())
-			throw new NoDataFoundException();
-
 		log.info("DB operation success! Fetched {} Sessions using EventID:{}", entities.size(), eventId);
 		return mapper.entityToDTO(entities);
 	}
@@ -52,13 +49,11 @@ public class SessionServiceImpl implements SessionService {
 	@Override
 	public EsessionDTO findSessionByID(final Integer ID) throws NoDataFoundException {
 		Optional<Esession> optional = repository.findById(ID);
-		if (optional.isEmpty())
-			throw new NoDataFoundException();
-
-		Esession entity = optional.get();
-
-		log.info("DB operation success! Fetched Session:{}", entity.getEsessionId());
-		return mapper.entityToDTO(entity);
+		return optional.map(entity -> {
+			EsessionDTO dto = mapper.entityToDTO(entity);
+			log.info("DB operation success! Fetched Session:{}", dto.getEsessionId());
+			return dto;
+		}).orElseThrow(() -> new NoDataFoundException());
 	}
 
 	@Override

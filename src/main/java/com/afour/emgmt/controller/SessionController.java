@@ -62,7 +62,7 @@ public class SessionController {
 	@GetMapping(value = "/", produces = "application/json")
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> findSessionEventByID(@RequestParam(value = "eventId") final Integer eventId)
-			throws NoDataFoundException, Exception {
+			throws Exception {
 		if (null == eventId)
 			throw new EmptyRequestException();
 
@@ -101,7 +101,7 @@ public class SessionController {
 
 		EsessionDTO result = service.addSession(dto);
 
-		response = genericResponse.getRequestSuccessResponse("session.create.successs", result, HttpStatus.CREATED);
+		response = genericResponse.getRequestSuccessResponse("session.create.success", result, HttpStatus.CREATED);
 		return new ResponseEntity(response, HttpStatus.OK);
 	}
 
