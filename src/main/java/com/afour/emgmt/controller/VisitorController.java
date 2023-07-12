@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,6 +25,7 @@ import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
 import com.afour.emgmt.exception.EmptyRequestException;
 import com.afour.emgmt.exception.NoDataFoundException;
+import com.afour.emgmt.exception.UndefinedRoleException;
 import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.model.UserRegistrationDTO;
@@ -61,7 +63,7 @@ public class VisitorController {
 	@ApiOperation(value = "Fetch all the visitors without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the visitors!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping(value = "/visitors", produces = "application/json")
+	@GetMapping(value = "/visitors", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> fetchAllVisitors() throws NoDataFoundException, Exception {
 		List<UserDTO> result = service.fetchAllVisitors();
@@ -74,7 +76,7 @@ public class VisitorController {
 	@ApiOperation(value = "Fetch one Visitor by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping(value = "/{id}", produces = "application/json")
+	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> findVisitorByID(@PathVariable(value = "id") final Integer id)
 			throws NoDataFoundException, Exception {
@@ -91,7 +93,7 @@ public class VisitorController {
 	@ApiOperation(value = "Fetch one Visitor by USERNAME!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> findVisitorByUserName(@RequestParam(value = "userName") final String userName)
 			throws NoDataFoundException, Exception {
@@ -108,10 +110,10 @@ public class VisitorController {
 	@ApiOperation(value = "Create a new Visitor.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR')")
 	public ResponseEntity<AppResponse> addVisitor(@RequestBody UserDTO dto)
-			throws UserAlreadyExistException, Exception {
+			throws UserAlreadyExistException, UndefinedRoleException, Exception {
 		if (null == dto)
 			throw new EmptyRequestException();
 
@@ -126,7 +128,7 @@ public class VisitorController {
 	@ApiOperation(value = "Update a Visitor.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@PutMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PutMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR')")
 	public ResponseEntity<AppResponse> updateVisitor(@RequestBody UserDTO dto) throws NoDataFoundException, Exception {
 		if (null == dto)
@@ -143,7 +145,7 @@ public class VisitorController {
 	@ApiOperation(value = "Delete the vistor.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested visitor!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@DeleteMapping(value = "/{id}", produces = "application/json")
+	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR')")
 	public ResponseEntity<AppResponse> deleteVisitorByID(@PathVariable(value = "id") final Integer id)
 			throws NoDataFoundException, Exception {
@@ -161,7 +163,7 @@ public class VisitorController {
 	@ApiOperation(value = "Register a Visitor for Events.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Registered!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@PostMapping(value = "/registerForEvent", consumes = "application/json", produces = "application/json")
+	@PostMapping(value = "/registerForEvent", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> registerVisitorForEvent(@RequestBody UserRegistrationDTO dto)
 			throws NoDataFoundException, Exception {

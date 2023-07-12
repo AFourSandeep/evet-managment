@@ -86,9 +86,8 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public UserDTO addVisitor(final UserDTO dto) throws UserAlreadyExistException, UndefinedRoleException {
-		Optional<User> optional = repository.findByUserName(dto.getUserName());
-		if (optional.isPresent())
-			throw new UserAlreadyExistException();
+		repository.findByUserName(dto.getUserName())
+		.ifPresent(u->new UserAlreadyExistException());
 
 		Set<EventDTO> newEventDtos = dto.getEvents();
 

@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -59,7 +60,7 @@ public class SessionController {
 	@ApiOperation(value = "Fetch all Session by its Event Id.")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the sessions!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> findSessionEventByID(@RequestParam(value = "eventId") final Integer eventId)
 			throws Exception {
@@ -76,7 +77,7 @@ public class SessionController {
 	@ApiOperation(value = "Fetch Session by Session Id.")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the sessions!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping(value = "/{ID}", produces = "application/json")
+	@GetMapping(value = "/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> findSessionByID(@PathVariable(value = "id") final Integer id)
 			throws NoDataFoundException, Exception {
@@ -93,7 +94,7 @@ public class SessionController {
 	@ApiOperation(value = "Create a new Session.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> addSession(@RequestBody EsessionDTO dto) throws NoDataFoundException, Exception {
 		if (null == dto)
@@ -110,7 +111,7 @@ public class SessionController {
 	@ApiOperation(value = "Update the Session.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@PutMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PutMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> updateSession(@RequestBody EsessionDTO dto)
 			throws NoDataFoundException, Exception {
@@ -128,7 +129,7 @@ public class SessionController {
 	@ApiOperation(value = "Delete the Session.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested session!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@DeleteMapping(value = "/{ID}", produces = "application/json")
+	@DeleteMapping(value = "/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> deleteSession(@PathVariable(value = "id") final Integer id)
 			throws NoDataFoundException, Exception {
