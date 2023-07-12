@@ -53,7 +53,6 @@ public class SessionController {
 	}
 
 	/* Get all sessions of an event */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all Session by its Event Id.")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the sessions!"),
 			@ApiResponse(code = 204, message = "No data found!") })
@@ -65,11 +64,10 @@ public class SessionController {
 
 		List<EsessionDTO> result = service.findSessionEventByID(eventId);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
-	/* Get a existing session using its id */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	/* Get an existing session using its id */
 	@ApiOperation(value = "Fetch Session by Session Id.")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the sessions!"),
 			@ApiResponse(code = 204, message = "No data found!") })
@@ -81,11 +79,10 @@ public class SessionController {
 
 		EsessionDTO result = service.findSessionByID(id);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Create a new session under any event */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Session.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
@@ -102,7 +99,6 @@ public class SessionController {
 	}
 
 	/* Update an existing session */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update the Session.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
@@ -119,7 +115,6 @@ public class SessionController {
 	}
 
 	/* Delete one existing session */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete the Session.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested session!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })

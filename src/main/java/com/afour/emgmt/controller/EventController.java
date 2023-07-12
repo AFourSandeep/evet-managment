@@ -51,7 +51,6 @@ public class EventController {
 	}
 
 	/* Get all the existing events without any filter */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the events without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the events!"),
 			@ApiResponse(code = 204, message = "No data found!") })
@@ -60,11 +59,10 @@ public class EventController {
 	public ResponseEntity<AppResponse> fetchAllEvents() {
 		List<EventDTO> result = service.fetchAllEvents();
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get all the existing events by filtering them on there status */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the OPEN evets!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the OPEN/CLOSED events!"),
 			@ApiResponse(code = 204, message = "No data found!") })
@@ -77,11 +75,10 @@ public class EventController {
 
 		List<EventDTO> result = service.fetchEventsByStatus(status);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get one existing event using its id */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch an Event by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Event!"),
 			@ApiResponse(code = 204, message = "No data found!") })
@@ -93,11 +90,10 @@ public class EventController {
 
 		EventDTO result = service.findEventByID(id);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Create a new event */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Event.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
@@ -114,7 +110,6 @@ public class EventController {
 	}
 
 	/* update one existing event */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update an Event.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
@@ -131,7 +126,6 @@ public class EventController {
 	}
 
 	/* delete one existing event */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete the Event.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested event!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })

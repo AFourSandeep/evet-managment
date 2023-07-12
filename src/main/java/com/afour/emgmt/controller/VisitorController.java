@@ -52,7 +52,6 @@ public class VisitorController {
 	}
 
 	/* Get all the visitors without any filter */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the visitors without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the visitors!"),
 			@ApiResponse(code = 204, message = "No data found!") })
@@ -61,11 +60,10 @@ public class VisitorController {
 	public ResponseEntity<AppResponse> fetchAllVisitors() {
 		List<UserDTO> result = service.fetchAllVisitors();
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get a visitor using its id */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one Visitor by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
@@ -77,11 +75,10 @@ public class VisitorController {
 
 		UserDTO result = service.findVisitorByID(id);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Get a visitor using its username */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one Visitor by USERNAME!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
@@ -93,11 +90,10 @@ public class VisitorController {
 
 		UserDTO result = service.findVisitorByUserName(userName);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Create a new visitor */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Visitor.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
@@ -114,7 +110,6 @@ public class VisitorController {
 	}
 
 	/* Update an existing visitor */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update a Visitor.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
@@ -131,8 +126,7 @@ public class VisitorController {
 	}
 
 	/* Delete an existing visitor using its id */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@ApiOperation(value = "Delete the vistor.")
+	@ApiOperation(value = "Delete the visitor.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested visitor!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -148,7 +142,6 @@ public class VisitorController {
 	}
 
 	/* Register one existing visitor for one or more events */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Register a Visitor for Events.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Registered!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })

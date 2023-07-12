@@ -51,7 +51,6 @@ public class OrganizerController {
 	}
 
 	/* Get all the existing organizers without any filter */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the organizers without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the organizers!"),
 			@ApiResponse(code = 204, message = "No data found!") })
@@ -60,7 +59,7 @@ public class OrganizerController {
 	public ResponseEntity<AppResponse> fetchAllOrganizers() {
 		List<UserDTO> result = service.fetchAllOrganizers();
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get one existing organizer using its id */
@@ -75,11 +74,10 @@ public class OrganizerController {
 
 		UserDTO result = service.findOrganizerByID(id);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Get one existing organizer using its username */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one organizers by USERNAME!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizer!"),
 			@ApiResponse(code = 204, message = "No data found!") })
@@ -91,11 +89,10 @@ public class OrganizerController {
 
 		UserDTO result = service.findOrganizerByUserName(userName);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Create a new organizer */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
@@ -112,7 +109,6 @@ public class OrganizerController {
 	}
 
 	/* update an existing organizer */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update an Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
@@ -129,7 +125,6 @@ public class OrganizerController {
 	}
 
 	/* Delete one organizer using its id */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Delete an Organizer.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested organizer!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
