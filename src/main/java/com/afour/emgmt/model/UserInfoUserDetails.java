@@ -24,6 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserInfoUserDetails implements UserDetails{
+	private static final long serialVersionUID = 1L;
 	private String name;
     private String password;
     private List<GrantedAuthority> authorities;

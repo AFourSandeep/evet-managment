@@ -79,9 +79,6 @@ CREATE TABLE `esession` (
 
 
 
-
-
-
 DROP TABLE IF EXISTS `user_event_map`;
 
 CREATE TABLE `user_event_map` (

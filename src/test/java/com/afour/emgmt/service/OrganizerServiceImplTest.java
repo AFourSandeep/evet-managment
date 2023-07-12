@@ -1,8 +1,16 @@
 package com.afour.emgmt.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -20,15 +28,13 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import com.afour.emgmt.config.EventMgmtConfiguration;
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.User;
-import com.afour.emgmt.exception.NoDataFoundException;
+import com.afour.emgmt.exception.UndefinedRoleException;
 import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.UserRepository;
 import com.afour.emgmt.util.MySQLTestImage;
 import com.afour.emgmt.util.TestUtils;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @WebAppConfiguration
@@ -44,7 +50,7 @@ class OrganizerServiceImplTest {
 
 	@Autowired
 	RoleRepository roleRepository;
-	
+
 	@Autowired
 	PasswordEncoder passwordEncoder;
 
@@ -68,10 +74,8 @@ class OrganizerServiceImplTest {
 	@DisplayName("fetchAllOrganizers")
 	@Test
 	void fetchAllOrganizers() {
-		List<User> organizers = List.of(TestUtils.buildOrganizer("User1"),
-				TestUtils.buildOrganizer("User2"),
-				TestUtils.buildOrganizer("User3"),
-				TestUtils.buildOrganizer("User4"),
+		List<User> organizers = List.of(TestUtils.buildOrganizer("User1"), TestUtils.buildOrganizer("User2"),
+				TestUtils.buildOrganizer("User3"), TestUtils.buildOrganizer("User4"),
 				TestUtils.buildOrganizer("User5"));
 		repository.saveAll(organizers);
 		List<UserDTO> dtos = service.fetchAllOrganizers();
@@ -107,7 +111,7 @@ class OrganizerServiceImplTest {
 	@DisplayName("addOrganizer")
 	@ParameterizedTest
 	@ValueSource(strings = { "USER1101", "USER2201" })
-	void addOrganizer(String userName) throws UserAlreadyExistException, Exception {
+	void addOrganizer(String userName) throws UserAlreadyExistException, UndefinedRoleException, Exception {
 		UserDTO inputDTO = TestUtils.buildOrganizerDTO(userName);
 		UserDTO resultDTO = service.addOrganizer(inputDTO);
 		assertNotNull(resultDTO);
@@ -121,9 +125,9 @@ class OrganizerServiceImplTest {
 	void updateOrganizer(String userName) {
 		User exist = TestUtils.buildOrganizer(userName);
 		exist = repository.saveAndFlush(exist);
-		
-		UserDTO updateResuest = UserDTO.builder().userId(exist.getUserId())
-				.firstName(userName + "ABCD").password(userName + "456").build();
+
+		UserDTO updateResuest = UserDTO.builder().userId(exist.getUserId()).firstName(userName + "ABCD")
+				.password(userName + "456").build();
 
 		UserDTO resultDTO = service.updateOrganizer(updateResuest);
 		assertNotNull(resultDTO);

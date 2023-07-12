@@ -45,7 +45,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 
     @Override
     public List<UserDTO> fetchAllOrganizers() {
-        List<User> entities = repository.findAll();
+        List<User> entities = repository.findAllByRoleId(RoleEnum.ORGANIZER);
 
         log.info("DB operation success! Fetched {} Organizers!", entities.size());
         return mapper.entityToDTO(entities);

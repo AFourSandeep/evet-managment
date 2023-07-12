@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.AuthRequest;
-import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.common.AppResponseBuilder;
 import com.afour.emgmt.common.LoginResponse;
 import com.afour.emgmt.model.UserInfoUserDetails;
 import com.afour.emgmt.service.JwtService;
@@ -42,12 +42,13 @@ public class AuthenticationController {
 
 	private final AuthenticationManager authenticationManager;
 
-	private final GenericResponse genericResponse;
+	private final AppResponseBuilder responseBuilder;
 
-	public AuthenticationController(JwtService jwtService, AuthenticationManager authenticationManager, GenericResponse genericResponse) {
+	public AuthenticationController(JwtService jwtService, AuthenticationManager authenticationManager,
+			AppResponseBuilder responseBuilder) {
 		this.jwtService = jwtService;
 		this.authenticationManager = authenticationManager;
-		this.genericResponse = genericResponse;
+		this.responseBuilder = responseBuilder;
 	}
 
 	@PostMapping(value = "/token", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -66,15 +67,14 @@ public class AuthenticationController {
 				throw new UsernameNotFoundException("invalid user request !");
 			}
 		} catch (BadCredentialsException ex) {
-			response = LoginResponse.builder().username(authRequest.getUsername())
-					.message("Login Fail.").build();
+			response = LoginResponse.builder().username(authRequest.getUsername()).message("Login Fail.").build();
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
 	}
-	
+
 	@GetMapping(value = "/access-denied", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<AppResponse> accessDeniedHandler() {
-		return new ResponseEntity(genericResponse.getAccessDeniedResponse(), HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity(responseBuilder.getAccessDeniedResponse(), HttpStatus.UNAUTHORIZED);
 	}
 
 }

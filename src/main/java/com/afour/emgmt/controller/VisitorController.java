@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
-import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.common.AppResponseBuilder;
 import com.afour.emgmt.exception.EmptyRequestException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.model.UserRegistrationDTO;
@@ -44,11 +44,11 @@ public class VisitorController {
 
 	private final VisitorService service;
 
-	private final GenericResponse genericResponse;
+	private final AppResponseBuilder responseBuilder;
 
-	public VisitorController(VisitorService service, GenericResponse genericResponse) {
+	public VisitorController(VisitorService service, AppResponseBuilder responseBuilder) {
 		this.service = service;
-		this.genericResponse = genericResponse;
+		this.responseBuilder = responseBuilder;
 	}
 
 	/* Get all the visitors without any filter */
@@ -60,7 +60,7 @@ public class VisitorController {
 	public ResponseEntity<AppResponse> fetchAllVisitors() {
 		List<UserDTO> result = service.fetchAllVisitors();
 
-		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity<>(responseBuilder.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get a visitor using its id */
@@ -75,7 +75,7 @@ public class VisitorController {
 
 		UserDTO result = service.findVisitorByID(id);
 
-		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity<>(responseBuilder.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Get a visitor using its username */
@@ -90,7 +90,7 @@ public class VisitorController {
 
 		UserDTO result = service.findVisitorByUserName(userName);
 
-		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity<>(responseBuilder.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Create a new visitor */
@@ -105,7 +105,7 @@ public class VisitorController {
 
 		UserDTO result = service.addVisitor(dto);
 
-		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.create.success", result, HttpStatus.CREATED);
+		AppResponse response = responseBuilder.getRequestSuccessResponse("visitor.create.success", result, HttpStatus.CREATED);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -121,7 +121,7 @@ public class VisitorController {
 
 		UserDTO result = service.updateVisitor(dto);
 
-		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.update.success", result, HttpStatus.CREATED);
+		AppResponse response = responseBuilder.getRequestSuccessResponse("visitor.update.success", result, HttpStatus.CREATED);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -137,7 +137,7 @@ public class VisitorController {
 
 		boolean result = service.deleteVisitorByID(id);
 
-		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.delete.success", result, HttpStatus.ACCEPTED);
+		AppResponse response = responseBuilder.getRequestSuccessResponse("visitor.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -152,7 +152,7 @@ public class VisitorController {
 			throw new EmptyRequestException();
 
 		UserDTO result = service.registerVisitorForEvent(dto);
-		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.register.successs", result, HttpStatus.CREATED);
+		AppResponse response = responseBuilder.getRequestSuccessResponse("visitor.register.success", result, HttpStatus.CREATED);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 

@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.afour.emgmt.common.RoleEnum;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -25,13 +24,13 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.afour.emgmt.common.Actor;
+import com.afour.emgmt.common.RoleEnum;
 import com.afour.emgmt.config.SpringDataJPAConfiguration;
 import com.afour.emgmt.entity.Role;
 import com.afour.emgmt.entity.User;
 import com.afour.emgmt.repository.RoleRepository;
 import com.afour.emgmt.repository.UserRepository;
 import com.afour.emgmt.util.MySQLTestImage;
-import com.afour.emgmt.util.UtilConstant;
 
 import lombok.extern.slf4j.Slf4j;
 

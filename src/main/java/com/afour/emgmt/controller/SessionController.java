@@ -5,8 +5,6 @@ package com.afour.emgmt.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.afour.emgmt.common.AppResponse;
-import com.afour.emgmt.common.GenericResponse;
+import com.afour.emgmt.common.AppResponseBuilder;
 import com.afour.emgmt.exception.EmptyRequestException;
 import com.afour.emgmt.model.EsessionDTO;
 import com.afour.emgmt.service.SessionService;
@@ -45,11 +43,11 @@ public class SessionController {
 
 	private final SessionService service;
 
-	private final GenericResponse genericResponse;
+	private final AppResponseBuilder responseBuilder;
 
-	public SessionController(SessionService service, GenericResponse genericResponse) {
+	public SessionController(SessionService service, AppResponseBuilder responseBuilder) {
 		this.service = service;
-		this.genericResponse = genericResponse;
+		this.responseBuilder = responseBuilder;
 	}
 
 	/* Get all sessions of an event */
@@ -64,7 +62,7 @@ public class SessionController {
 
 		List<EsessionDTO> result = service.findSessionEventByID(eventId);
 
-		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity<>(responseBuilder.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get an existing session using its id */
@@ -79,7 +77,7 @@ public class SessionController {
 
 		EsessionDTO result = service.findSessionByID(id);
 
-		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity<>(responseBuilder.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Create a new session under any event */
@@ -94,8 +92,8 @@ public class SessionController {
 
 		EsessionDTO result = service.addSession(dto);
 
-		AppResponse response = genericResponse.getRequestSuccessResponse("session.create.success", result, HttpStatus.CREATED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = responseBuilder.getRequestSuccessResponse("session.create.success", result, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* Update an existing session */
@@ -109,8 +107,8 @@ public class SessionController {
 			throw new EmptyRequestException();
 
 		EsessionDTO result = service.updateSession(dto);
-
-		AppResponse response = genericResponse.getRequestSuccessResponse("session.update.success", result, HttpStatus.CREATED);
+		
+		AppResponse response = responseBuilder.getRequestSuccessResponse("session.update.success", result, HttpStatus.CREATED);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
@@ -126,7 +124,7 @@ public class SessionController {
 
 		Boolean result = service.deleteSessionByID(id);
 
-		AppResponse response = genericResponse.getRequestSuccessResponse("session.delete.success", result, HttpStatus.ACCEPTED);
+		AppResponse response = responseBuilder.getRequestSuccessResponse("session.delete.success", result, HttpStatus.ACCEPTED);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 

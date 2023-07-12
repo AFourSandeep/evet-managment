@@ -17,11 +17,11 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Component
 @Slf4j
-public class GenericResponseImpl implements GenericResponse {
+public class AppResponseBuilderImpl implements AppResponseBuilder {
 
 	private final MessageSource messages;
 
-	public GenericResponseImpl(@Qualifier("messageSource") MessageSource messages) {
+	public AppResponseBuilderImpl(@Qualifier("messageSource") MessageSource messages) {
 		this.messages = messages;
 	}
 
