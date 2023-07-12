@@ -38,12 +38,13 @@ public class OrganizerServiceImpl implements OrganizerService {
 	@Autowired
 	RoleRepository roleRepository;
 
-	@Override
-	public List<UserDTO> fetchAllOrganizers() {
-		List<User> entities = repository.findAll();
-		log.info("DB operation success! Fetched {} Organizers!", entities.size());
-		return mapper.entityToDTO(entities);
-	}
+    @Override
+    public List<UserDTO> fetchAllOrganizers() {
+        List<User> entities = repository.findAll();
+
+        log.info("DB operation success! Fetched {} Organizers!", entities.size());
+        return mapper.entityToDTO(entities);
+    }
 
 	@Override
 	public UserDTO findOrganizerByID(final Integer ID) throws NoDataFoundException {

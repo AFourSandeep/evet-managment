@@ -47,6 +47,7 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public List<EventDTO> fetchAllEvents() {
 		List<Event> entities = repository.findAll();
+
 		log.info("DB operation success! Fetched {} Events!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
@@ -54,6 +55,7 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public List<EventDTO> fetchEventsByStatus(final Boolean status) {
 		List<Event> entities = repository.fetchEventsByStatus(!status);
+
 		log.info("DB operation success! Fetched {} Open Events!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
@@ -112,8 +114,7 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public Set<Event> findAllById(Set<Integer> eventIds) throws NoDataFoundException {
 		List<Event> entities = repository.findAllById(eventIds);
-		if (null == entities)
-			throw new NoDataFoundException();
+
 		log.info("DB operation success! Fetched total {} Events ", entities.size());
 		return new HashSet<>(entities);
 	}

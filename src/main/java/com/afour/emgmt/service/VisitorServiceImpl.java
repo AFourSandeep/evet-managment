@@ -55,6 +55,7 @@ public class VisitorServiceImpl implements VisitorService {
 	@Override
 	public List<UserDTO> fetchAllVisitors() throws Exception {
 		List<User> entities = repository.findAll();
+
 		log.info("DB operation success! Fetched {} visitors!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
