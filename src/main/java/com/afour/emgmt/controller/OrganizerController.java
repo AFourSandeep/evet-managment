@@ -22,9 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
 import com.afour.emgmt.exception.EmptyRequestException;
-import com.afour.emgmt.exception.NoDataFoundException;
-import com.afour.emgmt.exception.UndefinedRoleException;
-import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.service.OrganizerService;
 
@@ -60,21 +57,19 @@ public class OrganizerController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/organizers", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> fetchAllOrganizers() throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> fetchAllOrganizers() {
 		List<UserDTO> result = service.fetchAllOrganizers();
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get one existing organizer using its id */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one organizer by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the organizer!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findOrganizerByID(@PathVariable(value = "id") final Integer id)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> findOrganizerByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			throw new EmptyRequestException();
 
@@ -90,8 +85,7 @@ public class OrganizerController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findOrganizerByUserName(@RequestParam(value = "userName") final String userName)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> findOrganizerByUserName(@RequestParam(value = "userName") final String userName) {
 		if (null == userName)
 			throw new EmptyRequestException();
 
@@ -107,7 +101,7 @@ public class OrganizerController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> addOrganizer(@RequestBody UserDTO dto) throws UserAlreadyExistException, UndefinedRoleException, Exception {
+	public ResponseEntity<AppResponse> addOrganizer(@RequestBody UserDTO dto) {
 		if (null == dto)
 			throw new EmptyRequestException();
 
@@ -124,8 +118,7 @@ public class OrganizerController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> updateOrganizer(@RequestBody UserDTO dto)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> updateOrganizer(@RequestBody UserDTO dto) {
 		if (null == dto)
 			throw new EmptyRequestException();
 
@@ -142,8 +135,7 @@ public class OrganizerController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> deleteOrganizer(@PathVariable(value = "id") final Integer id)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> deleteOrganizer(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			throw new EmptyRequestException();
 

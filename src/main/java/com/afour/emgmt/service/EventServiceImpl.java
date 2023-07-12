@@ -112,7 +112,7 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public Set<Event> findAllById(Set<Integer> eventIds) throws NoDataFoundException {
+	public Set<Event> findAllById(Set<Integer> eventIds) {
 		List<Event> entities = repository.findAllById(eventIds);
 
 		log.info("DB operation success! Fetched total {} Events ", entities.size());

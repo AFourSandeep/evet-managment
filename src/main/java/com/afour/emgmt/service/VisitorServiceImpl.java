@@ -53,7 +53,7 @@ public class VisitorServiceImpl implements VisitorService {
 	RoleRepository roleRepository;
 
 	@Override
-	public List<UserDTO> fetchAllVisitors() throws Exception {
+	public List<UserDTO> fetchAllVisitors() {
 		List<User> entities = repository.findAll();
 
 		log.info("DB operation success! Fetched {} visitors!", entities.size());
@@ -61,7 +61,7 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public UserDTO findVisitorByID(final Integer ID) throws NoDataFoundException {
+	public UserDTO findVisitorByID(final Integer ID)  {
 		Optional<User> optional = repository.findById(ID);
 
 		return optional.map(visitor -> {
@@ -81,7 +81,7 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public UserDTO findVisitorByUserName(final String USERNAME) throws NoDataFoundException {
+	public UserDTO findVisitorByUserName(final String USERNAME)  {
 		Optional<User> optional = repository.findByUserName(USERNAME);
 		return optional.map(visitor -> {
 			UserDTO userDTO = dtoFromEntity(visitor);
@@ -91,9 +91,11 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public UserDTO addVisitor(final UserDTO dto) throws UserAlreadyExistException, UndefinedRoleException {
-		repository.findByUserName(dto.getUserName())
-		.ifPresent(u->new UserAlreadyExistException());
+	@Transactional
+	public UserDTO addVisitor(final UserDTO dto)  {
+		Optional<User> optional = repository.findByUserName(dto.getUserName());
+		if (optional.isPresent())
+			throw new UserAlreadyExistException();
 
 		Set<EventDTO> newEventDtos = dto.getEvents();
 
@@ -156,8 +158,8 @@ public class VisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public UserDTO registerVisitorForEvent(UserRegistrationDTO dto) throws NoDataFoundException {
-		User entity = repository.findById(dto.getUserId()).orElseThrow(()->new NoDataFoundException());
+	public UserDTO registerVisitorForEvent(UserRegistrationDTO dto) {
+		User entity = repository.findById(dto.getUserId()).orElseThrow(NoDataFoundException::new);
 
 		Set<Integer> newEventIds = dto.getEventIds();
 		List<Event> newEvents = eventRepository.findAllById(newEventIds);

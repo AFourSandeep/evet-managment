@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
 import com.afour.emgmt.exception.EmptyRequestException;
-import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.EsessionDTO;
 import com.afour.emgmt.service.SessionService;
 
@@ -60,8 +59,7 @@ public class SessionController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findSessionEventByID(@RequestParam(value = "eventId") final Integer eventId)
-			throws Exception {
+	public ResponseEntity<AppResponse> findSessionEventByID(@RequestParam(value = "eventId") final Integer eventId) {
 		if (null == eventId)
 			throw new EmptyRequestException();
 
@@ -77,8 +75,7 @@ public class SessionController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findSessionByID(@PathVariable(value = "id") final Integer id)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> findSessionByID(@PathVariable(value = "ID") final Integer id) {
 		if (null == id)
 			throw new EmptyRequestException();
 
@@ -94,7 +91,7 @@ public class SessionController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> addSession(@RequestBody EsessionDTO dto) throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> addSession(@RequestBody EsessionDTO dto) {
 		if (null == dto)
 			throw new EmptyRequestException();
 
@@ -111,8 +108,7 @@ public class SessionController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> updateSession(@RequestBody EsessionDTO dto)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> updateSession(@RequestBody EsessionDTO dto) {
 		if (null == dto)
 			throw new EmptyRequestException();
 
@@ -129,8 +125,7 @@ public class SessionController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> deleteSession(@PathVariable(value = "id") final Integer id)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> deleteSession(@PathVariable(value = "ID") final Integer id) {
 		if (null == id)
 			throw new EmptyRequestException();
 

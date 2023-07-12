@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
 import com.afour.emgmt.exception.EmptyRequestException;
-import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.EventDTO;
 import com.afour.emgmt.service.EventService;
 
@@ -58,7 +57,7 @@ public class EventController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/events", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> fetchAllEvents() throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> fetchAllEvents() {
 		List<EventDTO> result = service.fetchAllEvents();
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
@@ -72,8 +71,7 @@ public class EventController {
 	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> fetchEventsByStatus(
-			@RequestParam(value = "open", defaultValue = "true") final Boolean status)
-			throws NoDataFoundException, Exception {
+			@RequestParam(value = "open", defaultValue = "true") final Boolean status) {
 		if (null == status)
 			throw new EmptyRequestException();
 
@@ -89,8 +87,7 @@ public class EventController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findEventByID(@PathVariable(value = "id") final Integer id)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> findEventByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			throw new EmptyRequestException();
 
@@ -106,7 +103,7 @@ public class EventController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> addEvent(@RequestBody EventDTO eventDTO) throws Exception {
+	public ResponseEntity<AppResponse> addEvent(@RequestBody EventDTO eventDTO) {
 		if (null == eventDTO)
 			throw new EmptyRequestException();
 
@@ -123,8 +120,7 @@ public class EventController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> updateEvent(@RequestBody EventDTO eventDTO)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> updateEvent(@RequestBody EventDTO eventDTO) {
 		if (null == eventDTO)
 			throw new EmptyRequestException();
 
@@ -141,8 +137,7 @@ public class EventController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> deleteEventByID(@PathVariable(value = "id") final Integer id)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> deleteEventByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			throw new EmptyRequestException();
 

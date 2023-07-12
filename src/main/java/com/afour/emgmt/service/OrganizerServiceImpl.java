@@ -46,30 +46,28 @@ public class OrganizerServiceImpl implements OrganizerService {
         return mapper.entityToDTO(entities);
     }
 
-	@Override
-	public UserDTO findOrganizerByID(final Integer ID) throws NoDataFoundException {
-		Optional<User> optional = repository.findById(ID);
-		return optional.map(e -> {
-			UserDTO user = mapper.entityToDTO(e);
-			log.info("DB operation success! Fetched User:{} ", user.getUserId());
-			return user;
-		}).orElseThrow(() -> new NoDataFoundException());
-	}
+    @Override
+    public UserDTO findOrganizerByID(final Integer ID) {
+        Optional<User> optional = repository.findById(ID);
+        return optional.map(entity -> {
+            log.info("DB operation success! Fetched User:{} ", entity.getUserId());
+            return mapper.entityToDTO(entity);
+        }).orElseThrow(NoDataFoundException::new);
+    }
 
-	@Override
-	public UserDTO findOrganizerByUserName(final String USERNAME) throws NoDataFoundException {
-		Optional<User> optional = repository.findByUserName(USERNAME);
-		return optional.map(e -> {
-			UserDTO user = mapper.entityToDTO(e);
-			log.info("DB operation success! Fetched User:{} by username: {}", user.getUserId(), USERNAME);
-			return user;
-		}).orElseThrow(() -> new NoDataFoundException());
-	}
+    @Override
+    public UserDTO findOrganizerByUserName(final String USERNAME) {
+        Optional<User> optional = repository.findByUserName(USERNAME);
+        return optional.map(entity -> {
+            log.info("DB operation success! Fetched User:{} by username: {}", entity.getUserId(), USERNAME);
+            return mapper.entityToDTO(entity);
+        }).orElseThrow(NoDataFoundException::new);
+    }
 
-	@Override
-	public UserDTO addOrganizer(final UserDTO dto) throws UserAlreadyExistException, UndefinedRoleException {
+    @Override
+    public UserDTO addOrganizer(final UserDTO dto) {
 		repository.findByUserName(dto.getUserName())
-		.ifPresent(u -> new UserAlreadyExistException());
+				.ifPresent(u -> new UserAlreadyExistException());
 
 		Role role = roleRepository.findByRoleName(UtilConstant.ROLE_ORGANIZER)
 				.orElseThrow(() -> new UndefinedRoleException());
@@ -82,11 +80,11 @@ public class OrganizerServiceImpl implements OrganizerService {
 		return mapper.entityToDTO(entity);
 	}
 
-	@Override
-	public UserDTO updateOrganizer(final UserDTO dto) throws NoDataFoundException {
+    @Override
+    public UserDTO updateOrganizer(final UserDTO dto) {
 		User user = repository.findById(dto.getUserId())
 				.map(e -> mapper.prepareForUpdate(e, dto))
-				.orElseThrow(() -> new NoDataFoundException());
+				.orElseThrow(NoDataFoundException::new);
 
 		user = repository.save(user);
 		log.info("DB operation success! Updated Organizer : {}", user.getUserId());

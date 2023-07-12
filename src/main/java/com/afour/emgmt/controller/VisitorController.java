@@ -22,9 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
 import com.afour.emgmt.exception.EmptyRequestException;
-import com.afour.emgmt.exception.NoDataFoundException;
-import com.afour.emgmt.exception.UndefinedRoleException;
-import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.model.UserRegistrationDTO;
 import com.afour.emgmt.service.VisitorService;
@@ -61,7 +58,7 @@ public class VisitorController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/visitors", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> fetchAllVisitors() throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> fetchAllVisitors() {
 		List<UserDTO> result = service.fetchAllVisitors();
 
 		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
@@ -74,8 +71,7 @@ public class VisitorController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findVisitorByID(@PathVariable(value = "id") final Integer id)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> findVisitorByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			throw new EmptyRequestException();
 
@@ -91,8 +87,7 @@ public class VisitorController {
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findVisitorByUserName(@RequestParam(value = "userName") final String userName)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> findVisitorByUserName(@RequestParam(value = "userName") final String userName) {
 		if (null == userName)
 			throw new EmptyRequestException();
 
@@ -108,8 +103,7 @@ public class VisitorController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR')")
-	public ResponseEntity<AppResponse> addVisitor(@RequestBody UserDTO dto)
-			throws UserAlreadyExistException, UndefinedRoleException, Exception {
+	public ResponseEntity<AppResponse> addVisitor(@RequestBody UserDTO dto) {
 		if (null == dto)
 			throw new EmptyRequestException();
 
@@ -126,7 +120,7 @@ public class VisitorController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR')")
-	public ResponseEntity<AppResponse> updateVisitor(@RequestBody UserDTO dto) throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> updateVisitor(@RequestBody UserDTO dto) {
 		if (null == dto)
 			throw new EmptyRequestException();
 
@@ -143,8 +137,7 @@ public class VisitorController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR')")
-	public ResponseEntity<AppResponse> deleteVisitorByID(@PathVariable(value = "id") final Integer id)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> deleteVisitorByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			throw new EmptyRequestException();
 
@@ -161,8 +154,7 @@ public class VisitorController {
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/registerForEvent", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> registerVisitorForEvent(@RequestBody UserRegistrationDTO dto)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> registerVisitorForEvent(@RequestBody UserRegistrationDTO dto) {
 		if (null == dto)
 			throw new EmptyRequestException();
 
