@@ -91,7 +91,7 @@ DROP TABLE IF EXISTS `role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `role` (
-  `role_id` int NOT NULL,
+  `role_id` varchar(64) NOT NULL,
   `role_name` varchar(100) NOT NULL,
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -103,7 +103,7 @@ CREATE TABLE `role` (
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
-INSERT INTO `role` VALUES (1,'ORGANIZER'),(2,'VISITOR');
+INSERT INTO `role` VALUES ('ORGANIZER','ORGANIZER'),('VISITOR','VISITOR');
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,7 +125,7 @@ CREATE TABLE `user` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '1',
-  `role_id` int DEFAULT NULL,
+  `role_id` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `user_FK` (`role_id`),
   CONSTRAINT `user_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)
@@ -138,7 +138,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'organizer1','sandeep','jariya','$2a$10$9CPLVhFmVDZRfT.jx30qk.6Gc2MmhZLMNfJ8YumUvKvWxWHJV4V/m','System','System','2023-06-24 08:52:26','2023-06-25 11:32:30',1,1),(2,'visitor1','sandeep','jariya','$2a$10$9CPLVhFmVDZRfT.jx30qk.6Gc2MmhZLMNfJ8YumUvKvWxWHJV4V/m','System','System','2023-06-24 08:52:26','2023-06-25 11:32:30',1,2);
+INSERT INTO `user` VALUES (1,'organizer1','sandeep','jariya','$2a$10$9CPLVhFmVDZRfT.jx30qk.6Gc2MmhZLMNfJ8YumUvKvWxWHJV4V/m','System','System','2023-06-24 08:52:26','2023-06-25 11:32:30',1,'ORGANIZER'),(2,'visitor1','sandeep','jariya','$2a$10$9CPLVhFmVDZRfT.jx30qk.6Gc2MmhZLMNfJ8YumUvKvWxWHJV4V/m','System','System','2023-06-24 08:52:26','2023-06-25 11:32:30',1,'VISITOR');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -3,6 +3,7 @@
  */
 package com.afour.emgmt.model;
 
+import com.afour.emgmt.common.RoleEnum;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RoleDTO {
 
-	private Integer roleId;
+	private RoleEnum roleId;
 
 	private String roleName;
 

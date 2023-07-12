@@ -73,7 +73,7 @@ public class OrganizerServiceImpl implements OrganizerService {
 				.orElseThrow(() -> new UndefinedRoleException());
 
 		User entity = mapper.prepareForCreate(dto);
-		entity.setRole(role);
+        entity.setRole(role);
 
 		entity = repository.save(entity);
 		log.info("DB operation success! Added User : {}", entity.getUserId());

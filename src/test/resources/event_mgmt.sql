@@ -7,7 +7,7 @@ USE `event_mgmt`;
 DROP TABLE IF EXISTS `role`;
 
 CREATE TABLE `role` (
-  `role_id` int NOT NULL,
+  `role_id` varchar(64) NOT NULL,
   `role_name` varchar(100) NOT NULL,
   PRIMARY KEY (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ;
@@ -15,7 +15,7 @@ CREATE TABLE `role` (
 
 --LOCK TABLES `role` WRITE;
 
-INSERT INTO `role` VALUES (1,'Organiser'),(2,'Visitor');
+INSERT INTO `role` VALUES ('ORGANIZER','Organiser'),('VISITOR','Visitor');
 
 --UNLOCK TABLES;
 
@@ -32,7 +32,7 @@ CREATE TABLE `user` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `is_active` tinyint NOT NULL DEFAULT '1',
-  `role_id` int DEFAULT NULL,
+  `role_id` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   KEY `user_FK` (`role_id`),
   CONSTRAINT `user_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`)

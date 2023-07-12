@@ -6,6 +6,8 @@ package com.afour.emgmt.util;
 import java.time.LocalDateTime;
 import java.util.Random;
 
+import com.afour.emgmt.common.Actor;
+import com.afour.emgmt.common.RoleEnum;
 import com.afour.emgmt.entity.Esession;
 import com.afour.emgmt.entity.Event;
 import com.afour.emgmt.entity.Role;
@@ -19,9 +21,6 @@ import com.afour.emgmt.model.UserDTO;
  */
 public class TestUtils {
 
-	private static final Integer ORGANIZER = 1;
-	private static final Integer VISITOR = 1;
-
 	private static final LocalDateTime NOW = LocalDateTime.now();
 
 	private static final LocalDateTime PAST10DAYS = LocalDateTime.now().minusDays(10);
@@ -34,8 +33,8 @@ public class TestUtils {
 		return random.nextInt(100);
 	}
 
-	public static Role buildRole(Integer roleId) {
-		return Role.builder().roleId(roleId).build();
+	public static Role buildRole(RoleEnum roleId) {
+		return Role.builder().roleId(roleId).roleName(roleId.name()).build();
 	}
 
 	public static User buildOrganizer(String userName) {
