@@ -19,5 +19,5 @@ import com.afour.emgmt.entity.User;
 public interface UserRepository extends JpaRepository<User, Integer>{
 	
 	@Query("SELECT u FROM User AS u WHERE u.userName=:username")
-	public Optional<User> findByUserName(@Param("username") final String username); 
+	Optional<User> findByUserName(@Param("username") final String username);
 }

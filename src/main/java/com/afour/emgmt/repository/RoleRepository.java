@@ -3,8 +3,7 @@
  */
 package com.afour.emgmt.repository;
 
-import java.util.Optional;
-
+import com.afour.emgmt.common.RoleEnum;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.afour.emgmt.entity.Role;
@@ -12,8 +11,6 @@ import com.afour.emgmt.entity.Role;
 /**
  * 
  */
-public interface RoleRepository extends JpaRepository<Role, Integer>{
-
-	Optional<Role> findByRoleName(String roleOrganizer);
+public interface RoleRepository extends JpaRepository<Role, RoleEnum>{
 
 }

@@ -5,8 +5,6 @@ package com.afour.emgmt.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.afour.emgmt.common.AppResponse;
 import com.afour.emgmt.common.GenericResponse;
 import com.afour.emgmt.exception.EmptyRequestException;
-import com.afour.emgmt.exception.NoDataFoundException;
-import com.afour.emgmt.exception.UndefinedRoleException;
-import com.afour.emgmt.exception.UserAlreadyExistException;
 import com.afour.emgmt.model.UserDTO;
 import com.afour.emgmt.model.UserRegistrationDTO;
 import com.afour.emgmt.service.VisitorService;
@@ -47,132 +42,118 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = "Manage Visitors")
 public class VisitorController {
 
-	@Autowired
-	VisitorService service;
+	private final VisitorService service;
 
-	@Autowired
-	MessageSource messages;
+	private final GenericResponse genericResponse;
 
-	@Autowired
-	GenericResponse genericResponse;
-
-	private AppResponse response;
+	public VisitorController(VisitorService service, GenericResponse genericResponse) {
+		this.service = service;
+		this.genericResponse = genericResponse;
+	}
 
 	/* Get all the visitors without any filter */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch all the visitors without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the visitors!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/visitors", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> fetchAllVisitors() throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> fetchAllVisitors() {
 		List<UserDTO> result = service.fetchAllVisitors();
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, result.size()), HttpStatus.OK);
 	}
 
 	/* Get a visitor using its id */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one Visitor by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findVisitorByID(@PathVariable(value = "id") final Integer id)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> findVisitorByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			throw new EmptyRequestException();
 
 		UserDTO result = service.findVisitorByID(id);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Get a visitor using its username */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Fetch one Visitor by USERNAME!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Visitor!"),
 			@ApiResponse(code = 204, message = "No data found!") })
 	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> findVisitorByUserName(@RequestParam(value = "userName") final String userName)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> findVisitorByUserName(@RequestParam(value = "userName") final String userName) {
 		if (null == userName)
 			throw new EmptyRequestException();
 
 		UserDTO result = service.findVisitorByUserName(userName);
 
-		return new ResponseEntity(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
+		return new ResponseEntity<>(genericResponse.getSuccessDataFoundResponse(result, 1), HttpStatus.OK);
 	}
 
 	/* Create a new visitor */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Create a new Visitor.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR')")
-	public ResponseEntity<AppResponse> addVisitor(@RequestBody UserDTO dto)
-			throws UserAlreadyExistException, UndefinedRoleException, Exception {
+	public ResponseEntity<AppResponse> addVisitor(@RequestBody UserDTO dto) {
 		if (null == dto)
 			throw new EmptyRequestException();
 
 		UserDTO result = service.addVisitor(dto);
 
-		response = genericResponse.getRequestSuccessResponse("visitor.create.successs", result, HttpStatus.CREATED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.create.success", result, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* Update an existing visitor */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Update a Visitor.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PutMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR')")
-	public ResponseEntity<AppResponse> updateVisitor(@RequestBody UserDTO dto) throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> updateVisitor(@RequestBody UserDTO dto) {
 		if (null == dto)
 			throw new EmptyRequestException();
 
 		UserDTO result = service.updateVisitor(dto);
 
-		response = genericResponse.getRequestSuccessResponse("visitor.update.successs", result, HttpStatus.CREATED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.update.success", result, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* Delete an existing visitor using its id */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@ApiOperation(value = "Delete the vistor.")
+	@ApiOperation(value = "Delete the visitor.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested visitor!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR')")
-	public ResponseEntity<AppResponse> deleteVisitorByID(@PathVariable(value = "id") final Integer id)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> deleteVisitorByID(@PathVariable(value = "id") final Integer id) {
 		if (null == id)
 			throw new EmptyRequestException();
 
-		Boolean result = service.deleteVisitorByID(id);
+		boolean result = service.deleteVisitorByID(id);
 
-		response = genericResponse.getRequestSuccessResponse("visitor.delete.success", result, HttpStatus.ACCEPTED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.delete.success", result, HttpStatus.ACCEPTED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	/* Register one existing visitor for one or more events */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@ApiOperation(value = "Register a Visitor for Events.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Registered!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
 	@PostMapping(value = "/registerForEvent", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
-	public ResponseEntity<AppResponse> registerVisitorForEvent(@RequestBody UserRegistrationDTO dto)
-			throws NoDataFoundException, Exception {
+	public ResponseEntity<AppResponse> registerVisitorForEvent(@RequestBody UserRegistrationDTO dto) {
 		if (null == dto)
 			throw new EmptyRequestException();
 
 		UserDTO result = service.registerVisitorForEvent(dto);
-		response = genericResponse.getRequestSuccessResponse("visitor.register.successs", result, HttpStatus.CREATED);
-		return new ResponseEntity(response, HttpStatus.OK);
+		AppResponse response = genericResponse.getRequestSuccessResponse("visitor.register.successs", result, HttpStatus.CREATED);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 }

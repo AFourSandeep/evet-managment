@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.afour.emgmt.entity.Event;
@@ -30,28 +29,33 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EventServiceImpl implements EventService {
 
-	@Autowired
-	EventMapper mapper;
+	private final EventMapper mapper;
 
-	@Autowired
-	SessionMapper sessionMapper;
-	
-	@Autowired
-	UserMapper userMapper;
+	private final SessionMapper sessionMapper;
 
-	@Autowired
-	EventRepository repository;
+	private final UserMapper userMapper;
+
+	private final EventRepository repository;
+
+	public EventServiceImpl(EventMapper eventMapper, SessionMapper sessionMapper, UserMapper userMapper, EventRepository eventRepository) {
+		this.mapper = eventMapper;
+		this.sessionMapper = sessionMapper;
+		this.userMapper = userMapper;
+		this.repository = eventRepository;
+	}
 
 	@Override
 	public List<EventDTO> fetchAllEvents() {
 		List<Event> entities = repository.findAll();
+
 		log.info("DB operation success! Fetched {} Events!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
 
 	@Override
-	public List<EventDTO> fetchEventsByStatus(final Boolean status) {
+	public List<EventDTO> fetchEventsByStatus(final boolean status) {
 		List<Event> entities = repository.fetchEventsByStatus(!status);
+
 		log.info("DB operation success! Fetched {} Open Events!", entities.size());
 		return mapper.entityToDTO(entities);
 	}
@@ -63,13 +67,13 @@ public class EventServiceImpl implements EventService {
 			EventDTO dto = mapper.entityToDTO(e);
 			Set<EsessionDTO> sessionDtos = sessionMapper.entityToDTO(e.getSessions());
 			dto.setSessions(sessionDtos);
-			
+
 			Set<UserDTO> visitorDtos = userMapper.entityToDTO(e.getVisitors());
 			dto.setVisitors(visitorDtos);
 			log.info("DB operation success! Fetched Event:{} ", dto.getEventId());
 			return dto;
-		}).orElseThrow(()->new NoDataFoundException());
-	}	
+		}).orElseThrow(NoDataFoundException::new);
+	}
 
 	@Override
 	public EventDTO addEvent(EventDTO dto) {
@@ -81,39 +85,34 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public EventDTO updateEvent(EventDTO dto) throws NoDataFoundException {
-		Event entity = repository.findById(dto.getEventId()).get();
+	public EventDTO updateEvent(EventDTO dto) {
+		return repository.findById(dto.getEventId()).map(entity -> {
+			entity = mapper.prepareForUpdate(entity, dto);
+			entity = repository.save(entity);
 
-		if (null == entity)
-			throw new NoDataFoundException();
+			log.info("DB operation success! Updated Event : {}", entity.getEventId());
+			return mapper.entityToDTO(entity);
+		}).orElse(null);
 
-		entity = mapper.prepareForUpdate(entity, dto);
-		entity = repository.save(entity);
-
-		log.info("DB operation success! Updated Event : {}", entity.getEventId());
-		return mapper.entityToDTO(entity);
 	}
 
 	@Override
-	public Boolean deleteEventByID(Integer ID) throws NoDataFoundException {
-		Boolean exist = repository.existsById(ID);
+	public boolean deleteEventByID(Integer ID) {
+		boolean exist = repository.existsById(ID);
 
-		if (!exist)
-			throw new NoDataFoundException();
-		
+		if (exist)
 			repository.deleteById(ID);
 
 		exist = repository.existsById(ID);
-		log.info("DB operation success! Deleted the Eevent : {}", !exist);
+		log.info("DB operation success! Deleted the Event : {}", !exist);
 
 		return !exist;
 	}
 
 	@Override
-	public Set<Event> findAllById(Set<Integer> eventIds) throws NoDataFoundException {
+	public Set<Event> findAllById(Set<Integer> eventIds) {
 		List<Event> entities = repository.findAllById(eventIds);
-		if (null == entities)
-			throw new NoDataFoundException();
+
 		log.info("DB operation success! Fetched total {} Events ", entities.size());
 		return new HashSet<>(entities);
 	}

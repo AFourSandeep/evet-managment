@@ -23,12 +23,15 @@ import com.afour.emgmt.util.UtilConstant;
 @Component
 public class SessionMapperImpl implements SessionMapper {
 
-	@Autowired
-	ModelMapper modelMapper;
-	
-	@Autowired
-	AuthenticationFacade authentication;
-	
+	private final ModelMapper modelMapper;
+
+	private final AuthenticationFacade authentication;
+
+	public SessionMapperImpl(ModelMapper modelMapper, AuthenticationFacade authentication) {
+		this.modelMapper = modelMapper;
+		this.authentication = authentication;
+	}
+
 	@Override
 	public EsessionDTO entityToDTO(Esession entity) {
 		return modelMapper.map(entity, EsessionDTO.class);
@@ -43,7 +46,7 @@ public class SessionMapperImpl implements SessionMapper {
 	public List<EsessionDTO> entityToDTO(List<Esession> entities) {
 		return entities
 				.stream()
-				.map(entity -> entityToDTO(entity))
+				.map(this::entityToDTO)
 				.collect(Collectors.toList());
 	}
 
@@ -51,14 +54,14 @@ public class SessionMapperImpl implements SessionMapper {
 	public List<Esession> DTOToEntity(List<EsessionDTO> dtos) {
 		return dtos
 				.stream()
-				.map(dto -> DTOToEntity(dto))
+				.map(this::DTOToEntity)
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Esession prepareForUpdate(Esession entity, EsessionDTO dto) {
-		final String ACTOR = authentication.getAuthentication()!=null ?
-				authentication.getAuthentication().getName():UtilConstant.DEFAULT_USER;
+		final String ACTOR = authentication.getActor();
+
 		if (null != dto.getEsessionTitle())
 			entity.setEsessionTitle(dto.getEsessionTitle());
 		if (null != dto.getStartAt())
@@ -75,7 +78,7 @@ public class SessionMapperImpl implements SessionMapper {
 	public Set<EsessionDTO> entityToDTO(Set<Esession> entities) {
 		return entities
 				.stream()
-				.map(entity -> entityToDTO(entity))
+				.map(this::entityToDTO)
 				.collect(Collectors.toSet());
 	}
 
@@ -83,14 +86,14 @@ public class SessionMapperImpl implements SessionMapper {
 	public Set<Esession> DTOToEntity(Set<EsessionDTO> dtos) {
 		return dtos
 				.stream()
-				.map(dto -> DTOToEntity(dto))
+				.map(this::DTOToEntity)
 				.collect(Collectors.toSet());
 	}
 	
 	@Override
 	public Esession prepareForCreate(EsessionDTO dto) {
-		final String ACTOR = authentication.getAuthentication()!=null ?
-				authentication.getAuthentication().getName():UtilConstant.DEFAULT_USER;
+		final String ACTOR = authentication.getActor();
+
 		Esession entity = this.DTOToEntity(dto);
 		entity.setCreatedAt(LocalDateTime.now());
 		entity.setCreatedBy(ACTOR);

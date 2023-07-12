@@ -23,7 +23,7 @@ import com.afour.emgmt.common.AppResponse;
 /**
  * 
  */
-public class TokenExpiredExeption extends RuntimeException implements AuthenticationEntryPoint {
+public class TokenExpiredException extends RuntimeException implements AuthenticationEntryPoint {
 	
 	String token;
 
@@ -31,7 +31,7 @@ public class TokenExpiredExeption extends RuntimeException implements Authentica
 	
 	private final HttpMessageConverter<String> messageConverter;
 
-    public TokenExpiredExeption(String token) {
+    public TokenExpiredException(String token) {
         this.messageConverter = new StringHttpMessageConverter();
         this.token = token;
     }

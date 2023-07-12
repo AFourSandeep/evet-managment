@@ -30,16 +30,16 @@ public class SecurityConfig {
 	@Autowired
 	private JwtAuthFilter authFilter;
 
-	@Bean
-	public UserDetailsService userDetailsService() {
-		return new UserDetailsServiceImpl();
-	};
 
 	@Autowired
 	CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
 	@Autowired
 	PasswordEncoder passwordEncoder;
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return new UserDetailsServiceImpl();
+	};
 
 	@Bean
 	public AuthenticationProvider authenticationProvider() {

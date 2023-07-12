@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 /**
  * 
  */
-@SuppressWarnings("serial")
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

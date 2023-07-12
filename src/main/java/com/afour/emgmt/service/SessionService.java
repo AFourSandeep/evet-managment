@@ -5,7 +5,6 @@ package com.afour.emgmt.service;
 
 import java.util.List;
 
-import com.afour.emgmt.exception.NoDataFoundException;
 import com.afour.emgmt.model.EsessionDTO;
 
 /**
@@ -13,14 +12,14 @@ import com.afour.emgmt.model.EsessionDTO;
  */
 public interface SessionService {
 
-	List<EsessionDTO> findSessionEventByID(Integer eventId) throws Exception;
+	List<EsessionDTO> findSessionEventByID(Integer eventId) ;
 
-	EsessionDTO findSessionByID(Integer ID) throws NoDataFoundException;
+	EsessionDTO findSessionByID(Integer ID) ;
 
-	EsessionDTO addSession(EsessionDTO dto) throws NoDataFoundException;
+	EsessionDTO addSession(EsessionDTO dto) ;
 
-	EsessionDTO updateSession(EsessionDTO dto) throws NoDataFoundException;
+	EsessionDTO updateSession(EsessionDTO dto) ;
 
-	Boolean deleteSessionByID(Integer iD) throws NoDataFoundException;
+	Boolean deleteSessionByID(Integer iD) ;
 
 }
