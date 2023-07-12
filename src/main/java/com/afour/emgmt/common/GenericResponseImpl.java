@@ -7,15 +7,15 @@ import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
  */
-@Configuration
+@Component
 @Slf4j
 public class GenericResponseImpl implements GenericResponse {
 

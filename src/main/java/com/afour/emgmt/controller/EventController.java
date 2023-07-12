@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -59,7 +60,7 @@ public class EventController {
 	@ApiOperation(value = "Fetch all the events without any filter!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the events!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping(value = "/events", produces = "application/json")
+	@GetMapping(value = "/events", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> fetchAllEvents() throws NoDataFoundException, Exception {
 		List<EventDTO> result = service.fetchAllEvents();
@@ -72,7 +73,7 @@ public class EventController {
 	@ApiOperation(value = "Fetch all the OPEN evets!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found all the OPEN/CLOSED events!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping(value = "/", produces = "application/json")
+	@GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> fetchEventsByStatus(
 			@RequestParam(value = "open", defaultValue = "true") final Boolean status)
@@ -90,7 +91,7 @@ public class EventController {
 	@ApiOperation(value = "Fetch an Event by ID!")
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Found the Event!"),
 			@ApiResponse(code = 204, message = "No data found!") })
-	@GetMapping(value = "/{id}", produces = "application/json")
+	@GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('VISITOR') or hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> findEventByID(@PathVariable(value = "id") final Integer id)
 			throws NoDataFoundException, Exception {
@@ -107,7 +108,7 @@ public class EventController {
 	@ApiOperation(value = "Create a new Event.")
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@PostMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> addEvent(@RequestBody EventDTO eventDTO) throws Exception {
 		if (null == eventDTO)
@@ -124,7 +125,7 @@ public class EventController {
 	@ApiOperation(value = "Update an Event.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Accepted and Updated!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@PutMapping(value = "/", consumes = "application/json", produces = "application/json")
+	@PutMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> updateEvent(@RequestBody EventDTO eventDTO)
 			throws NoDataFoundException, Exception {
@@ -142,7 +143,7 @@ public class EventController {
 	@ApiOperation(value = "Delete the Event.")
 	@ApiResponses(value = { @ApiResponse(code = 202, message = "Deleted the requested event!"),
 			@ApiResponse(code = 400, message = "Bad Request!") })
-	@DeleteMapping(value = "/{id}", produces = "application/json")
+	@DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@PreAuthorize("hasAuthority('ORGANIZER')")
 	public ResponseEntity<AppResponse> deleteEventByID(@PathVariable(value = "id") final Integer id)
 			throws NoDataFoundException, Exception {

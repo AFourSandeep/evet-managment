@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -47,7 +48,7 @@ public class AuthenticationController {
 	@Autowired
 	GenericResponse genericResponse;
 	
-	@PostMapping(value = "/token", consumes = "application/json", produces = "application/json")
+	@PostMapping(value = "/token", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
 		LoginResponse response;
 		try {
@@ -69,7 +70,7 @@ public class AuthenticationController {
 		}
 	}
 	
-	@GetMapping(value = "/access-denied", produces = "application/json")
+	@GetMapping(value = "/access-denied", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<AppResponse> accessDeniedHandler() {
 		return new ResponseEntity(genericResponse.getAccessDeniedResponse(), HttpStatus.UNAUTHORIZED);
 	}
